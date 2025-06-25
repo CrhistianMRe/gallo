@@ -21,6 +21,7 @@ ALTER TABLE person ADD CONSTRAINT chk_person_gender CHECK (gender IN ('M', 'F', 
 CREATE TABLE IF NOT EXISTS account(
     id bigint NOT NULL,
     email varchar(100) NOT NULL,
+    password varchar (150) NOT NULL,
     created_at DATETIME NOT NULL,
     updated_at DATETIME DEFAULT NULL,
     enabled boolean NOT NULL DEFAULT 1,
