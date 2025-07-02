@@ -24,3 +24,6 @@
 - (Optional: Jetpack Components)  
 - Gradle
 
+## Template docs
+- [Requirements](https://drive.google.com/file/d/1diq_zjKFh7muv0KoUWesED698ZbEQZOE/view?usp=sharing)
+
