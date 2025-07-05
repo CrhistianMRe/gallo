@@ -1,6 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +23,7 @@ public class Person {
 
     private String phoneNumber;
 
-    private Date birthDate;
+    private LocalDate birthDate;
 
     private String gender;
 
@@ -37,7 +37,12 @@ public class Person {
     public Person(){
     }
     
-	public Person(String firstName, String lastName, String phoneNumber, Date birthDate, String gender, Double height, Double weight, Account account) {
+    public Person(Long id, String firstName) {
+        this.id = id;
+        this.firstName = firstName;
+    }
+
+	public Person(String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender, Double height, Double weight, Account account) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -47,6 +52,7 @@ public class Person {
         this.weight = weight;
         this.account = account;
     }
+
 
     public Long getId() {
 		return id;
@@ -80,11 +86,11 @@ public class Person {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Date getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthLocalDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
