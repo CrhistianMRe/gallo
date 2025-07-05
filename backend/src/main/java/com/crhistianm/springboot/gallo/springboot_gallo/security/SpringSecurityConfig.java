@@ -23,6 +23,7 @@ public class SpringSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
         return http.authorizeHttpRequests((authz) -> authz 
                     .requestMatchers(HttpMethod.POST, "/api/persons/register").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/accounts/register").permitAll()
                     .anyRequest().authenticated())
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
