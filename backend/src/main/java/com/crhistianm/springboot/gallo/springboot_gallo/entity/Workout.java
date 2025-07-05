@@ -96,6 +96,37 @@ public class Workout {
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((workoutDate == null) ? 0 : workoutDate.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Workout other = (Workout) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (workoutDate == null) {
+            if (other.workoutDate != null)
+                return false;
+        } else if (!workoutDate.equals(other.workoutDate))
+            return false;
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "Workout {id=" + id + ", workoutDate=" + workoutDate + ", workoutLength=" + workoutLength + ", exercise="
                 + exercise + ", sets=" + sets + "}";
