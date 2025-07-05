@@ -143,7 +143,10 @@ public class Account {
         this.workouts = workouts;
     }
 
-
+    public Account addRole(Role role){
+        this.roles.add(role);
+        return this;
+    }
 
     //person and roles here and as the main bidirectional relationship
     @Override
