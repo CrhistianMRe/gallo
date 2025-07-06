@@ -1,12 +1,13 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.entity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,11 +34,8 @@ public class Account {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private Date createdAt;
-        
-    private Date updatedAt;
-
-    private Boolean enabled;
+    @Embedded
+    private Audit audit = new Audit();
 
     @OneToOne
     private Person person;
@@ -55,18 +53,16 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<Workout> workouts;
 
+
     public Account() {
         this.workouts = new ArrayList<>();
         this.roles = new ArrayList<>();
     }
 
-    public Account(String email, String password, Date createdAt, Date updatedAt, Boolean enabled, Person person) {
+    public Account(String email, String password, Person person) {
         this();
         this.email = email;
         this.password = password;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.enabled = enabled;
         this.person = person;
     }
 
@@ -94,30 +90,6 @@ public class Account {
         this.password = password;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public Person getPerson() {
         return person;
     }
@@ -134,7 +106,6 @@ public class Account {
         this.roles = roles;
     }
 
-
     public List<Workout> getWorkouts() {
         return workouts;
     }
@@ -146,6 +117,14 @@ public class Account {
     public Account addRole(Role role){
         this.roles.add(role);
         return this;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
+    }
+
+    public Audit getAudit() {
+        return audit;
     }
 
     @Override
@@ -182,10 +161,11 @@ public class Account {
     //person and roles here and as the main bidirectional relationship
     @Override
     public String toString() {
-        return "Account [id=" + id + ", email=" + email + ", password=" + password + ", createdAt=" + createdAt
-                + ", updatedAt=" + updatedAt + ", enabled=" + enabled + ", person=" + person + ", roles=" + roles
+        return "Account [id=" + id + ", email=" + email + ", password=" + password + ", createdAt=" + audit.getCreatedAt() 
+                + ", updatedAt=" + audit.getUpdatedAt()+ ", enabled=" + audit.isEnabled()+ ", person=" + person + ", roles=" + roles
                  + "}";
     }
+
 
 
 
