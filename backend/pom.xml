@@ -164,6 +164,22 @@
   </profile>
 
   <profile>
+    <id>entity-tests</id>
+    <build>
+      <plugins>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <includes>
+              <include>**/entity/*Test.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+
+  <profile>
     <id>validation-tests</id>
     <build>
       <plugins>
