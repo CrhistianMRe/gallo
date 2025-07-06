@@ -41,6 +41,8 @@ public class Account {
     private Person person;
 
     //Created inverse relationship as i need to query how many users have roles 
+    //JsonIgnoreProperties to avoid infinte loop of roles and accounts
+    @JsonIgnoreProperties({"accounts", "handler", "hibernateLazyInitializer"})
     @ManyToMany
     @JoinTable(
         name = "account_role",
