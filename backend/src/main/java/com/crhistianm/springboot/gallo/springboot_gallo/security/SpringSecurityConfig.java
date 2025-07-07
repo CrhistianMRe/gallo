@@ -24,6 +24,8 @@ public class SpringSecurityConfig {
         return http.authorizeHttpRequests((authz) -> authz 
                     .requestMatchers(HttpMethod.POST, "/api/persons/register").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/accounts/register").permitAll()
+                    .requestMatchers("/swagger-ui/**").permitAll()
+                    .requestMatchers("/v3/**").permitAll()
                     .anyRequest().authenticated())
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
