@@ -33,6 +33,7 @@ ALTER TABLE account MODIFY id bigint NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE account ADD UNIQUE INDEX uq_account_email (email ASC) VISIBLE;
 ALTER TABLE account ADD CONSTRAINT fk_account_person_id FOREIGN KEY (person_id) REFERENCES person(id);
+ALTER TABLE account ADD UNIQUE INDEX uq_fk_account_person_id (person_id ASC) VISIBLE;
 
 CREATE TABLE IF NOT EXISTS role(
     id bigint NOT NULL,
