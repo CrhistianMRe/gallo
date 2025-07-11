@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
@@ -43,10 +44,7 @@ public class AccountControllerTest {
     void testCreate() throws Exception{
         AccountDto accountDto = createAccountAdminDto().orElseThrow(); 
 
-        Account account = new Account();
-        account.setEmail(accountDto.getEmail());
-        account.setPerson(createPerson().orElseThrow());
-        account.setPassword(accountDto.getPassword());
+        Account account = new AccountBuilder().email(accountDto.getEmail()).person(createPerson().orElseThrow()).password(accountDto.getPassword()).build();
 
         //It is a different instance as objectMapper changes it obviously
         when(accountService.save(accountDto)).thenReturn(account);
