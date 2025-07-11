@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountDtoBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.data.Data;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
@@ -44,10 +45,7 @@ class AccountServiceImplTest {
     @DisplayName("Testing role user assignment")
 	@Test
 	void testAssignRoleUser() {
-        AccountDto accountUser = new AccountDto();
-        accountUser.setPersonId(1L);
-        accountUser.setPassword("12345");
-        accountUser.setAdmin(false);
+        AccountDto accountUser = new AccountDtoBuilder().personId(1L).password("12345").admin(false).build();
 
         //One role
         assertEquals(Arrays.asList(Data.createUserRole().orElseThrow()), accountService.save(accountUser).getRoles());
@@ -57,10 +55,7 @@ class AccountServiceImplTest {
     @DisplayName("Testing role user and admin assignment")
 	@Test
 	void testAssignRoleAdmin() {
-        AccountDto accountAdmin = new AccountDto();
-        accountAdmin.setPersonId(2L);
-        accountAdmin.setPassword("12345");
-        accountAdmin.setAdmin(true);
+        AccountDto accountAdmin = new AccountDtoBuilder().personId(2L).password("12345").admin(true).build();
 
         //Both roles
         assertEquals(Arrays.asList(Data.createUserRole().orElseThrow(), Data.createAdminRole().orElseThrow()), accountService.save(accountAdmin).getRoles());
@@ -70,9 +65,7 @@ class AccountServiceImplTest {
     @DisplayName("Testing service person assignment")
     @Test
     void testAssignPerson(){
-        AccountDto accountUser = new AccountDto();
-        accountUser.setPassword("12345");
-        accountUser.setPersonId(1L);
+        AccountDto accountUser = new AccountDtoBuilder().password("12345").personId(1L).build();
 
         //Per person test
         assertNotNull(accountService.save(accountUser).getPerson());

@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.data.Data;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 
@@ -23,7 +24,7 @@ public class AccountRepositoryTest {
     @Test
     void testSave(){
         //With id 1 person
-        Account account = new Account("example@gmail.com", "12345", Data.createPerson().orElseThrow());
+        Account account = new AccountBuilder().email("example@gmail.com").person(Data.createPerson().orElseThrow()).build();
         accountRepository.save(account);
 
         assertTrue(accountRepository.findByEmail("example@gmail.com").isPresent());
