@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
 
 @RestController
@@ -19,7 +19,7 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> create(@RequestBody AccountDto accountDto){
+    public ResponseEntity<?> create(@RequestBody AccountCreateDto accountDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.save(accountDto));
     }
 
