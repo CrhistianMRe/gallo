@@ -17,8 +17,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,13 +48,17 @@ public class AccountControllerTest {
 
     @Test
     void testCreate() throws Exception{
-        AccountDto accountDto = createAccountAdminDto().orElseThrow(); 
+        AccountCreateDto accountDto = createAccountAdminDto().orElseThrow(); 
+        Person person = new PersonBuilder().id(1L).build();
 
-        Account account = new AccountBuilder().email(accountDto.getEmail()).person(createPerson().orElseThrow()).password(accountDto.getPassword()).build();
+        AccountAdminResponseDto accountResponseDto = new AccountAdminResponseDto();
+        accountResponseDto.setEmail("erikadmin@gmail.com");
+        accountResponseDto.setPerson(person);
+            
 
         //It is a different instance as objectMapper changes it obviously
-        when(accountService.save(accountDto)).thenReturn(account);
-        System.out.println(objectMapper.writeValueAsString(account));
+        when(accountService.save(accountDto)).thenReturn(accountResponseDto);
+        System.out.println(objectMapper.writeValueAsString(accountResponseDto));
 
         //Given
         mockMvc.perform(post("/api/accounts/register")

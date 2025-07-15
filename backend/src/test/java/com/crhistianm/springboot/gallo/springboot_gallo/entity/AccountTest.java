@@ -11,7 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.data.Data;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
 
 @DataJpaTest
@@ -25,7 +25,7 @@ public class AccountTest {
     @Test
     @DisplayName("Testing per persists createdAt Date")
     void testLifeCyclePersist(){
-        Account account = new AccountBuilder().email("example@gmail.com").password("12345").person(Data.createPerson().orElseThrow()).build();
+        Account account = new AccountBuilder().email("example@gmail.com").password("12345").person(new PersonBuilder().firstName("example").build()).build();
         boolean result = false;
         Account accountResult = accountRepository.save(account);
         if(accountResult.getAudit().getCreatedAt() != null){

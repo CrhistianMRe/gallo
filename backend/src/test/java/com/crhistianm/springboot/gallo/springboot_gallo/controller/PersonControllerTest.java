@@ -17,6 +17,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,18 +45,25 @@ public class PersonControllerTest {
     @Test
     @DisplayName("Testing post person into endpoint")
     void testCreate() throws Exception {
-        when(personService.save(createPerson().orElseThrow())).thenReturn(createPerson().orElseThrow());
+        PersonResponseDto person = new PersonResponseDto();
+        person.setId(1L);
+        person.setFirstName(createPersonOneDto().orElseThrow().getFirstName());
+        person.setLastName(createPersonOneDto().orElseThrow().getLastName());
+        
+        
+        when(personService.save(createPersonOneDto().orElseThrow())).thenReturn(person);
 
         //Given
         mockMvc.perform(post("/api/persons/register")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(createPerson().orElseThrow())))
+            .content(objectMapper.writeValueAsString(createPersonOneDto().orElseThrow())))
 
             //Then
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").value(1L))
-            .andExpect(jsonPath("$.firstName").value("ejemplo"));
+            .andExpect(jsonPath("$.firstName").value("one"))
+            .andExpect(jsonPath("$.lastName").value("1one"));
     }
     
 }
