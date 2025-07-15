@@ -1,5 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.builder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
@@ -24,7 +25,10 @@ public class AccountBuilder {
 
     private List<Workout> workouts;
 
-    public AccountBuilder(){}
+    public AccountBuilder(){
+        this.roles = new ArrayList<>();
+        this.workouts = new ArrayList<>();
+    }
 
     public AccountBuilder id(Long id){
         this.id = id;
