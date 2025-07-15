@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 
 @Service
@@ -15,8 +18,10 @@ public class PersonServiceImpl implements PersonService{
 
     @Transactional
     @Override
-    public Person save(Person person) {
-        return personRepository.save(person);
+    public PersonResponseDto save(PersonCreateDto personDto) {
+        Person person = PersonMapper.createToEntity(personDto);
+        return PersonMapper.entityToResponse(personRepository.save(person));
+
     }
     
 }

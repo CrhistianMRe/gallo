@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 
 
@@ -20,8 +20,8 @@ public class PersonController {
     private PersonService personService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> create(@RequestBody Person person){
-        return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(person));
+    public ResponseEntity<?> create(@RequestBody PersonCreateDto personDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDto));
     }
 
     

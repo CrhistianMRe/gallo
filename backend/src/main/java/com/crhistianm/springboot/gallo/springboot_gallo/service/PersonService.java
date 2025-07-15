@@ -1,10 +1,11 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 
 public interface PersonService {
    
-    Person save(Person Person);
+    PersonResponseDto save(PersonCreateDto createDto);
 
 }
 
