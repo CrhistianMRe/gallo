@@ -10,7 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.data.Data;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 
 @DataJpaTest
@@ -23,11 +23,10 @@ public class AccountRepositoryTest {
 
     @Test
     void testSave(){
-        //With id 1 person
-        Account account = new AccountBuilder().email("example@gmail.com").person(Data.createPerson().orElseThrow()).build();
+        Account account = new AccountBuilder().email("example@gmail.com").person(new PersonBuilder().firstName("two").id(1L).build()).build();
         accountRepository.save(account);
 
         assertTrue(accountRepository.findByEmail("example@gmail.com").isPresent());
-        assertEquals("example@gmail.com",accountRepository.findByEmail("example@gmail.com").orElseThrow().getEmail());
+        assertEquals("example@gmail.com", accountRepository.findByEmail("example@gmail.com").orElseThrow().getEmail());
     }
 }
