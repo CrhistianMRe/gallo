@@ -1,20 +1,11 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.entity;
+package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 
-@Entity
-@Table(name = "person")
-public class Person {
+public class PersonResponseDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;
@@ -31,13 +22,14 @@ public class Person {
 
     private Double weight;
 
-    @OneToOne(mappedBy = "person")
     private Account account;
 
-    public Person(){
+    public PersonResponseDto() {
     }
-    
-	public Person(String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender, Double height, Double weight, Account account) {
+
+    public PersonResponseDto(Long id, String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
+            Double height, Double weight, Account account) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -48,70 +40,69 @@ public class Person {
         this.account = account;
     }
 
-
     public Long getId() {
-		return id;
-	}
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-	public LocalDate getBirthDate() {
-		return birthDate;
-	}
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
 
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
-	}
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
 
-	public String getGender() {
-		return gender;
-	}
+    public String getGender() {
+        return gender;
+    }
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
-	public Double getHeight() {
-		return height;
-	}
+    public Double getHeight() {
+        return height;
+    }
 
-	public void setHeight(Double height) {
-		this.height = height;
-	}
+    public void setHeight(Double height) {
+        this.height = height;
+    }
 
-	public Double getWeight() {
-		return weight;
-	}
+    public Double getWeight() {
+        return weight;
+    }
 
-	public void setWeight(Double weight) {
-		this.weight = weight;
-	}
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
 
     public Account getAccount() {
         return account;
@@ -140,7 +131,7 @@ public class Person {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Person other = (Person) obj;
+        PersonResponseDto other = (PersonResponseDto) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -166,9 +157,9 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person {id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber="
+        return "PersonResponseDto [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber="
                 + phoneNumber + ", birthDate=" + birthDate + ", gender=" + gender + ", height=" + height + ", weight="
-                + weight + "}";
+                + weight + ", account=" + account + "]";
     }
-
+    
 }
