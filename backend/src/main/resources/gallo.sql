@@ -18,6 +18,8 @@ ALTER TABLE person MODIFY id bigint NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE person ADD CONSTRAINT chk_person_gender CHECK (gender IN ('M', 'F', 'NT'));
 
+ALTER TABLE person ADD UNIQUE INDEX uq_person_phone_number (phone_number ASC) VISIBLE;
+
 CREATE TABLE IF NOT EXISTS account(
     id bigint NOT NULL,
     email varchar(100) NOT NULL,
