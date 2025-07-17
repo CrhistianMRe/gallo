@@ -1,5 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,5 +25,22 @@ public class PersonServiceImpl implements PersonService{
         return PersonMapper.entityToResponse(personRepository.save(person));
 
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isPhoneNumberAvailable(String phoneNumber) {
+        return personRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isPersonRegistered(Long personId) {
+        Optional<Person> optionalPerson = personRepository.findById(personId);
+        if(optionalPerson.isPresent()){
+            return true;
+        }
+        return false;
+    }
+    
     
 }
