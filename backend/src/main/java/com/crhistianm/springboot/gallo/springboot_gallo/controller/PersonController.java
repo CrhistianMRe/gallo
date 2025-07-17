@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("api/persons")
@@ -20,7 +22,7 @@ public class PersonController {
     private PersonService personService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> create(@RequestBody PersonCreateDto personDto){
+    public ResponseEntity<?> create(@Valid @RequestBody PersonCreateDto personDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDto));
     }
 

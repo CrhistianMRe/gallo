@@ -7,5 +7,9 @@ public interface PersonService {
    
     PersonResponseDto save(PersonCreateDto createDto);
 
+    boolean isPhoneNumberAvailable(String phoneNumber);
+
+    boolean isPersonRegistered(Long personId);
+
 }
 

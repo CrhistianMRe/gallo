@@ -2,21 +2,44 @@ package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
 import java.time.LocalDate;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.UniquePhoneNumber;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.ValidGender;
+
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+
 //No id as it is auto incremental on db
 public class PersonCreateDto {
 
+    @NotBlank
     private String firstName;
 
+    @NotBlank
     private String lastName;
 
+    @NotBlank
+    @UniquePhoneNumber
     private String phoneNumber;
 
+    @NotNull
+    @PastOrPresent
     private LocalDate birthDate;
 
+    @NotBlank
+    @ValidGender
     private String gender;
 
+    @DecimalMin("0.50")
+    @Digits(integer = 1, fraction = 2, message = "is not correct, use meters for correct format. EX: 1.70")
     private Double height;
 
+    @Digits(integer = 3, fraction = 1, message = "is not correct, use kilograms for correct format. EX: 80.0")
+    @DecimalMin("20.0")
+    @DecimalMax("200.0")
     private Double weight;
 
     public PersonCreateDto() {
