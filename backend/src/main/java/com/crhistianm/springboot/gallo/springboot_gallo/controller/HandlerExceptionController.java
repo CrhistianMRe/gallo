@@ -1,5 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,4 +22,12 @@ public class HandlerExceptionController {
 
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<?> handleJsonParserException(DateTimeParseException ex){
+        Map<String, String> errors = new HashMap<>();
+        errors.put(ex.getParsedString(), "not valid, use yyyy/mm/dd");
+        return ResponseEntity.badRequest().body(errors);
+    }
+    
 }
