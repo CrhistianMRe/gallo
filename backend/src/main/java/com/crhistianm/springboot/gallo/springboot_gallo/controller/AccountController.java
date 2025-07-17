@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("api/accounts")
 public class AccountController {
@@ -19,7 +21,7 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> create(@RequestBody AccountCreateDto accountDto){
+    public ResponseEntity<?> create(@Valid @RequestBody AccountCreateDto accountDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.save(accountDto));
     }
 

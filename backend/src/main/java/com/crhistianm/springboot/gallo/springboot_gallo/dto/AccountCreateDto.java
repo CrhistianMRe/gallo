@@ -1,12 +1,28 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
+
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.PersonNotAssigned;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.PersonRegistered;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.UniqueEmail;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 //Id not in dto as it is auto incremental on db
 public class AccountCreateDto{
 
+    @NotNull
+    @PersonNotAssigned
+    @PersonRegistered
     private Long personId;
 
+    @NotBlank
+    @UniqueEmail
+    @Email
     private String email;
 
+    @NotBlank
     private String password;
 
     private boolean admin;

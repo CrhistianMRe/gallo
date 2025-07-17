@@ -59,5 +59,23 @@ public class AccountServiceImpl implements AccountService{
 
         return AccountMapper.entityToResponse(accountRepository.save(account));
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isEmailAvailable(String email) {
+        return accountRepository.existsByEmail(email);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isPersonIdAssigned(Long personId){
+        Optional<Account> accountOptional = accountRepository.findAccountByPersonId(personId);
+        if(accountOptional.isPresent()){
+            return true;
+        }
+
+        return false;
+
+    }
     
 }

@@ -8,4 +8,7 @@ public interface AccountService {
 
     AccountResponseDto save(AccountCreateDto accountDto);
     
+    boolean isEmailAvailable(String email);
+
+    boolean isPersonIdAssigned(Long personId);
 }
