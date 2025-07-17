@@ -2,6 +2,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.entity;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +22,7 @@ public class Person {
 
     private String lastName;
 
+    @Column(unique = true)
     private String phoneNumber;
 
     private LocalDate birthDate;
