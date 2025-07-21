@@ -9,9 +9,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
@@ -25,45 +27,57 @@ import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountReposi
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
 
-@SpringBootTest
-class AccountServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class AccountServiceImplUnitTest {
 
-    @MockitoBean
+    @Mock
     AccountRepository accountRepository;
 
-    @MockitoBean
+    @Mock
     RoleRepository roleRepository;
 
-    @MockitoBean
+    @Mock
     PersonRepository personRepository;
 
-    @Autowired
-    AccountService accountService;
+    //Not used here just for dependency usage
+    @Mock
+    PasswordEncoder passwordEncoder;
+
+    @InjectMocks
+    AccountServiceImpl accountServiceImpl;
 
     @BeforeEach
     void setUp(){
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(createUserRole());
-        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(createAdminRole());
-        when(personRepository.findById(anyLong())).thenReturn(Optional.of(new PersonBuilder().firstName("one").lastName("1one").id(1L).build()));
+        when(personRepository.findById(anyLong())).thenReturn(Optional.of(new PersonBuilder()
+                    .firstName("one")
+                    .lastName("1one")
+                    .phoneNumber(createPersonTwoDto().orElseThrow().getPhoneNumber())
+                    .birthDate(createPersonTwoDto().orElseThrow().getBirthDate())
+                    .gender(createPersonTwoDto().orElseThrow().getGender())
+                    .id(1L)
+                    .build()));
         when(accountRepository.save(any())).thenAnswer(arg -> arg.getArgument(0));
     }
 
     @DisplayName("Testing role user assignment")
 	@Test
 	void testAssignRoleUser() {
+        when(roleRepository.findByName("ROLE_USER")).thenReturn(createUserRole());
         AccountCreateDto accountUserDto = createAccountDto().orElseThrow();
 
         //One role
-        assertTrue(accountService.save(accountUserDto) instanceof AccountUserResponseDto);
+        assertTrue(accountServiceImpl.save(accountUserDto) instanceof AccountUserResponseDto);
         verify(roleRepository, times(1)).findByName(anyString());
 	}
 
     @DisplayName("Testing role user and admin assignment")
 	@Test
 	void testAssignRoleAdmin() {
+        when(roleRepository.findByName("ROLE_USER")).thenReturn(createUserRole());
+        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(createAdminRole());
         AccountCreateDto accountAdminDto = createAccountAdminDto().orElseThrow();
 
-        AccountResponseDto accountResponseDto = accountService.save(accountAdminDto);
+        AccountResponseDto accountResponseDto = accountServiceImpl.save(accountAdminDto);
 
         AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountResponseDto;
 
@@ -79,7 +93,7 @@ class AccountServiceImplTest {
         AccountCreateDto accountCreateDto = createAccountAdminDto().orElseThrow();
         
 
-        AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountService.save(accountCreateDto);
+        AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountCreateDto);
         Person answer = PersonMapper.createToEntity(createPersonOneDto().orElseThrow());
         answer.setId(1L);
         //Per person test
