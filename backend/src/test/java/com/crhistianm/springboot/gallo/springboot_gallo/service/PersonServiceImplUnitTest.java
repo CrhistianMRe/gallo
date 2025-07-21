@@ -5,22 +5,23 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 
-@SpringBootTest
-public class PersonServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+public class PersonServiceImplUnitTest {
 
-    @MockitoBean
+    @Mock
     PersonRepository personRepository;
 
-    @Autowired
-    PersonService personService;
+    @InjectMocks
+    PersonServiceImpl personServiceImpl;
 
     @BeforeEach
     void setUp(){
@@ -30,7 +31,7 @@ public class PersonServiceImplTest {
 
     @Test
     void testSave(){
-        personService.save(createPersonOneDto().orElseThrow());
+        personServiceImpl.save(createPersonOneDto().orElseThrow());
         verify(personRepository, times(1)).save(any(Person.class));
     }
     
