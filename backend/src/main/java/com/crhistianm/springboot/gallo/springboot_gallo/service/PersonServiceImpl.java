@@ -2,7 +2,6 @@ package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +14,11 @@ import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonReposit
 @Service
 public class PersonServiceImpl implements PersonService{
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
+
+    public PersonServiceImpl(PersonRepository personRepository){
+        this.personRepository = personRepository;
+    }
 
     @Transactional
     @Override
