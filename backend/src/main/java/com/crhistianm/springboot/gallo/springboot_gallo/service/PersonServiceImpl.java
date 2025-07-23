@@ -38,10 +38,7 @@ public class PersonServiceImpl implements PersonService{
     @Override
     public boolean isPersonRegistered(Long personId) {
         Optional<Person> optionalPerson = personRepository.findById(personId);
-        if(optionalPerson.isPresent()){
-            return true;
-        }
-        return false;
+        return optionalPerson.isPresent();
     }
     
     

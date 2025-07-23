@@ -73,12 +73,7 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public boolean isPersonIdAssigned(Long personId){
         Optional<Account> accountOptional = accountRepository.findAccountByPersonId(personId);
-        if(accountOptional.isPresent()){
-            return true;
-        }
-
-        return false;
-
+        return accountOptional.isPresent();
     }
     
 }
