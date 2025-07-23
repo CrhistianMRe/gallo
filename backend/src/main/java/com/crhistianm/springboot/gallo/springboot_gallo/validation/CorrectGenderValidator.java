@@ -6,7 +6,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 @Component
-public class ValidGenderValidator implements ConstraintValidator<ValidGender, String>{
+public class CorrectGenderValidator implements ConstraintValidator<CorrectGender, String>{
 
     @Override
     public boolean isValid(String gender, ConstraintValidatorContext arg1) {
