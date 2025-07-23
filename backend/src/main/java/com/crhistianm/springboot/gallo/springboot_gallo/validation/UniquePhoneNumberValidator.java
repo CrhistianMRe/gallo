@@ -18,6 +18,7 @@ public class UniquePhoneNumberValidator implements ConstraintValidator<UniquePho
 
     @Override
     public boolean isValid(String phoneNumber, ConstraintValidatorContext arg1) {
+        if(phoneNumber == null) return true;
         return !personService.isPhoneNumberAvailable(phoneNumber);
     }
     

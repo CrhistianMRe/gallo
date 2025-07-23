@@ -18,7 +18,8 @@ public class PersonRegisteredValidator implements ConstraintValidator<PersonRegi
 
     @Override
     public boolean isValid(Long personId, ConstraintValidatorContext arg1) {
+        if(personId == null) return true;
         return personService.isPersonRegistered(personId);
     }
-    
 }
+    
