@@ -1,6 +1,5 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.validation;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
@@ -11,9 +10,11 @@ import jakarta.validation.ConstraintValidatorContext;
 @Component
 public class UniquePhoneNumberValidator implements ConstraintValidator<UniquePhoneNumber, String>{
 
-    @Autowired
-    private PersonService personService;
+    private final PersonService personService;
 
+    public UniquePhoneNumberValidator(PersonService personService) {
+        this.personService = personService;
+    }
 
     @Override
     public boolean isValid(String phoneNumber, ConstraintValidatorContext arg1) {
