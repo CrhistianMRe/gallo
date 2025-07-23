@@ -34,6 +34,7 @@ public class PersonCreateDto {
     private String gender;
 
     @DecimalMin("0.50")
+    @DecimalMax("3.00")
     @Digits(integer = 1, fraction = 2, message = "is not correct, use meters for correct format. EX: 1.70")
     private Double height;
 
