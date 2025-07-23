@@ -11,8 +11,11 @@ import jakarta.validation.ConstraintValidatorContext;
 @Component
 public class PersonNotAssignedValidator implements ConstraintValidator<PersonNotAssigned, Long>{
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
+
+    public PersonNotAssignedValidator(AccountService accountService){
+        this.accountService = accountService;
+    }
 
     @Override
     public boolean isValid(Long personId, ConstraintValidatorContext arg1) {
