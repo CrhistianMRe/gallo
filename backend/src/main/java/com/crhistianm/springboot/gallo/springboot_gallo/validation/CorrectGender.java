@@ -8,10 +8,10 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-@Constraint(validatedBy = ValidGenderValidator.class)
+@Constraint(validatedBy = CorrectGenderValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidGender {
+public @interface CorrectGender{
 
     String message() default "is not a valid gender, use M, F or NT";
 
