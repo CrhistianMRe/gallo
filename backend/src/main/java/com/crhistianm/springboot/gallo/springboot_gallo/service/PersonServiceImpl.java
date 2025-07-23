@@ -31,7 +31,7 @@ public class PersonServiceImpl implements PersonService{
     @Transactional(readOnly = true)
     @Override
     public boolean isPhoneNumberAvailable(String phoneNumber) {
-        return personRepository.existsByPhoneNumber(phoneNumber);
+        return !personRepository.existsByPhoneNumber(phoneNumber);
     }
 
     @Transactional(readOnly = true)

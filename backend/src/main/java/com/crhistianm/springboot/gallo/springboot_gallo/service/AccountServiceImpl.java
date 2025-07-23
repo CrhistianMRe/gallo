@@ -66,7 +66,7 @@ public class AccountServiceImpl implements AccountService{
     @Transactional(readOnly = true)
     @Override
     public boolean isEmailAvailable(String email) {
-        return accountRepository.existsByEmail(email);
+        return !accountRepository.existsByEmail(email);
     }
 
     @Transactional(readOnly = true)
