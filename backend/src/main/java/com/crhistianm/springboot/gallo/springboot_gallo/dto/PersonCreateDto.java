@@ -2,8 +2,8 @@ package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
 import java.time.LocalDate;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.CorrectGender;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.UniquePhoneNumber;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.ValidGender;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -30,7 +30,7 @@ public class PersonCreateDto {
     private LocalDate birthDate;
 
     @NotBlank
-    @ValidGender
+    @CorrectGender
     private String gender;
 
     @DecimalMin("0.50")
