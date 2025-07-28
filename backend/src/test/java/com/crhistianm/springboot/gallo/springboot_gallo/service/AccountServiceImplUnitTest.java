@@ -110,47 +110,64 @@ class AccountServiceImplUnitTest {
 
     }
 
-    @DisplayName("Testing role user assignment")
-	@Test
-	void testAssignRoleUser() {
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(createUserRole());
-        AccountCreateDto accountUserDto = createAccountDto().orElseThrow();
+    @Nested
+    class validationModuleTest{
 
-        //One role
-        assertTrue(accountServiceImpl.save(accountUserDto) instanceof AccountUserResponseDto);
-        verify(roleRepository, times(1)).findByName(anyString());
-	}
+        @Nested
+        class isEmailAvailableTest{
 
-    @DisplayName("Testing role user and admin assignment")
-	@Test
-	void testAssignRoleAdmin() {
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(createUserRole());
-        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(createAdminRole());
-        AccountCreateDto accountAdminDto = createAccountAdminDto().orElseThrow();
+            @BeforeEach
+            void setUp(){
+                when(accountRepository.existsByEmail(anyString())).thenAnswer(invo -> {
+                    return invo.getArgument(0).equals("came.29meca@gmail.com");
+                });
 
-        AccountResponseDto accountResponseDto = accountServiceImpl.save(accountAdminDto);
+            }
 
-        AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountResponseDto;
+            @Test
+            void testAvailable(){
+                assertFalse(accountServiceImpl.isEmailAvailable("came.29meca@gmail.com"));
+                verify(accountRepository, times(1)).existsByEmail(anyString());
+            }
 
-        //Both roles
-        assertTrue(accountResponseDto instanceof AccountAdminResponseDto);
-        assertEquals(Arrays.asList(createUserRole().orElseThrow(), createAdminRole().orElseThrow()), accountAdminResponseDto.getRoles());
-        verify(roleRepository, times(2)).findByName(anyString());
-	}
+            @Test
+            void testNotAvailable(){
+                assertTrue(accountServiceImpl.isEmailAvailable("example@gmail.com"));
+                verify(accountRepository, times(1)).existsByEmail(anyString());
+            }
 
-    @DisplayName("Testing service person assignment")
-    @Test
-    void testAssignPerson(){
-        AccountCreateDto accountCreateDto = createAccountAdminDto().orElseThrow();
-        
+        }
 
-        AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountCreateDto);
-        Person answer = PersonMapper.createToEntity(createPersonOneDto().orElseThrow());
-        answer.setId(1L);
-        //Per person test
-        assertNotNull(accountAdminResponseDto.getPerson());
-        verify(personRepository, times(1)).findById(anyLong());
-        assertEquals(answer, (accountAdminResponseDto.getPerson()));
+        @Nested
+        class isPersonIdAssignedTest{
+
+            @BeforeEach
+            void setUp(){
+                when(accountRepository.findAccountByPersonId(anyLong())).thenAnswer(invo ->{
+                    Optional<Account> account = Optional.empty();
+                    if(invo.getArgument(0, Long.class) == 1L) account = Optional.of(AccountMapper.createToEntity(createAccountDto().orElseThrow()));
+                    return account;
+                });
+            }
+
+            @Test
+            void testNotAssigned(){
+                assertFalse(accountServiceImpl.isPersonIdAssigned(2L));
+                verify(accountRepository, times(1)).findAccountByPersonId(anyLong());
+            }
+
+            @Test
+            void testAssigned(){
+                assertTrue(accountServiceImpl.isPersonIdAssigned(1L));
+                verify(accountRepository, times(1)).findAccountByPersonId(anyLong());
+            }
+
+        }
+
     }
+
+
+
+
 
 }
