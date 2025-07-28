@@ -37,18 +37,17 @@ public class AccountControllerTest {
     @MockitoBean
     private AccountService accountService; 
 
+    @Autowired
     ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp(){
-        objectMapper = new ObjectMapper();
-    }
-
+    @MockitoBean
+    Validator validator;
+    
     @Test
     void testCreate() throws Exception{
         AccountCreateDto accountDto = createAccountAdminDto().orElseThrow(); 
-        Person person = new PersonBuilder().id(1L).build();
 
+        Person person = new PersonBuilder().id(1L).build();
         AccountAdminResponseDto accountResponseDto = new AccountAdminResponseDto();
         accountResponseDto.setEmail("erikadmin@gmail.com");
         accountResponseDto.setPerson(person);

@@ -37,6 +37,7 @@ public class PersonControllerTest {
     @MockitoBean
     private PersonService personService;
 
+    @Autowired
     ObjectMapper objectMapper;
 
 
