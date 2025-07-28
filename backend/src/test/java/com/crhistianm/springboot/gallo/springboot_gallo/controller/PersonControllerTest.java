@@ -2,7 +2,6 @@ package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,20 +12,23 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.validation.Validator;
+
 //Select controller class
 @WebMvcTest(PersonController.class)
-//Import security filterChain to expose endpoints
-@Import(SpringSecurityConfig.class)
+//Import security filterChain to expose endpoints and JacksonMapper config
+@Import({SpringSecurityConfig.class, JacksonConfig.class})
 public class PersonControllerTest {
 
     @Autowired
@@ -37,10 +39,6 @@ public class PersonControllerTest {
 
     ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp(){
-        objectMapper = new ObjectMapper();
-    }
 
     @Test
     @DisplayName("Testing post person into endpoint")
@@ -49,7 +47,6 @@ public class PersonControllerTest {
         person.setId(1L);
         person.setFirstName(createPersonOneDto().orElseThrow().getFirstName());
         person.setLastName(createPersonOneDto().orElseThrow().getLastName());
-        
         
         when(personService.save(createPersonOneDto().orElseThrow())).thenReturn(person);
 
