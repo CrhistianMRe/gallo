@@ -16,21 +16,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.validation.Validator;
+
 @WebMvcTest(AccountController.class)
-@Import(SpringSecurityConfig.class)
+@Import({SpringSecurityConfig.class, JacksonConfig.class})
 public class AccountControllerTest {
 
     @Autowired
