@@ -199,6 +199,7 @@
           <configuration>
             <includes>
               <include>**/validation/*Test.java</include>
+              <include>**/validation/dto/*Test.java</include>
             </includes>
           </configuration>
         </plugin>
