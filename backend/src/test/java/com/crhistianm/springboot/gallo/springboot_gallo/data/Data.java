@@ -1,6 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.data;
 
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.RoleBuilder;
@@ -31,6 +32,9 @@ public class Data {
         PersonCreateDto person = new PersonCreateDto();
         person.setFirstName("one");
         person.setLastName("1one");
+        person.setBirthDate(LocalDate.now());
+        person.setGender("M");
+        person.setPhoneNumber("123123123");
         return Optional.of(person);
     }
 
@@ -38,6 +42,9 @@ public class Data {
         PersonCreateDto person = new PersonCreateDto();
         person.setFirstName("two");
         person.setLastName("2two");
+        person.setBirthDate(LocalDate.now());
+        person.setGender("M");
+        person.setPhoneNumber("123123123");
         return Optional.of(person);
     }
 
