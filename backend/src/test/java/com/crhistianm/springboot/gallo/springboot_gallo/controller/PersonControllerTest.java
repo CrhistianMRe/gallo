@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -40,6 +41,8 @@ public class PersonControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @MockitoBean
+    Validator validator;
 
     @Test
     @DisplayName("Testing post person into endpoint")
