@@ -11,6 +11,9 @@ public interface AccountRepository extends CrudRepository <Account, Long>{
 
     Optional<Account> findByEmail(String email);
 
+    @Query("select a from Account a left join fetch a.roles where a.email=?1")
+    Optional<Account> findByEmailWithRoles(String email);
+
     boolean existsByEmail(String email);
 
     @Query("select a from Account a where a.person.id=?1")
