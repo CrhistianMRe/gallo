@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.security.filter.JwtAuthenticationFilter;
+import com.crhistianm.springboot.gallo.springboot_gallo.security.filter.JwtValidationFilter;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -44,6 +45,7 @@ public class SpringSecurityConfig {
                     .requestMatchers("/v3/**").permitAll()
                     .anyRequest().authenticated())
                     .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                    .addFilter(new JwtValidationFilter(authenticationManager()))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
