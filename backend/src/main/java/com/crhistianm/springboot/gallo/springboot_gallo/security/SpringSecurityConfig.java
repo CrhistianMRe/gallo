@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.security.filter.JwtAuthenticationFilter;
+
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfig {
@@ -32,6 +34,7 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
         return http.authorizeHttpRequests((authz) -> authz 
@@ -40,6 +43,7 @@ public class SpringSecurityConfig {
                     .requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers("/v3/**").permitAll()
                     .anyRequest().authenticated())
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
