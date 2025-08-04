@@ -45,7 +45,7 @@ public class Account {
         name = "account_role",
         joinColumns = @JoinColumn(name = "account_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"),
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"account_id, role_id"})}
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"account_id", "role_id"})}
     )
     private List<Role> roles;
 
