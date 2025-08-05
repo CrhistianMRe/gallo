@@ -42,7 +42,7 @@ public class SpringSecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/api/persons/register").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/accounts/register").permitAll()
                     .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
-                    .requestMatchers("/v3/**").permitAll()
+                    .requestMatchers("/v3/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
                     .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                     .addFilter(new JwtValidationFilter(authenticationManager()))
