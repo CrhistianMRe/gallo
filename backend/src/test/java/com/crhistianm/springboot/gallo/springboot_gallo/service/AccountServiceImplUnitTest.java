@@ -50,7 +50,7 @@ class AccountServiceImplUnitTest {
     AccountServiceImpl accountServiceImpl;
 
     @Nested
-    class registerModuleTest{
+    class RegisterModuleTest{
 
         @BeforeEach
         void setUp(){
@@ -111,10 +111,10 @@ class AccountServiceImplUnitTest {
     }
 
     @Nested
-    class validationModuleTest{
+    class ValidationModuleTest{
 
         @Nested
-        class isEmailAvailableTest{
+        class IsEmailAvailableTest{
 
             @BeforeEach
             void setUp(){
@@ -139,7 +139,7 @@ class AccountServiceImplUnitTest {
         }
 
         @Nested
-        class isPersonIdAssignedTest{
+        class IsPersonIdAssignedTest{
 
             @BeforeEach
             void setUp(){

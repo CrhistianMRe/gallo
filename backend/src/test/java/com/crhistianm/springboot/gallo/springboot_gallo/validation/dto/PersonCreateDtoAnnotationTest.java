@@ -44,7 +44,7 @@ public class PersonCreateDtoAnnotationTest {
     }
 
     @Nested
-    class firstNameFieldTest{
+    class FirstNameFieldTest{
         
         @BeforeEach
         void setUp(){
@@ -69,7 +69,7 @@ public class PersonCreateDtoAnnotationTest {
     }
 
     @Nested
-    class lastNameFieldTest{
+    class LastNameFieldTest{
 
         @BeforeEach
         void setUp(){
@@ -95,7 +95,7 @@ public class PersonCreateDtoAnnotationTest {
     }
 
     @Nested
-    class phoneNumberFieldTest{
+    class PhoneNumberFieldTest{
         
         @BeforeEach
         void setUp(){
@@ -137,7 +137,7 @@ public class PersonCreateDtoAnnotationTest {
     }
 
     @Nested
-    class birthDateFieldTest{
+    class BirthDateFieldTest{
 
         @BeforeEach
         void setUp(){
@@ -179,7 +179,7 @@ public class PersonCreateDtoAnnotationTest {
     }
 
     @Nested
-    class genderFieldTest{
+    class GenderFieldTest{
 
         @BeforeEach
         void setUp(){
@@ -222,7 +222,7 @@ public class PersonCreateDtoAnnotationTest {
     }
 
     @Nested
-    class heightFieldTest{
+    class HeightFieldTest{
 
         @BeforeEach
         void setUp(){
@@ -280,7 +280,7 @@ public class PersonCreateDtoAnnotationTest {
     }
 
     @Nested
-    class weightFieldTest{
+    class WeightFieldTest{
 
         @BeforeEach
         void setUp(){
