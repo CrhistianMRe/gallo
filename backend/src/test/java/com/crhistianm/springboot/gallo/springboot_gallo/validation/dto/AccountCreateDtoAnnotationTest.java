@@ -107,7 +107,7 @@ public class AccountCreateDtoAnnotationTest{
     }
 
     @Nested
-    class emailFieldTest{
+    class EmailFieldTest{
         
         @BeforeEach
         void setUp(){
@@ -165,7 +165,7 @@ public class AccountCreateDtoAnnotationTest{
     }
 
     @Nested
-    class passwordFieldTest{
+    class PasswordFieldTest{
 
         @BeforeEach
         void setUp(){

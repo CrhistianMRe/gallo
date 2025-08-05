@@ -31,7 +31,7 @@ public class PersonServiceImplUnitTest {
     PersonServiceImpl personServiceImpl;
 
     @Nested
-    class registerModuleTest{
+    class RegisterModuleTest{
 
         @Test
         void testSave(){
@@ -44,7 +44,7 @@ public class PersonServiceImplUnitTest {
     }
 
     @Nested
-    class validationModuleTest{
+    class ValidationModuleTest{
 
         @Nested
         class IsPhoneNumberAvailableTest{
