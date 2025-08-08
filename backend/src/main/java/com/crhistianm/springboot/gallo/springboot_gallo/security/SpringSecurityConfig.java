@@ -39,8 +39,8 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
         return http.authorizeHttpRequests((authz) -> authz 
-                    .requestMatchers(HttpMethod.POST, "/api/persons/register").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/accounts/register").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/persons/register").hasAnyRole("ADMIN", "USER")
+                    .requestMatchers(HttpMethod.POST, "/api/accounts/register").hasAnyRole("ADMIN", "USER")
                     .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
                     .requestMatchers("/v3/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
