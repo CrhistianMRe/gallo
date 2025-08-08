@@ -1,11 +1,14 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.validation.dto;
 
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.createAccountAdminDto;
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.createAccountDto;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +16,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 
@@ -189,6 +196,39 @@ public class AccountCreateDtoAnnotationTest{
         }
 
     }
+
+    @Nested
+    class AdminFieldTest{
+
+        @BeforeEach
+        void setUp(){
+            account = createAccountAdminDto().orElseThrow();
+        }
+
+        @Test
+        void testInvalidAdminRequired(){
+            violations = validator.validate(account);
+            assertFalse(violations.isEmpty());
+            assertThat(violations).hasSize(1);
+            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("requires an admin user!");
+        }
+
+        @Test
+        void testValidAdminRequired(){
+            Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN"));
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("example@gmail.com", null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            violations = validator.validate(account);
+            assertTrue(violations.isEmpty());
+            assertThat(violations).hasSize(0);
+            SecurityContextHolder.clearContext();
+        }
+
+
+    }
+
+    
 
 
     
