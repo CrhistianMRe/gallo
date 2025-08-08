@@ -15,6 +15,7 @@ public class AccountMapper {
 
     public static AccountResponseDto entityToAdminResponse(Account account){
         AccountAdminResponseDto accountDto = new AccountAdminResponseDto();
+        accountDto.setId(account.getId());
         accountDto.setEmail(account.getEmail());
         accountDto.setRoles(account.getRoles());
         accountDto.setPerson(account.getPerson());
