@@ -2,9 +2,9 @@ package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -29,6 +29,8 @@ import jakarta.validation.Validator;
 
 @WebMvcTest(AccountController.class)
 @Import({SpringSecurityConfig.class, JacksonConfig.class})
+//remove security filters as is not needed in these tests
+@AutoConfigureMockMvc(addFilters = false)
 public class AccountControllerTest {
 
     @Autowired

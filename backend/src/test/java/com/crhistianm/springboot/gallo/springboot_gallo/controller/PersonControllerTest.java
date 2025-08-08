@@ -4,8 +4,8 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -30,6 +30,8 @@ import jakarta.validation.Validator;
 @WebMvcTest(PersonController.class)
 //Import security filterChain to expose endpoints and JacksonMapper config
 @Import({SpringSecurityConfig.class, JacksonConfig.class})
+//remove security filters as is not needed in these tests
+@AutoConfigureMockMvc(addFilters = false)
 public class PersonControllerTest {
 
     @Autowired
@@ -47,6 +49,7 @@ public class PersonControllerTest {
     @Test
     @DisplayName("Testing post person into endpoint")
     void testCreate() throws Exception {
+        
         PersonResponseDto person = new PersonResponseDto();
         person.setId(1L);
         person.setFirstName(createPersonOneDto().orElseThrow().getFirstName());
