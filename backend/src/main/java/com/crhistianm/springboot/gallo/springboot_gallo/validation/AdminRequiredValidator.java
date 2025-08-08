@@ -13,7 +13,10 @@ public class AdminRequiredValidator implements ConstraintValidator<AdminRequired
     @Override
     public boolean isValid(Boolean value, ConstraintValidatorContext context) {
 
-        Boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+        Boolean isAdmin = false; 
+        if(SecurityContextHolder.getContext().getAuthentication() != null){
+            isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+        }
 
         if ((value == null || value == false) || isAdmin) return true;
 
