@@ -1,6 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
 
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.AdminRequired;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.PersonNotAssigned;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.PersonRegistered;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.UniqueEmail;
@@ -25,6 +26,7 @@ public class AccountCreateDto{
     @NotBlank
     private String password;
 
+    @AdminRequired
     private boolean admin;
 
     public AccountCreateDto() {
