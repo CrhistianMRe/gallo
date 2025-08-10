@@ -1,6 +1,8 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,13 @@ public class PersonServiceImpl implements PersonService{
         Optional<Person> optionalPerson = personRepository.findById(personId);
         return optionalPerson.isPresent();
     }
-    
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PersonResponseDto> listAll() {
+        List<PersonResponseDto> personList = personRepository.findAll().stream().map(p -> PersonMapper.entityToResponse(p)).collect(Collectors.toList());
+        return personList;
+    }
+
     
 }
