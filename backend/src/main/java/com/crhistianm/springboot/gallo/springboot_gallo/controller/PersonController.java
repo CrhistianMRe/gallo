@@ -33,4 +33,8 @@ public class PersonController {
         return ResponseEntity.ok(personService.listAll());
     }
     
+    @GetMapping("/{id}")
+    public ResponseEntity<?> viewById(@PathVariable Long id){
+        return ResponseEntity.ok(personService.listById(id));
+    }
 }

@@ -15,6 +15,7 @@ public interface PersonService {
 
     List<PersonResponseDto> listAll();
 
+    PersonResponseDto listById(Long id);
 
 }
 
