@@ -45,14 +45,14 @@ public class PersonServiceImpl implements PersonService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<PersonResponseDto> listAll() {
+    public List<PersonResponseDto> getAll() {
         List<PersonResponseDto> personList = personRepository.findAll().stream().map(p -> PersonMapper.entityToResponse(p)).collect(Collectors.toList());
         return personList;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public PersonResponseDto listById(Long id) {
+    public PersonResponseDto getById(Long id) {
         Optional<Person> personOptional = personRepository.findById(id);
         return PersonMapper.entityToResponse(personOptional.orElseThrow());
     }
