@@ -3,6 +3,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 
 public class PersonMapper {
@@ -29,7 +30,7 @@ public class PersonMapper {
         dto.setGender(person.getGender());
         dto.setHeight(person.getHeight());
         dto.setWeight(person.getWeight());
-        dto.setAccount(person.getAccount());
+        if(person.getAccount()!=null)dto.setAccount((AccountAdminResponseDto)AccountMapper.entityToAdminResponse(person.getAccount()));
         return dto;
     }
 }

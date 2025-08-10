@@ -2,7 +2,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
 import java.time.LocalDate;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public class PersonResponseDto {
 
@@ -22,13 +22,14 @@ public class PersonResponseDto {
 
     private Double weight;
 
-    private Account account;
+    @JsonIgnoreProperties({"person", "accounts", "handler", "hibernateLazyInitializer"}) 
+    private AccountAdminResponseDto account;
 
     public PersonResponseDto() {
     }
 
     public PersonResponseDto(Long id, String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
-            Double height, Double weight, Account account) {
+            Double height, Double weight, AccountAdminResponseDto account) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -104,11 +105,11 @@ public class PersonResponseDto {
         this.weight = weight;
     }
 
-    public Account getAccount() {
+    public AccountAdminResponseDto getAccount() {
         return account;
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(AccountAdminResponseDto account) {
         this.account = account;
     }
 
