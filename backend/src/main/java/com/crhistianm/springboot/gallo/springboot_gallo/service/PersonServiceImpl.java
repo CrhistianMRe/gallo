@@ -50,5 +50,11 @@ public class PersonServiceImpl implements PersonService{
         return personList;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public PersonResponseDto listById(Long id) {
+        Optional<Person> personOptional = personRepository.findById(id);
+        return PersonMapper.entityToResponse(personOptional.orElseThrow());
+    }
     
 }
