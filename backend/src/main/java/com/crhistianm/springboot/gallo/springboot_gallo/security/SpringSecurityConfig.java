@@ -40,6 +40,7 @@ public class SpringSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
         return http.authorizeHttpRequests((authz) -> authz 
                 .requestMatchers(HttpMethod.GET, "/api/persons").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/persons/{id}").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/persons/register").hasAnyRole("ADMIN", "USER")
                     .requestMatchers(HttpMethod.POST, "/api/accounts/register").hasAnyRole("ADMIN", "USER")
                     .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
