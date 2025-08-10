@@ -30,11 +30,11 @@ public class PersonController {
 
     @GetMapping
     public ResponseEntity<?> viewAll(){
-        return ResponseEntity.ok(personService.listAll());
+        return ResponseEntity.ok(personService.getAll());
     }
     
     @GetMapping("/{id}")
     public ResponseEntity<?> viewById(@PathVariable Long id){
-        return ResponseEntity.ok(personService.listById(id));
+        return ResponseEntity.ok(personService.getById(id));
     }
 }

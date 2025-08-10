@@ -13,9 +13,9 @@ public interface PersonService {
 
     boolean isPersonRegistered(Long personId);
 
-    List<PersonResponseDto> listAll();
+    List<PersonResponseDto> getAll();
 
-    PersonResponseDto listById(Long id);
+    PersonResponseDto getById(Long id);
 
 }
 
