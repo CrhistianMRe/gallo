@@ -47,7 +47,7 @@ public class AccountControllerTest {
     
     @Test
     void testCreate() throws Exception{
-        AccountCreateDto accountDto = createAccountAdminDto().orElseThrow(); 
+        AccountCreateDto accountDto = givenAdminAccountCreateDto().orElseThrow(); 
 
         Person person = new PersonBuilder().id(1L).build();
         AccountAdminResponseDto accountResponseDto = new AccountAdminResponseDto();

@@ -52,15 +52,15 @@ public class PersonControllerTest {
         
         PersonResponseDto person = new PersonResponseDto();
         person.setId(1L);
-        person.setFirstName(createPersonOneDto().orElseThrow().getFirstName());
-        person.setLastName(createPersonOneDto().orElseThrow().getLastName());
+        person.setFirstName(givenPersonCreateDtoOne().orElseThrow().getFirstName());
+        person.setLastName(givenPersonCreateDtoOne().orElseThrow().getLastName());
         
-        when(personService.save(createPersonOneDto().orElseThrow())).thenReturn(person);
+        when(personService.save(givenPersonCreateDtoOne().orElseThrow())).thenReturn(person);
 
         //Given
         mockMvc.perform(post("/api/persons/register")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(createPersonOneDto().orElseThrow())))
+            .content(objectMapper.writeValueAsString(givenPersonCreateDtoOne().orElseThrow())))
 
             //Then
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

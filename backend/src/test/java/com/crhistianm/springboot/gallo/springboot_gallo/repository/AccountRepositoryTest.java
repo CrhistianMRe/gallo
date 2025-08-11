@@ -1,7 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.repository;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.createAdminRole;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.createUserRole;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenRoleAdmin;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenRoleUser;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
@@ -60,7 +60,7 @@ public class AccountRepositoryTest {
             .email("crhistian@gmail.com")
             .person(new PersonBuilder()
                     .firstName("Crhistian").lastName("Mendez").phoneNumber("111222333").birthDate(LocalDate.of(2000, 01, 01)).weight(80.0).gender("M").height(1.74).build())
-            .roles(List.of(createAdminRole().orElseThrow(), createUserRole().orElseThrow()))
+            .roles(List.of(givenRoleAdmin().orElseThrow(), givenRoleUser().orElseThrow()))
             .build();
 
         Optional<Account> accountOptional = accountRepository.findByEmailWithRoles("crhistian@gmail.com");

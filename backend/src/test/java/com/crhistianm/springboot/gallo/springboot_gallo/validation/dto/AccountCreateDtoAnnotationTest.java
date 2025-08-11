@@ -1,7 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.validation.dto;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.createAccountAdminDto;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.createAccountDto;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAdminAccountCreateDto;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenUserAccountCreateDto;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -59,7 +59,7 @@ public class AccountCreateDtoAnnotationTest{
 
         @BeforeEach
         void setUp(){
-            account = createAccountDto().orElseThrow();
+            account = givenUserAccountCreateDto().orElseThrow();
         }
 
         @Test
@@ -118,7 +118,7 @@ public class AccountCreateDtoAnnotationTest{
         
         @BeforeEach
         void setUp(){
-            account = createAccountDto().orElseThrow();
+            account = givenUserAccountCreateDto().orElseThrow();
         }
 
         @Test
@@ -176,7 +176,7 @@ public class AccountCreateDtoAnnotationTest{
 
         @BeforeEach
         void setUp(){
-            account = createAccountDto().orElseThrow();
+            account = givenUserAccountCreateDto().orElseThrow();
         }
 
         @Test
@@ -202,7 +202,7 @@ public class AccountCreateDtoAnnotationTest{
 
         @BeforeEach
         void setUp(){
-            account = createAccountAdminDto().orElseThrow();
+            account = givenAdminAccountCreateDto().orElseThrow();
         }
 
         @Test

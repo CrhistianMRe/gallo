@@ -1,6 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.validation.dto;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.createPersonOneDto;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonCreateDtoOne;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,7 +48,7 @@ public class PersonCreateDtoAnnotationTest {
         
         @BeforeEach
         void setUp(){
-            person = createPersonOneDto().orElseThrow();
+            person = givenPersonCreateDtoOne().orElseThrow();
         }
 
         @Test
@@ -73,7 +73,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = createPersonOneDto().orElseThrow();
+            person = givenPersonCreateDtoOne().orElseThrow();
         }
 
         @Test
@@ -99,7 +99,7 @@ public class PersonCreateDtoAnnotationTest {
         
         @BeforeEach
         void setUp(){
-            person = createPersonOneDto().orElseThrow();
+            person = givenPersonCreateDtoOne().orElseThrow();
         }
 
         @Test
@@ -141,7 +141,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = createPersonOneDto().orElseThrow();
+            person = givenPersonCreateDtoOne().orElseThrow();
         }
 
         @Test
@@ -183,7 +183,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = createPersonOneDto().orElseThrow();
+            person = givenPersonCreateDtoOne().orElseThrow();
         }
 
         @Test
@@ -226,7 +226,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = createPersonOneDto().orElseThrow();
+            person = givenPersonCreateDtoOne().orElseThrow();
         }
 
         @Test
@@ -284,7 +284,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = createPersonOneDto().orElseThrow();
+            person = givenPersonCreateDtoOne().orElseThrow();
         }
 
         @Test
