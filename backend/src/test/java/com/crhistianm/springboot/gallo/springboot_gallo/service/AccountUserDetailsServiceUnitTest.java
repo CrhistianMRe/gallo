@@ -1,7 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.createAccountAdmin;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.createAccountUser;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityAdmin;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,8 +40,8 @@ public class AccountUserDetailsServiceUnitTest {
     void setUp(){
         when(accountRepository.findByEmailWithRoles(anyString())).thenAnswer(invo -> {
             Optional<Account> accountOptional = Optional.empty();
-            if(invo.getArgument(0).equals("admin@gmail.com")) accountOptional = createAccountAdmin();
-            if(invo.getArgument(0).equals("user@gmail.com")) accountOptional = createAccountUser();
+            if(invo.getArgument(0).equals("admin@gmail.com")) accountOptional = givenAccountEntityAdmin();
+            if(invo.getArgument(0).equals("user@gmail.com")) accountOptional = givenAccountEntityUser();
             return accountOptional;
         });
     }

@@ -57,9 +57,9 @@ class AccountServiceImplUnitTest {
             when(personRepository.findById(anyLong())).thenReturn(Optional.of(new PersonBuilder()
                         .firstName("one")
                         .lastName("1one")
-                        .phoneNumber(createPersonTwoDto().orElseThrow().getPhoneNumber())
-                        .birthDate(createPersonTwoDto().orElseThrow().getBirthDate())
-                        .gender(createPersonTwoDto().orElseThrow().getGender())
+                        .phoneNumber(givenPersonCreateDtoTwo().orElseThrow().getPhoneNumber())
+                        .birthDate(givenPersonCreateDtoTwo().orElseThrow().getBirthDate())
+                        .gender(givenPersonCreateDtoTwo().orElseThrow().getGender())
                         .id(1L)
                         .build()));
             when(accountRepository.save(any())).thenAnswer(arg -> arg.getArgument(0));
@@ -68,8 +68,8 @@ class AccountServiceImplUnitTest {
         @DisplayName("Testing role user assignment")
         @Test
         void testAssignRoleUser() {
-            when(roleRepository.findByName("ROLE_USER")).thenReturn(createUserRole());
-            AccountCreateDto accountUserDto = createAccountDto().orElseThrow();
+            when(roleRepository.findByName("ROLE_USER")).thenReturn(givenRoleUser());
+            AccountCreateDto accountUserDto = givenUserAccountCreateDto().orElseThrow();
 
             //One role
             assertTrue(accountServiceImpl.save(accountUserDto) instanceof AccountUserResponseDto);
@@ -79,9 +79,9 @@ class AccountServiceImplUnitTest {
         @DisplayName("Testing role user and admin assignment")
         @Test
         void testAssignRoleAdmin() {
-            when(roleRepository.findByName("ROLE_USER")).thenReturn(createUserRole());
-            when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(createAdminRole());
-            AccountCreateDto accountAdminDto = createAccountAdminDto().orElseThrow();
+            when(roleRepository.findByName("ROLE_USER")).thenReturn(givenRoleUser());
+            when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(givenRoleAdmin());
+            AccountCreateDto accountAdminDto = givenAdminAccountCreateDto().orElseThrow();
 
             AccountResponseDto accountResponseDto = accountServiceImpl.save(accountAdminDto);
 
@@ -89,18 +89,18 @@ class AccountServiceImplUnitTest {
 
             //Both roles
             assertTrue(accountResponseDto instanceof AccountAdminResponseDto);
-            assertEquals(Arrays.asList(createUserRole().orElseThrow(), createAdminRole().orElseThrow()), accountAdminResponseDto.getRoles());
+            assertEquals(Arrays.asList(givenRoleUser().orElseThrow(), givenRoleAdmin().orElseThrow()), accountAdminResponseDto.getRoles());
             verify(roleRepository, times(2)).findByName(anyString());
         }
 
         @DisplayName("Testing service person assignment")
         @Test
         void testAssignPerson(){
-            AccountCreateDto accountCreateDto = createAccountAdminDto().orElseThrow();
+            AccountCreateDto accountCreateDto = givenAdminAccountCreateDto().orElseThrow();
 
 
             AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountCreateDto);
-            Person answer = PersonMapper.createToEntity(createPersonOneDto().orElseThrow());
+            Person answer = PersonMapper.createToEntity(givenPersonCreateDtoOne().orElseThrow());
             answer.setId(1L);
             //Per person test
             assertNotNull(accountAdminResponseDto.getPerson());
@@ -145,7 +145,7 @@ class AccountServiceImplUnitTest {
             void setUp(){
                 when(accountRepository.findAccountByPersonId(anyLong())).thenAnswer(invo ->{
                     Optional<Account> account = Optional.empty();
-                    if(invo.getArgument(0, Long.class) == 1L) account = Optional.of(AccountMapper.createToEntity(createAccountDto().orElseThrow()));
+                    if(invo.getArgument(0, Long.class) == 1L) account = Optional.of(AccountMapper.createToEntity(givenUserAccountCreateDto().orElseThrow()));
                     return account;
                 });
             }
