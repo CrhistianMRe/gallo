@@ -57,9 +57,9 @@ class AccountServiceImplUnitTest {
             when(personRepository.findById(anyLong())).thenReturn(Optional.of(new PersonBuilder()
                         .firstName("one")
                         .lastName("1one")
-                        .phoneNumber(givenPersonCreateDtoTwo().orElseThrow().getPhoneNumber())
-                        .birthDate(givenPersonCreateDtoTwo().orElseThrow().getBirthDate())
-                        .gender(givenPersonCreateDtoTwo().orElseThrow().getGender())
+                        .phoneNumber(givenPersonRequestDtoTwo().orElseThrow().getPhoneNumber())
+                        .birthDate(givenPersonRequestDtoTwo().orElseThrow().getBirthDate())
+                        .gender(givenPersonRequestDtoTwo().orElseThrow().getGender())
                         .id(1L)
                         .build()));
             when(accountRepository.save(any())).thenAnswer(arg -> arg.getArgument(0));
@@ -100,7 +100,7 @@ class AccountServiceImplUnitTest {
 
 
             AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountCreateDto);
-            Person answer = PersonMapper.createToEntity(givenPersonCreateDtoOne().orElseThrow());
+            Person answer = PersonMapper.createToEntity(givenPersonRequestDtoOne().orElseThrow());
             answer.setId(1L);
             //Per person test
             assertNotNull(accountAdminResponseDto.getPerson());

@@ -11,7 +11,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.RoleBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
@@ -37,8 +37,8 @@ public class Data {
         return Optional.of(accountCreateDto);
     }
 
-    public static Optional<PersonCreateDto> givenPersonCreateDtoOne(){
-        PersonCreateDto person = new PersonCreateDto();
+    public static Optional<PersonRequestDto> givenPersonRequestDtoOne(){
+        PersonRequestDto person = new PersonRequestDto();
         person.setFirstName("one");
         person.setLastName("1one");
         person.setBirthDate(LocalDate.now());
@@ -47,8 +47,8 @@ public class Data {
         return Optional.of(person);
     }
 
-    public static Optional<PersonCreateDto> givenPersonCreateDtoTwo(){
-        PersonCreateDto person = new PersonCreateDto();
+    public static Optional<PersonRequestDto> givenPersonRequestDtoTwo(){
+        PersonRequestDto person = new PersonRequestDto();
         person.setFirstName("two");
         person.setLastName("2two");
         person.setBirthDate(LocalDate.now());
@@ -75,7 +75,7 @@ public class Data {
                 .id(1L)
                 .email("admin@gmail.com")
                 .password("12345")
-                .person(PersonMapper.createToEntity(givenPersonCreateDtoOne().orElseThrow()))
+                .person(PersonMapper.createToEntity(givenPersonRequestDtoOne().orElseThrow()))
                 .roles(List.of(givenRoleAdmin().orElseThrow(), givenRoleUser().orElseThrow()))
                 .audit(audit)
                 .workouts(null)
@@ -93,7 +93,7 @@ public class Data {
                 .id(1L)
                 .email("user@gmail.com")
                 .password("12345")
-                .person(PersonMapper.createToEntity(givenPersonCreateDtoOne().orElseThrow()))
+                .person(PersonMapper.createToEntity(givenPersonRequestDtoOne().orElseThrow()))
                 .roles(List.of(givenRoleUser().orElseThrow()))
                 .audit(audit)
                 .workouts(null)

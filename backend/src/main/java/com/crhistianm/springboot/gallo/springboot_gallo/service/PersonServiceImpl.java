@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
@@ -24,7 +24,7 @@ public class PersonServiceImpl implements PersonService{
 
     @Transactional
     @Override
-    public PersonResponseDto save(PersonCreateDto personDto) {
+    public PersonResponseDto save(PersonRequestDto personDto) {
         Person person = PersonMapper.createToEntity(personDto);
         return PersonMapper.entityToResponse(personRepository.save(person));
 

@@ -1,6 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonCreateDtoOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonRequestDtoOne;
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonEntityOne;
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonEntityTwo;
 import static org.mockito.Mockito.*;
@@ -41,7 +41,7 @@ public class PersonServiceImplUnitTest {
         void testSave(){
             //Return an instance for the mapper
             when(personRepository.save(any(Person.class))).thenReturn(new PersonBuilder().build());
-            personServiceImpl.save(givenPersonCreateDtoOne().orElseThrow());
+            personServiceImpl.save(givenPersonRequestDtoOne().orElseThrow());
             verify(personRepository, times(1)).save(any(Person.class));
         }
 
@@ -84,7 +84,7 @@ public class PersonServiceImplUnitTest {
                 when(personRepository.findById(anyLong())).thenAnswer(invo ->{
                     Optional<Person> person = Optional.empty();
                     if(invo.getArgument(0, Long.class) == 1L){
-                        person = Optional.of(PersonMapper.createToEntity(givenPersonCreateDtoOne().orElseThrow()));
+                        person = Optional.of(PersonMapper.createToEntity(givenPersonRequestDtoOne().orElseThrow()));
                     }
                     return person; 
                 });
