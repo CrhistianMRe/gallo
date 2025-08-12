@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService{
 
         Optional<Person> optionalPerson = personRepository.findById(accountDto.getPersonId());
 
-        Account account = AccountMapper.createToEntity(accountDto);
+        Account account = AccountMapper.requestToEntity(accountDto);
 
         optionalPerson.ifPresent(account::setPerson);
         optionalRoleUser.ifPresent(System.out::println);

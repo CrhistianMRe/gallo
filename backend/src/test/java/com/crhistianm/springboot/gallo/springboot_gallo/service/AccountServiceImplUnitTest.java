@@ -100,7 +100,7 @@ class AccountServiceImplUnitTest {
 
 
             AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountCreateDto);
-            Person answer = PersonMapper.createToEntity(givenPersonRequestDtoOne().orElseThrow());
+            Person answer = PersonMapper.requestToEntity(givenPersonRequestDtoOne().orElseThrow());
             answer.setId(1L);
             //Per person test
             assertNotNull(accountAdminResponseDto.getPerson());
@@ -145,7 +145,7 @@ class AccountServiceImplUnitTest {
             void setUp(){
                 when(accountRepository.findAccountByPersonId(anyLong())).thenAnswer(invo ->{
                     Optional<Account> account = Optional.empty();
-                    if(invo.getArgument(0, Long.class) == 1L) account = Optional.of(AccountMapper.createToEntity(givenUserAccountCreateDto().orElseThrow()));
+                    if(invo.getArgument(0, Long.class) == 1L) account = Optional.of(AccountMapper.requestToEntity(givenUserAccountCreateDto().orElseThrow()));
                     return account;
                 });
             }
