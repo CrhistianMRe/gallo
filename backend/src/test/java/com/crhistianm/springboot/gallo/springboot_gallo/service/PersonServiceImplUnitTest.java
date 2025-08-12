@@ -117,6 +117,16 @@ public class PersonServiceImplUnitTest {
             verify(personRepository, times(1)).findAll();
         }
 
+        @Test
+        void testGetById(){
+            when(personRepository.findById(1L)).thenReturn(givenPersonEntityOne());
+
+            PersonResponseDto expectedPerson = PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow());
+
+            assertEquals(expectedPerson, personServiceImpl.getById(1L));
+            verify(personRepository, times(1)).findById(anyLong());
+        }
+
     }
 
 }
