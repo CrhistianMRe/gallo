@@ -2,12 +2,12 @@ package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
 import java.util.List;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 
 public interface PersonService {
    
-    PersonResponseDto save(PersonCreateDto createDto);
+    PersonResponseDto save(PersonRequestDto createDto);
 
     boolean isPhoneNumberAvailable(String phoneNumber);
 

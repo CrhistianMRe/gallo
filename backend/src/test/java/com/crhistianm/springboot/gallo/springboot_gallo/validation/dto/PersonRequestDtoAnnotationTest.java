@@ -1,6 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.validation.dto;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonCreateDtoOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonRequestDtoOne;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,21 +18,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonServiceImpl;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
 @SpringBootTest
-public class PersonCreateDtoAnnotationTest {
+public class PersonRequestDtoAnnotationTest {
 
     @Autowired
     private Validator validator;
 
-    private PersonCreateDto person;
+    private PersonRequestDto person;
 
-    Set<ConstraintViolation<PersonCreateDto>> violations;
+    Set<ConstraintViolation<PersonRequestDto>> violations;
 
     @MockitoBean
     private PersonServiceImpl personService;
@@ -48,7 +48,7 @@ public class PersonCreateDtoAnnotationTest {
         
         @BeforeEach
         void setUp(){
-            person = givenPersonCreateDtoOne().orElseThrow();
+            person = givenPersonRequestDtoOne().orElseThrow();
         }
 
         @Test
@@ -73,7 +73,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = givenPersonCreateDtoOne().orElseThrow();
+            person = givenPersonRequestDtoOne().orElseThrow();
         }
 
         @Test
@@ -99,7 +99,7 @@ public class PersonCreateDtoAnnotationTest {
         
         @BeforeEach
         void setUp(){
-            person = givenPersonCreateDtoOne().orElseThrow();
+            person = givenPersonRequestDtoOne().orElseThrow();
         }
 
         @Test
@@ -141,7 +141,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = givenPersonCreateDtoOne().orElseThrow();
+            person = givenPersonRequestDtoOne().orElseThrow();
         }
 
         @Test
@@ -183,7 +183,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = givenPersonCreateDtoOne().orElseThrow();
+            person = givenPersonRequestDtoOne().orElseThrow();
         }
 
         @Test
@@ -226,7 +226,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = givenPersonCreateDtoOne().orElseThrow();
+            person = givenPersonRequestDtoOne().orElseThrow();
         }
 
         @Test
@@ -284,7 +284,7 @@ public class PersonCreateDtoAnnotationTest {
 
         @BeforeEach
         void setUp(){
-            person = givenPersonCreateDtoOne().orElseThrow();
+            person = givenPersonRequestDtoOne().orElseThrow();
         }
 
         @Test

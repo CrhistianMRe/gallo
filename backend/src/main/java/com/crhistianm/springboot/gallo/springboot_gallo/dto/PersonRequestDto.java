@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
 //No id as it is auto incremental on db
-public class PersonCreateDto {
+public class PersonRequestDto {
 
     @NotBlank
     private String firstName;
@@ -43,10 +43,10 @@ public class PersonCreateDto {
     @DecimalMax("200.0")
     private Double weight;
 
-    public PersonCreateDto() {
+    public PersonRequestDto() {
     }
 
-    public PersonCreateDto(String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
+    public PersonRequestDto(String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
             Double height, Double weight) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -131,7 +131,7 @@ public class PersonCreateDto {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        PersonCreateDto other = (PersonCreateDto) obj;
+        PersonRequestDto other = (PersonRequestDto) obj;
         if (firstName == null) {
             if (other.firstName != null)
                 return false;
@@ -152,7 +152,7 @@ public class PersonCreateDto {
 
     @Override
     public String toString() {
-        return "PersonCreateDto [firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
+        return "PersonRequestDto [firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
                 + ", birthDate=" + birthDate + ", gender=" + gender + ", height=" + height + ", weight=" + weight + "]";
     }
 
