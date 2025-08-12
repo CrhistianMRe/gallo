@@ -1,8 +1,11 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonCreateDtoOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonEntityOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonEntityTwo;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
@@ -101,5 +105,19 @@ public class PersonServiceImplUnitTest {
 
     }
 
-    
+    @Nested
+    class ViewModuleTest{
+
+        @Test
+        void testGetAll(){
+            when(personRepository.findAll()).thenReturn(List.of(givenPersonEntityOne().orElseThrow(), givenPersonEntityTwo().orElseThrow()));
+
+            List<PersonResponseDto> expectedList = List.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()), PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow()));
+            assertEquals(expectedList, personServiceImpl.getAll());
+            verify(personRepository, times(1)).findAll();
+        }
+
+    }
+
 }
+

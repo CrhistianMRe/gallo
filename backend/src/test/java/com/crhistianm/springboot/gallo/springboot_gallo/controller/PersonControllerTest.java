@@ -13,6 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -20,6 +21,7 @@ import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,5 +71,20 @@ public class PersonControllerTest {
             .andExpect(jsonPath("$.firstName").value("one"))
             .andExpect(jsonPath("$.lastName").value("1one"));
     }
-    
+
+    @Test
+    void testViewAll() throws Exception {
+        when(personService.getAll()).thenReturn(List.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()), PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow())));
+
+        mockMvc.perform(get("/api/persons"))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].id").value(1L))
+            .andExpect(jsonPath("$[1].id").value(2L))
+            .andExpect(jsonPath("$[0].firstName").value("Crhistian"))
+            .andExpect(jsonPath("$[1].firstName").value("Erick"))
+            .andExpect(jsonPath("$[1].phoneNumber").value("55896144"))
+            .andExpect(jsonPath("$[0].phoneNumber").value("4444444"));
+    }
+
 }

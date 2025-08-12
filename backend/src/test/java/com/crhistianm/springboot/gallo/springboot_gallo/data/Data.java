@@ -8,11 +8,13 @@ import java.util.Optional;
 
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.RoleBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonCreateDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 
@@ -97,6 +99,34 @@ public class Data {
                 .workouts(null)
                 .build()
                 );
+    }
+
+    public static Optional<Person> givenPersonEntityOne(){
+        return Optional.of(new PersonBuilder()
+                .id(1L)
+                .firstName("Crhistian")
+                .lastName("Mendez")
+                .phoneNumber("4444444")
+                .birthDate(LocalDate.of(2004, 9, 28))
+                .gender("M")
+                .height(1.74)
+                .weight(80.0)
+                .account(givenAccountEntityAdmin().orElseThrow())
+                .build());
+    }
+
+    public static Optional<Person> givenPersonEntityTwo(){
+        return Optional.of(new PersonBuilder()
+                .id(2L)
+                .firstName("Erick")
+                .lastName("Perez")
+                .phoneNumber("55896144")
+                .birthDate(LocalDate.of(2005, 2, 1))
+                .gender("M")
+                .height(1.76)
+                .weight(80.0)
+                .account(givenAccountEntityUser().orElseThrow())
+                .build());
     }
 
 }
