@@ -25,7 +25,7 @@ public class PersonServiceImpl implements PersonService{
     @Transactional
     @Override
     public PersonResponseDto save(PersonRequestDto personDto) {
-        Person person = PersonMapper.createToEntity(personDto);
+        Person person = PersonMapper.requestToEntity(personDto);
         return PersonMapper.entityToResponse(personRepository.save(person));
 
     }

@@ -8,7 +8,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 
 public class PersonMapper {
 
-    public static Person createToEntity(PersonRequestDto dto){
+    public static Person requestToEntity(PersonRequestDto dto){
         return new PersonBuilder().firstName(dto.getFirstName())
             .lastName(dto.getLastName())
             .phoneNumber(dto.getPhoneNumber())

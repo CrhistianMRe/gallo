@@ -9,7 +9,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 
 public class AccountMapper {
 
-    public static Account createToEntity(AccountCreateDto accountDto){
+    public static Account requestToEntity(AccountCreateDto accountDto){
         return new AccountBuilder().email(accountDto.getEmail()).password(accountDto.getPassword()).build();
     }
 

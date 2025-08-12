@@ -84,7 +84,7 @@ public class PersonServiceImplUnitTest {
                 when(personRepository.findById(anyLong())).thenAnswer(invo ->{
                     Optional<Person> person = Optional.empty();
                     if(invo.getArgument(0, Long.class) == 1L){
-                        person = Optional.of(PersonMapper.createToEntity(givenPersonRequestDtoOne().orElseThrow()));
+                        person = Optional.of(PersonMapper.requestToEntity(givenPersonRequestDtoOne().orElseThrow()));
                     }
                     return person; 
                 });
