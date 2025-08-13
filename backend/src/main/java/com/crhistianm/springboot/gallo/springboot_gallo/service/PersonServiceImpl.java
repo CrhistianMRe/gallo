@@ -30,6 +30,19 @@ public class PersonServiceImpl implements PersonService{
 
     }
 
+    @Transactional
+    @Override
+    public Optional<PersonResponseDto> update(Long id, PersonRequestDto personDto) {
+        Optional<PersonResponseDto> responseDto = Optional.empty();
+        if(personRepository.findById(id).isPresent()){
+            Person person = PersonMapper.requestToEntity(personDto);
+            person.setId(id);
+            responseDto = Optional.of(PersonMapper.entityToResponse(personRepository.save(person)));
+        }
+        return responseDto;
+    }
+
+
     @Transactional(readOnly = true)
     @Override
     public boolean isPhoneNumberAvailable(String phoneNumber) {
