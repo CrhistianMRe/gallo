@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAccountUserDetails;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +50,8 @@ public class SpringEndpointSecurityTest {
 
     @MockitoBean
     private AccountUserDetailsService service;
+
+    String prefixWithToken;
 
     String generateToken(String email, String password) throws Exception{
 
@@ -99,14 +102,25 @@ public class SpringEndpointSecurityTest {
     @Nested
     class AdminAuthorityEndpointsTest{
 
+        @BeforeEach
+        void setUp() throws Exception{
+            prefixWithToken = "Bearer ".concat(generateToken("admin@gmail.com", "12345"));
+        }
+
         @Test
         void testSwaggerValidAuthority() throws Exception{
-           String prefixToken = "Bearer ".concat(generateToken("admin@gmail.com", "12345"));
 
             mockMvc.perform(get("/v3/api-docs")
-                    .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixToken))
+                    .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixWithToken))
                 .andExpect(status().isOk());
 
+        }
+
+        @Test
+        void testUpdateValidAuthority() throws Exception{
+            mockMvc.perform(put("/api/person/1")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new PersonRequestDto())).header("Authorization", prefixWithToken))
+                .andExpect(status().isNotFound());
         }
 
     }
@@ -114,14 +128,26 @@ public class SpringEndpointSecurityTest {
     @Nested
     class UserAuthorityEndpointsTest{
 
+        @BeforeEach
+        void setUp() throws Exception{
+            prefixWithToken = "Bearer ".concat(generateToken("user@gmail.com", "12345"));
+
+        }
+
         @Test
         void testSwaggerInvalidAuthority()throws Exception{
-            String prefixToken = "Bearer ".concat(generateToken("user@gmail.com", "12345"));
 
             mockMvc.perform(get("/v3/api-docs")
-                    .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixToken))
+                    .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixWithToken))
                     .andExpect(status().isForbidden());
 
+        }
+
+        @Test
+        void testUpdateValidAuthority() throws Exception{
+            mockMvc.perform(put("/api/persons/1")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new PersonRequestDto())).header("Authorization", prefixWithToken))
+                .andExpect(status().isForbidden());
         }
 
     }
