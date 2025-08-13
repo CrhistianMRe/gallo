@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
@@ -127,6 +128,57 @@ public class PersonServiceImplUnitTest {
             verify(personRepository, times(1)).findById(anyLong());
         }
 
+    }
+
+    @Nested
+    class UpdateModuleTest {
+
+        @BeforeEach
+        void setUp(){
+            when(personRepository.findById(anyLong())).thenAnswer(invo -> {
+                if(invo.getArgument(0, Long.class) == 1L){
+                    return Optional.of(new Person());
+                }
+                return Optional.empty();
+            });
+        }
+        
+
+
+        @Test
+        void testUpdate(){
+            PersonRequestDto requestDto = givenPersonRequestDtoOne().orElseThrow();
+
+            //Mock person updated already
+            when(personRepository.save(any(Person.class))).thenAnswer(invo ->{
+                Person personUpdated = invo.getArgument(0);
+                personUpdated.setFirstName(requestDto.getFirstName());
+                personUpdated.setLastName(requestDto.getLastName());
+                personUpdated.setPhoneNumber(requestDto.getPhoneNumber());
+                personUpdated.setBirthDate(requestDto.getBirthDate());
+                personUpdated.setGender(requestDto.getGender());
+                return personUpdated;
+            });
+
+            PersonResponseDto actualResponse = personServiceImpl.update(1L, requestDto).orElseThrow();
+
+            Person personExpected = PersonMapper.requestToEntity(requestDto);
+            personExpected.setId(1L);
+            PersonResponseDto expectedResponse = PersonMapper.entityToResponse(personExpected);
+
+            assertEquals(expectedResponse, actualResponse);
+
+            verify(personRepository, times(1)).findById(anyLong());
+            verify(personRepository, times(1)).save(any(Person.class));
+
+        }
+
+        @Test
+        void testUpdateEmpty(){
+            Boolean isFound = personServiceImpl.update(2L, new PersonRequestDto()).isPresent();
+            assertFalse(isFound);
+        }
+        
     }
 
 }
