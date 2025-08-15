@@ -66,6 +66,23 @@ public class PersonRequestDtoAnnotationTest {
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
         }
+
+        @Test
+        void testInvalidSize(){
+            person.setFirstName("somenametoolongsomenametoolongsomenametoolongsomenametoolong");
+            violations = validator.validate(person);
+            assertFalse(violations.isEmpty());
+            assertThat(violations).hasSize(1);
+            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("size must be between 0 and 45");
+        }
+
+        @Test
+        void testValidSize(){
+            violations = validator.validate(person);
+            assertTrue(violations.isEmpty());
+            assertThat(violations).hasSize(0);
+        }
+
     }
 
     @Nested
@@ -87,6 +104,22 @@ public class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidNotBlank(){
+            violations = validator.validate(person);
+            assertTrue(violations.isEmpty());
+            assertThat(violations).hasSize(0);
+        }
+
+        @Test
+        void testInvalidSize(){
+            person.setLastName("somelastnametoolongsomelastnametoolongsomelastnametoolongsomelastnametoolong");
+            violations = validator.validate(person);
+            assertFalse(violations.isEmpty());
+            assertThat(violations).hasSize(1);
+            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("size must be between 0 and 45");
+        }
+
+        @Test
+        void testValidSize(){
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -129,6 +162,22 @@ public class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidUniquePhoneNumber(){
+            violations = validator.validate(person);
+            assertTrue(violations.isEmpty());
+            assertThat(violations).hasSize(0);
+        }
+
+        @Test
+        void testInvalidSize(){
+            person.setPhoneNumber("+502 555 555 555 555");
+            violations = validator.validate(person);
+            assertFalse(violations.isEmpty());
+            assertThat(violations).hasSize(1);
+            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("size must be between 0 and 16");
+        }
+
+        @Test
+        void testValidSize(){
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
