@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS person(
     id bigint NOT NULL,
     first_name varchar(45) NOT NULL,
     last_name varchar(45) NOT NULL,
-    phone_number varchar(45) NOT NULL,
+    phone_number varchar(16) NOT NULL,
     birth_date DATE NOT NULL,
     gender varchar(2) NOT NULL,
     height decimal(4,2) DEFAULT NULL,
