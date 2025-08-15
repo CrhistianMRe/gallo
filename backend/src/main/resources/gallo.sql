@@ -9,14 +9,16 @@ CREATE TABLE IF NOT EXISTS person(
     phone_number varchar(16) NOT NULL,
     birth_date DATE NOT NULL,
     gender varchar(2) NOT NULL,
-    height decimal(4,2) DEFAULT NULL,
-    weight decimal(5,2) DEFAULT NULL
+    height decimal(3,2) DEFAULT NULL,
+    weight decimal(4,1) DEFAULT NULL
 );
 
 ALTER TABLE person ADD PRIMARY KEY (id);
 ALTER TABLE person MODIFY id bigint NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE person ADD CONSTRAINT chk_person_gender CHECK (gender IN ('M', 'F', 'NT'));
+ALTER TABLE person ADD CONSTRAINT chk_person_height CHECK (height >= 0.50 AND height <= 3.00);
+ALTER TABLE person ADD CONSTRAINT chk_person_weight CHECK (weight >= 020.0 AND weight <= 200.0);
 
 ALTER TABLE person ADD UNIQUE INDEX uq_person_phone_number (phone_number ASC) VISIBLE;
 
