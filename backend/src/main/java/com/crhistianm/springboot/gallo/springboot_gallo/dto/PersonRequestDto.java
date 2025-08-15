@@ -18,9 +18,11 @@ import jakarta.validation.constraints.Size;
 public class PersonRequestDto {
 
     @NotBlank
+    @Size(max = 45)
     private String firstName;
 
     @NotBlank
+    @Size(max = 45)
     private String lastName;
 
     @NotBlank
