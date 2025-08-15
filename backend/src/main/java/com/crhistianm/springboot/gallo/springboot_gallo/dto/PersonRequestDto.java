@@ -2,6 +2,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
 import java.time.LocalDate;
 
+
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.CorrectGender;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.UniquePhoneNumber;
 
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
 //No id as it is auto incremental on db
 public class PersonRequestDto {
@@ -23,6 +25,7 @@ public class PersonRequestDto {
 
     @NotBlank
     @UniquePhoneNumber
+    @Size(max = 16)
     private String phoneNumber;
 
     @NotNull
