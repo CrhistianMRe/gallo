@@ -12,6 +12,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.RoleBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
@@ -64,6 +65,14 @@ public class Data {
     public static Optional<Role> givenRoleUser(){
         return Optional.of(new RoleBuilder().name("ROLE_USER").build());
     }
+
+    public static Optional<RoleResponseDto> givenRoleResponseDtoAdmin(){
+        return Optional.of(new RoleResponseDto(null, "ROLE_ADMIN"));
+    }
+    public static Optional<RoleResponseDto> givenRoleResponseDtoUser(){
+        return Optional.of(new RoleResponseDto(null, "ROLE_USER"));
+    }
+
 
     public static Optional<Account> givenAccountEntityAdmin(){
         Audit audit = new Audit();
