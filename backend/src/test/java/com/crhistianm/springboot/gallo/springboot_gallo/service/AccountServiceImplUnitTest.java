@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
@@ -69,7 +69,7 @@ class AccountServiceImplUnitTest {
         @Test
         void testAssignRoleUser() {
             when(roleRepository.findByName("ROLE_USER")).thenReturn(givenRoleUser());
-            AccountCreateDto accountUserDto = givenUserAccountCreateDto().orElseThrow();
+            AccountRequestDto accountUserDto = givenUserAccountRequestDto().orElseThrow();
 
             //One role
             assertTrue(accountServiceImpl.save(accountUserDto) instanceof AccountUserResponseDto);
@@ -81,7 +81,7 @@ class AccountServiceImplUnitTest {
         void testAssignRoleAdmin() {
             when(roleRepository.findByName("ROLE_USER")).thenReturn(givenRoleUser());
             when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(givenRoleAdmin());
-            AccountCreateDto accountAdminDto = givenAdminAccountCreateDto().orElseThrow();
+            AccountRequestDto accountAdminDto = givenAdminAccountRequestDto().orElseThrow();
 
             AccountResponseDto accountResponseDto = accountServiceImpl.save(accountAdminDto);
 
@@ -96,7 +96,7 @@ class AccountServiceImplUnitTest {
         @DisplayName("Testing service person assignment")
         @Test
         void testAssignPerson(){
-            AccountCreateDto accountCreateDto = givenAdminAccountCreateDto().orElseThrow();
+            AccountRequestDto accountCreateDto = givenAdminAccountRequestDto().orElseThrow();
 
 
             AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountCreateDto);
@@ -145,7 +145,7 @@ class AccountServiceImplUnitTest {
             void setUp(){
                 when(accountRepository.findAccountByPersonId(anyLong())).thenAnswer(invo ->{
                     Optional<Account> account = Optional.empty();
-                    if(invo.getArgument(0, Long.class) == 1L) account = Optional.of(AccountMapper.requestToEntity(givenUserAccountCreateDto().orElseThrow()));
+                    if(invo.getArgument(0, Long.class) == 1L) account = Optional.of(AccountMapper.requestToEntity(givenUserAccountRequestDto().orElseThrow()));
                     return account;
                 });
             }

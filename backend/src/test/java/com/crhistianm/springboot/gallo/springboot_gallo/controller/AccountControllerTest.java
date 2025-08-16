@@ -19,7 +19,7 @@ import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
@@ -48,7 +48,7 @@ public class AccountControllerTest {
     
     @Test
     void testCreate() throws Exception{
-        AccountCreateDto accountDto = givenAdminAccountCreateDto().orElseThrow(); 
+        AccountRequestDto accountDto = givenAdminAccountRequestDto().orElseThrow(); 
 
         Person person = new PersonBuilder().id(1L).build();
         AccountAdminResponseDto accountResponseDto = new AccountAdminResponseDto();
