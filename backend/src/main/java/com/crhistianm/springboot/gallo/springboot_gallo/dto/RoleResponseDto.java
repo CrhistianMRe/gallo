@@ -1,46 +1,36 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.entity;
+package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@Entity
-@Table(name = "role")
-public class Role {
+public class RoleResponseDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
     private String name;
 
-    //Created inverse relationship as i need to query how many users have roles 
-    @ManyToMany(mappedBy = "roles")
-    private List<Account> accounts;
+    //Only display id and email from list of accounts
+    @JsonIgnoreProperties({"roles", "audit", "person", "handler", "hibernateLazyInitializer"})
+    List<AccountAdminResponseDto> accounts;
 
-    public Role(){
+    public RoleResponseDto() {
         this.accounts = new ArrayList<>();
     }
 
-    public Role(String name) {
+    public RoleResponseDto(Long id, String name) {
         this();
+        this.id = id;
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -51,14 +41,13 @@ public class Role {
         this.name = name;
     }
 
-    public void setAccounts(List<Account> accounts) {
+    public void setAccounts(List<AccountAdminResponseDto> accounts) {
         this.accounts = accounts;
     }
 
-    public List<Account> getAccounts() {
+    public List<AccountAdminResponseDto> getAccounts() {
         return accounts;
     }
-
 
     @Override
     public int hashCode() {
@@ -77,7 +66,7 @@ public class Role {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Role other = (Role) obj;
+        RoleResponseDto other = (RoleResponseDto) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -93,7 +82,7 @@ public class Role {
 
     @Override
     public String toString() {
-        return "Role {id=" + id + ", name=" + name + "}";
+        return "RoleResponseDto [id=" + id + ", name=" + name + ", accounts=" + accounts + "]";
     }
 
 }
