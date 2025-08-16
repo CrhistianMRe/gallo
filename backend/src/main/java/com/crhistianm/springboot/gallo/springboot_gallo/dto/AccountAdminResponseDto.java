@@ -5,7 +5,6 @@ import java.util.List;
 
 
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 //Without password as password is just for writing
@@ -20,8 +19,10 @@ public class AccountAdminResponseDto implements AccountResponseDto{
     @JsonIgnoreProperties({"accounts", "handler", "hibernateLazyInitializer"})
     private List<RoleResponseDto> roles;
 
+    //Ignore account as is already shown in this dto class(otherwise it will generate a infinite loop)
+    @JsonIgnoreProperties({"account", "handler", "hibernateLazyInitializer"})
     //Here i add the person to return it as it will be used on administration
-    private Person person;
+    private PersonResponseDto person;
 
     //As response will show when it was updated/created
     private Audit audit;
@@ -30,7 +31,7 @@ public class AccountAdminResponseDto implements AccountResponseDto{
         this.roles = new ArrayList<>();
     }
 
-    public AccountAdminResponseDto(Long id, String email, Person person, Audit audit) {
+    public AccountAdminResponseDto(Long id, String email, PersonResponseDto person, Audit audit) {
         this();
         this.id = id;
         this.email = email;
@@ -73,11 +74,11 @@ public class AccountAdminResponseDto implements AccountResponseDto{
         this.roles = roles;
     }
 
-    public Person getPerson() {
+    public PersonResponseDto getPerson() {
         return person;
     }
 
-    public void setPerson(Person person) {
+    public void setPerson(PersonResponseDto person) {
         this.person = person;
     }
 

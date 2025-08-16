@@ -19,6 +19,8 @@ public class AccountMapper {
     }
 
     public static AccountResponseDto entityToAdminResponse(Account account){
+        //Set account to null as this response does not need account from person entity
+        account.getPerson().setAccount(null);
         AccountAdminResponseDto accountDto = new AccountAdminResponseDto();
         //List<RoleResponseDto> rolesResponseDto = account.getRoles().stream().map(r -> new RoleResponseDto(r.getId(), r.getName())).collect(Collectors.toList());
         List<RoleResponseDto> rolesResponseDto = account.getRoles().stream().map(role -> {
@@ -42,7 +44,7 @@ public class AccountMapper {
         accountDto.setEmail(account.getEmail());
         accountDto.setRoles(rolesResponseDto);
         accountDto.setAudit(account.getAudit());
-        accountDto.setPerson(account.getPerson());
+        accountDto.setPerson(PersonMapper.entityToResponse(account.getPerson()));
         return accountDto;
     }
     
