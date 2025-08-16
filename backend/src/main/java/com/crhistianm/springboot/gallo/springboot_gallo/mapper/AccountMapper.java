@@ -1,10 +1,15 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 
 public class AccountMapper {
@@ -15,11 +20,29 @@ public class AccountMapper {
 
     public static AccountResponseDto entityToAdminResponse(Account account){
         AccountAdminResponseDto accountDto = new AccountAdminResponseDto();
+        //List<RoleResponseDto> rolesResponseDto = account.getRoles().stream().map(r -> new RoleResponseDto(r.getId(), r.getName())).collect(Collectors.toList());
+        List<RoleResponseDto> rolesResponseDto = account.getRoles().stream().map(role -> {
+            RoleResponseDto roleDto = new RoleResponseDto();
+            roleDto.setId(role.getId());
+            roleDto.setName(role.getName());
+            List<AccountAdminResponseDto> accountList = new ArrayList<>();
+
+            //Just add id and email as is the only information needed
+            for (Account iterate: role.getAccounts()) {
+                AccountAdminResponseDto accountAdminResponseDto = new AccountAdminResponseDto();
+                accountAdminResponseDto.setId(iterate.getId());
+                accountAdminResponseDto.setEmail(iterate.getEmail());
+                accountList.add(accountAdminResponseDto);
+            }
+            roleDto.setAccounts(accountList);
+
+            return roleDto;
+        }).collect(Collectors.toList());
         accountDto.setId(account.getId());
         accountDto.setEmail(account.getEmail());
-        accountDto.setRoles(account.getRoles());
-        accountDto.setPerson(account.getPerson());
+        accountDto.setRoles(rolesResponseDto);
         accountDto.setAudit(account.getAudit());
+        accountDto.setPerson(account.getPerson());
         return accountDto;
     }
     
