@@ -27,17 +27,17 @@ public class AccountMapper {
             RoleResponseDto roleDto = new RoleResponseDto();
             roleDto.setId(role.getId());
             roleDto.setName(role.getName());
-            List<AccountAdminResponseDto> accountList = new ArrayList<>();
-
-            //Just add id and email as is the only information needed
-            for (Account iterate: role.getAccounts()) {
-                AccountAdminResponseDto accountAdminResponseDto = new AccountAdminResponseDto();
-                accountAdminResponseDto.setId(iterate.getId());
-                accountAdminResponseDto.setEmail(iterate.getEmail());
-                accountList.add(accountAdminResponseDto);
+            if(role.getAccounts() != null){
+                List<AccountAdminResponseDto> accountList = new ArrayList<>();
+                //Just add id and email as is the only information needed
+                for (Account iterate: role.getAccounts()) {
+                    AccountAdminResponseDto accountAdminResponseDto = new AccountAdminResponseDto();
+                    accountAdminResponseDto.setId(iterate.getId());
+                    accountAdminResponseDto.setEmail(iterate.getEmail());
+                    accountList.add(accountAdminResponseDto);
+                }
+                roleDto.setAccounts(accountList);
             }
-            roleDto.setAccounts(accountList);
-
             return roleDto;
         }).collect(Collectors.toList());
         accountDto.setId(account.getId());
