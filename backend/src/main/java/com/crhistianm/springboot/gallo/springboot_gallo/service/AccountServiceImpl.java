@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
@@ -39,7 +39,7 @@ public class AccountServiceImpl implements AccountService{
 
     @Transactional
     @Override
-    public AccountResponseDto save(AccountCreateDto accountDto) {
+    public AccountResponseDto save(AccountRequestDto accountDto) {
         Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
 
         System.out.println(accountDto);

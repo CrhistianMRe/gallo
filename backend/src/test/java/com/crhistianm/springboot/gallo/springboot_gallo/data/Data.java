@@ -10,7 +10,7 @@ import java.util.Optional;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.RoleBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
@@ -20,16 +20,16 @@ import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 
 public class Data {
 
-    public static Optional<AccountCreateDto> givenUserAccountCreateDto(){
-        AccountCreateDto accountCreateDto = new AccountCreateDto();
+    public static Optional<AccountRequestDto> givenUserAccountRequestDto(){
+        AccountRequestDto accountCreateDto = new AccountRequestDto();
         accountCreateDto.setEmail("erikuser@gmail.com");
         accountCreateDto.setPassword("12345");
         accountCreateDto.setPersonId(1L);
         return Optional.of(accountCreateDto);
     }
 
-    public static Optional<AccountCreateDto> givenAdminAccountCreateDto(){
-        AccountCreateDto accountCreateDto = new AccountCreateDto();
+    public static Optional<AccountRequestDto> givenAdminAccountRequestDto(){
+        AccountRequestDto accountCreateDto = new AccountRequestDto();
         accountCreateDto.setEmail("erikadmin@gmail.com");
         accountCreateDto.setPassword("12345");
         accountCreateDto.setPersonId(2L);

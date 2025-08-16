@@ -1,7 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.validation.dto;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAdminAccountCreateDto;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenUserAccountCreateDto;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAdminAccountRequestDto;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenUserAccountRequestDto;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -23,7 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountServiceImpl;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonServiceImpl;
 
@@ -31,12 +31,12 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
 @SpringBootTest
-public class AccountCreateDtoAnnotationTest{
+public class AccountRequestDtoAnnotationTest{
 
     @Autowired
     private Validator validator;
 
-    private AccountCreateDto account;
+    private AccountRequestDto account;
 
     @MockitoBean
     private PersonServiceImpl personService;
@@ -44,7 +44,7 @@ public class AccountCreateDtoAnnotationTest{
     @MockitoBean
     private AccountServiceImpl accountService;
 
-    Set<ConstraintViolation<AccountCreateDto>> violations;
+    Set<ConstraintViolation<AccountRequestDto>> violations;
 
     @BeforeEach
     void setUp(){
@@ -59,7 +59,7 @@ public class AccountCreateDtoAnnotationTest{
 
         @BeforeEach
         void setUp(){
-            account = givenUserAccountCreateDto().orElseThrow();
+            account = givenUserAccountRequestDto().orElseThrow();
         }
 
         @Test
@@ -118,7 +118,7 @@ public class AccountCreateDtoAnnotationTest{
         
         @BeforeEach
         void setUp(){
-            account = givenUserAccountCreateDto().orElseThrow();
+            account = givenUserAccountRequestDto().orElseThrow();
         }
 
         @Test
@@ -176,7 +176,7 @@ public class AccountCreateDtoAnnotationTest{
 
         @BeforeEach
         void setUp(){
-            account = givenUserAccountCreateDto().orElseThrow();
+            account = givenUserAccountRequestDto().orElseThrow();
         }
 
         @Test
@@ -202,7 +202,7 @@ public class AccountCreateDtoAnnotationTest{
 
         @BeforeEach
         void setUp(){
-            account = givenAdminAccountCreateDto().orElseThrow();
+            account = givenAdminAccountRequestDto().orElseThrow();
         }
 
         @Test

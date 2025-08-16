@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
@@ -14,7 +14,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 
 public class AccountMapper {
 
-    public static Account requestToEntity(AccountCreateDto accountDto){
+    public static Account requestToEntity(AccountRequestDto accountDto){
         return new AccountBuilder().email(accountDto.getEmail()).password(accountDto.getPassword()).build();
     }
 

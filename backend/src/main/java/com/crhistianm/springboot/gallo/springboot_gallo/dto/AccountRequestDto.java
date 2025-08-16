@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 //Id not in dto as it is auto incremental on db
-public class AccountCreateDto{
+public class AccountRequestDto{
 
     @NotNull
     @PersonNotAssigned
@@ -29,10 +29,10 @@ public class AccountCreateDto{
     @AdminRequired
     private boolean admin;
 
-    public AccountCreateDto() {
+    public AccountRequestDto() {
     }
 
-    public AccountCreateDto(String email, String password, Long personId, boolean admin) {
+    public AccountRequestDto(String email, String password, Long personId, boolean admin) {
         this.email = email;
         this.password = password;
         this.admin = admin;
@@ -88,7 +88,7 @@ public class AccountCreateDto{
             return false;
         if (getClass() != obj.getClass())
             return false;
-        AccountCreateDto other = (AccountCreateDto) obj;
+        AccountRequestDto other = (AccountRequestDto) obj;
         if (personId == null) {
             if (other.personId != null)
                 return false;
@@ -104,7 +104,7 @@ public class AccountCreateDto{
 
     @Override
     public String toString() {
-        return "AccountCreateDto [personId=" + personId + ", email=" + email + ", password=" + password + ", admin="
+        return "AccountRequestDto [personId=" + personId + ", email=" + email + ", password=" + password + ", admin="
                 + admin + "]";
     }
 
