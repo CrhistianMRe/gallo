@@ -22,6 +22,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponse
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
@@ -89,7 +90,7 @@ class AccountServiceImplUnitTest {
 
             //Both roles
             assertTrue(accountResponseDto instanceof AccountAdminResponseDto);
-            assertEquals(Arrays.asList(givenRoleUser().orElseThrow(), givenRoleAdmin().orElseThrow()), accountAdminResponseDto.getRoles());
+            assertEquals(Arrays.asList(givenRoleResponseDtoUser().orElseThrow(), givenRoleResponseDtoAdmin().orElseThrow()), accountAdminResponseDto.getRoles());
             verify(roleRepository, times(2)).findByName(anyString());
         }
 
@@ -100,7 +101,7 @@ class AccountServiceImplUnitTest {
 
 
             AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountCreateDto);
-            Person answer = PersonMapper.requestToEntity(givenPersonRequestDtoOne().orElseThrow());
+            PersonResponseDto answer = PersonMapper.entityToResponse(PersonMapper.requestToEntity(givenPersonRequestDtoOne().orElseThrow()));
             answer.setId(1L);
             //Per person test
             assertNotNull(accountAdminResponseDto.getPerson());
