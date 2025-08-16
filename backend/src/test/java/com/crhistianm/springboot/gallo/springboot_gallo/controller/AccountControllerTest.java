@@ -21,6 +21,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountCreateDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +53,7 @@ public class AccountControllerTest {
         Person person = new PersonBuilder().id(1L).build();
         AccountAdminResponseDto accountResponseDto = new AccountAdminResponseDto();
         accountResponseDto.setEmail("erikadmin@gmail.com");
-        accountResponseDto.setPerson(person);
+        accountResponseDto.setPerson(PersonMapper.entityToResponse(person));
             
 
         //It is a different instance as objectMapper changes it obviously
