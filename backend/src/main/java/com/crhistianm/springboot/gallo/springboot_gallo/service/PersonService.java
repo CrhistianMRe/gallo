@@ -12,6 +12,8 @@ public interface PersonService {
 
     Optional<PersonResponseDto> update(Long id, PersonRequestDto personDto);
 
+    Optional<PersonResponseDto> delete(Long id);
+
     boolean isPhoneNumberAvailable(String phoneNumber);
 
     boolean isPersonRegistered(Long personId);
@@ -19,6 +21,7 @@ public interface PersonService {
     List<PersonResponseDto> getAll();
 
     PersonResponseDto getById(Long id);
+
 
 }
 

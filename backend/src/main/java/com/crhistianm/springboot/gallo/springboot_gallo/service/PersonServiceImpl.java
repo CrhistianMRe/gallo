@@ -42,6 +42,17 @@ public class PersonServiceImpl implements PersonService{
         return responseDto;
     }
 
+    @Transactional
+    @Override
+    public Optional<PersonResponseDto> delete(Long id) {
+        Optional<PersonResponseDto> responseDto =  Optional.empty();
+        Optional<Person> personOptional = personRepository.findById(id);
+        if(personOptional.isPresent()){
+            personRepository.delete(personOptional.orElseThrow());
+            responseDto = Optional.of(PersonMapper.entityToResponse(personOptional.orElseThrow()));
+        }
+        return responseDto;
+    }
 
     @Transactional(readOnly = true)
     @Override
