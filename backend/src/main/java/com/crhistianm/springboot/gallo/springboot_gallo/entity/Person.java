@@ -2,6 +2,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.entity;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public class Person {
 
     private Double weight;
 
-    @OneToOne(mappedBy = "person")
+    @OneToOne(mappedBy = "person", cascade = CascadeType.REMOVE)
     private Account account;
 
     public Person(){
