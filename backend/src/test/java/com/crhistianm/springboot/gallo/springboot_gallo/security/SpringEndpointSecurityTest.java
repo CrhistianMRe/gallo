@@ -137,6 +137,13 @@ public class SpringEndpointSecurityTest {
                 .andExpect(status().isNotFound());
         }
 
+        @Test
+        void testViewAllValidAuthority() throws Exception{
+            mockMvc.perform(get("/api/persons")
+                    .header("Authorization", prefixWithToken))
+                .andExpect(status().isOk());
+        }
+
     }
 
     @Nested
@@ -175,6 +182,13 @@ public class SpringEndpointSecurityTest {
         void testViewByIdInvalidAuthority() throws Exception{
             mockMvc.perform(get("/api/persons/1")
                 .header("Authorization", prefixWithToken))
+                .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void testViewAllInvalidAuthority() throws Exception{
+            mockMvc.perform(get("/api/persons")
+                    .header("Authorization", prefixWithToken))
                 .andExpect(status().isForbidden());
         }
 
