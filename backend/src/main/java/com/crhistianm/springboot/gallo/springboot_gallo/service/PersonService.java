@@ -20,7 +20,7 @@ public interface PersonService {
 
     List<PersonResponseDto> getAll();
 
-    PersonResponseDto getById(Long id);
+    Optional<PersonResponseDto> getById(Long id);
 
 
 }
