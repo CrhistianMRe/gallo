@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.parameters.P;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
@@ -179,6 +180,34 @@ public class PersonServiceImplUnitTest {
             assertFalse(isFound);
         }
         
+    }
+
+    @Nested
+    class DeleteModuleTest {
+
+        @BeforeEach
+        void setUp(){
+            when(personRepository.findById(anyLong())).thenAnswer(invo ->{
+                Optional<Person> personDb = Optional.empty();
+                if(invo.getArgument(0, Long.class) == 1L) personDb = givenPersonEntityOne();
+                return personDb;
+            });
+        }
+
+        @Test
+        void testDelete(){
+            Optional<PersonResponseDto> expectedResponse = Optional.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()));
+            assertEquals(expectedResponse, personServiceImpl.delete(1L));
+            verify(personRepository, times(1)).findById(anyLong());
+        }
+
+        @Test
+        void testDeleteEmpty(){
+            Optional<PersonResponseDto> expectedResponse = Optional.empty();
+            assertEquals(expectedResponse, personServiceImpl.delete(2L));
+            verify(personRepository, times(1)).findById(anyLong());
+        }
+
     }
 
 }

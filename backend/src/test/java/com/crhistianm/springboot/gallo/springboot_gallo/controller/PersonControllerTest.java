@@ -2,6 +2,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
 import static org.mockito.Mockito.*;
 
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,7 +22,6 @@ import java.util.Optional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
-import static com.crhistianm.springboot.gallo.springboot_gallo.security.TokenJwtConfig.CONTENT_TYPE;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
@@ -31,7 +31,6 @@ import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityC
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.qos.logback.core.joran.conditional.ThenAction;
 import jakarta.validation.Validator;
 
 //Select controller class
@@ -138,6 +137,37 @@ public class PersonControllerTest {
         void testUpdateNotFound() throws Exception {
             mockMvc.perform(put("/api/persons/2")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(givenPersonRequestDtoTwo().orElseThrow())))
+                .andExpect(status().isNotFound());
+        }
+
+    }
+
+    @Nested
+    class DeleteModuleTest {
+        
+        @BeforeEach
+        void setUp(){
+            when(personService.delete(anyLong())).thenAnswer(invo -> {
+                Optional<PersonResponseDto> responseOptional = Optional.empty();
+                if(invo.getArgument(0, Long.class) == 1L) responseOptional = Optional.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()));
+                return responseOptional;
+            });
+        }
+
+        @Test
+        void testDelete() throws Exception {
+            mockMvc.perform(delete("/api/persons/1"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.firstName").value("Crhistian"))
+                .andExpect(jsonPath("$.lastName").value("Mendez"))
+                .andExpect(jsonPath("$.phoneNumber").value("4444444"));
+        }
+
+        @Test
+        void testDeleteNotFound() throws Exception {
+            mockMvc.perform(delete("/api/persons/2"))
                 .andExpect(status().isNotFound());
         }
 
