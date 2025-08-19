@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAccountUserDetails;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
@@ -144,6 +145,19 @@ public class SpringEndpointSecurityTest {
                 .andExpect(status().isOk());
         }
 
+        @Nested
+        class Account{
+
+            @Test
+            void testCreateValidAuthority() throws Exception{
+                mockMvc.perform(post("/api/accounts/register")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new AccountRequestDto()))
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isBadRequest());
+            }
+
+        }
+
     }
 
     @Nested
@@ -191,6 +205,19 @@ public class SpringEndpointSecurityTest {
                     .header("Authorization", prefixWithToken))
                 .andExpect(status().isForbidden());
         }
+
+        @Nested
+        class Account{
+
+            @Test
+            void testCreateValidAuthority() throws Exception{
+                mockMvc.perform(post("/api/accounts/register")
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isBadRequest());
+            }
+
+        }
+        
 
     }
 
