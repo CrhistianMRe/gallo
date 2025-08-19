@@ -157,6 +157,18 @@ public class SpringEndpointSecurityTest {
             }
 
         }
+        
+        @Nested
+        class Person{
+
+            @Test
+            void testCreateValidAuthority() throws Exception {
+                mockMvc.perform(post("/api/persons/register")
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isBadRequest());
+            }
+
+        }
 
     }
 
@@ -218,6 +230,16 @@ public class SpringEndpointSecurityTest {
 
         }
         
+        @Nested
+        class Person{
+
+            @Test
+            void testCreateValidAuthority() throws Exception{
+                mockMvc.perform(post("/api/persons/register").header("Authorization", prefixWithToken))
+                    .andExpect(status().isBadRequest());
+            }
+
+        }
 
     }
 
