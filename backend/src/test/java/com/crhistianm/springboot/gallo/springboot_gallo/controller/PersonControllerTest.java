@@ -94,7 +94,7 @@ public class PersonControllerTest {
 
     @Test
     void testViewById() throws Exception {
-        when(personService.getById(2L)).thenReturn(PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow()));
+        when(personService.getById(2L)).thenReturn(Optional.of(PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow())));
 
         mockMvc.perform(get("/api/persons/2"))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

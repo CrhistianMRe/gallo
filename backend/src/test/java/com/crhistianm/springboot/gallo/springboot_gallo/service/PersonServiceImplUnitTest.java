@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.parameters.P;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
@@ -125,7 +124,7 @@ public class PersonServiceImplUnitTest {
 
             PersonResponseDto expectedPerson = PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow());
 
-            assertEquals(expectedPerson, personServiceImpl.getById(1L));
+            assertEquals(expectedPerson, personServiceImpl.getById(1L).orElseThrow());
             verify(personRepository, times(1)).findById(anyLong());
         }
 
