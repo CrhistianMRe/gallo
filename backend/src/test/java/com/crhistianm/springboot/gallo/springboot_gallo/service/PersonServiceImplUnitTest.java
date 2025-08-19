@@ -109,6 +109,15 @@ public class PersonServiceImplUnitTest {
     @Nested
     class ViewModuleTest{
 
+        @BeforeEach
+        void setUp(){
+            lenient().when(personRepository.findById(anyLong())).thenAnswer(invo -> {
+                Optional<Person> responseOptional = Optional.empty();
+                if(invo.getArgument(0, Long.class) == 1L) responseOptional = givenPersonEntityOne();
+                return responseOptional;
+            });
+        }
+
         @Test
         void testGetAll(){
             when(personRepository.findAll()).thenReturn(List.of(givenPersonEntityOne().orElseThrow(), givenPersonEntityTwo().orElseThrow()));
@@ -120,11 +129,17 @@ public class PersonServiceImplUnitTest {
 
         @Test
         void testGetById(){
-            when(personRepository.findById(1L)).thenReturn(givenPersonEntityOne());
-
             PersonResponseDto expectedPerson = PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow());
 
             assertEquals(expectedPerson, personServiceImpl.getById(1L).orElseThrow());
+            verify(personRepository, times(1)).findById(anyLong());
+        }
+
+        @Test
+        void testGetByIdEmpty(){
+            Optional<PersonResponseDto> expectedPerson = Optional.empty();
+
+            assertEquals(expectedPerson, personServiceImpl.getById(2L));
             verify(personRepository, times(1)).findById(anyLong());
         }
 

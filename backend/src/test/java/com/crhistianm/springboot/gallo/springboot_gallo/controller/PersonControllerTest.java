@@ -2,7 +2,6 @@ package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
 import static org.mockito.Mockito.*;
 
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -77,31 +76,49 @@ public class PersonControllerTest {
             .andExpect(jsonPath("$.lastName").value("1one"));
     }
 
-    @Test
-    void testViewAll() throws Exception {
-        when(personService.getAll()).thenReturn(List.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()), PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow())));
+    @Nested
+    class ViewModuleTest{
 
-        mockMvc.perform(get("/api/persons"))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].id").value(1L))
-            .andExpect(jsonPath("$[1].id").value(2L))
-            .andExpect(jsonPath("$[0].firstName").value("Crhistian"))
-            .andExpect(jsonPath("$[1].firstName").value("Erick"))
-            .andExpect(jsonPath("$[1].phoneNumber").value("55896144"))
-            .andExpect(jsonPath("$[0].phoneNumber").value("4444444"));
-    }
+        @BeforeEach
+        void setUp(){
+            lenient().when(personService.getById(anyLong())).thenAnswer(invo -> {
+                Optional<PersonResponseDto> responseOptional = Optional.empty();
+                if(invo.getArgument(0, Long.class) == 2L) responseOptional = Optional.of(PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow()));
+                return responseOptional;
+            });
 
-    @Test
-    void testViewById() throws Exception {
-        when(personService.getById(2L)).thenReturn(Optional.of(PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow())));
+        }
 
-        mockMvc.perform(get("/api/persons/2"))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(2L))
-            .andExpect(jsonPath("$.firstName").value("Erick"))
-            .andExpect(jsonPath("$.phoneNumber").value("55896144"));
+        @Test
+        void testViewAll() throws Exception {
+            when(personService.getAll()).thenReturn(List.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()), PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow())));
+
+            mockMvc.perform(get("/api/persons"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[0].firstName").value("Crhistian"))
+                .andExpect(jsonPath("$[1].firstName").value("Erick"))
+                .andExpect(jsonPath("$[1].phoneNumber").value("55896144"))
+                .andExpect(jsonPath("$[0].phoneNumber").value("4444444"));
+        }
+
+        @Test
+        void testViewById() throws Exception {
+            mockMvc.perform(get("/api/persons/2"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(2L))
+                .andExpect(jsonPath("$.firstName").value("Erick"))
+                .andExpect(jsonPath("$.phoneNumber").value("55896144"));
+        }
+        @Test
+        void testViewByIdNotFound() throws Exception {
+            mockMvc.perform(get("/api/persons/1"))
+                .andExpect(status().isNotFound());
+        }
+
     }
 
     @Nested
