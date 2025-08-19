@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -131,6 +130,13 @@ public class SpringEndpointSecurityTest {
                 .andExpect(status().isNotFound());
         }
 
+        @Test
+        void testViewByIdValidAuthority() throws Exception{
+            mockMvc.perform(get("/api/persons/1")
+                    .header("Authorization", prefixWithToken))
+                .andExpect(status().isNotFound());
+        }
+
     }
 
     @Nested
@@ -162,6 +168,13 @@ public class SpringEndpointSecurityTest {
         void testDeleteInvalidAuthority() throws Exception {
             mockMvc.perform(delete("/api/persons/1")
                     .header("Authorization", prefixWithToken))
+                .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void testViewByIdInvalidAuthority() throws Exception{
+            mockMvc.perform(get("/api/persons/1")
+                .header("Authorization", prefixWithToken))
                 .andExpect(status().isForbidden());
         }
 
