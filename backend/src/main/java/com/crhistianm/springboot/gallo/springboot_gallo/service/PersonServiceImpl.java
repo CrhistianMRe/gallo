@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 
@@ -32,26 +33,34 @@ public class PersonServiceImpl implements PersonService{
 
     @Transactional
     @Override
-    public Optional<PersonResponseDto> update(Long id, PersonRequestDto personDto) {
-        Optional<PersonResponseDto> responseDto = Optional.empty();
-        if(personRepository.findById(id).isPresent()){
+    public PersonResponseDto update(Long id, PersonRequestDto personDto) {
+        if(personRepository.findById(id).isEmpty()) throw new NotFoundException(Person.class);
             Person person = PersonMapper.requestToEntity(personDto);
             person.setId(id);
-            responseDto = Optional.of(PersonMapper.entityToResponse(personRepository.save(person)));
-        }
-        return responseDto;
+        return PersonMapper.entityToResponse(personRepository.save(person));
     }
 
     @Transactional
     @Override
-    public Optional<PersonResponseDto> delete(Long id) {
-        Optional<PersonResponseDto> responseDto =  Optional.empty();
+    public PersonResponseDto delete(Long id) {
         Optional<Person> personOptional = personRepository.findById(id);
-        if(personOptional.isPresent()){
+        if(personOptional.isEmpty())throw new NotFoundException(Person.class);
             personRepository.delete(personOptional.orElseThrow());
-            responseDto = Optional.of(PersonMapper.entityToResponse(personOptional.orElseThrow()));
-        }
-        return responseDto;
+        return PersonMapper.entityToResponse(personOptional.orElseThrow());
+    }
+    @Transactional(readOnly = true)
+    @Override
+    public PersonResponseDto getById(Long id) {
+        Optional<Person> personOptional = personRepository.findById(id);
+        if(personOptional.isEmpty()) throw new NotFoundException(Person.class);
+        return PersonMapper.entityToResponse(personOptional.orElseThrow());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PersonResponseDto> getAll() {
+        List<PersonResponseDto> personList = personRepository.findAll().stream().map(p -> PersonMapper.entityToResponse(p)).collect(Collectors.toList());
+        return personList;
     }
 
     @Transactional(readOnly = true)
@@ -67,20 +76,5 @@ public class PersonServiceImpl implements PersonService{
         return optionalPerson.isPresent();
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<PersonResponseDto> getAll() {
-        List<PersonResponseDto> personList = personRepository.findAll().stream().map(p -> PersonMapper.entityToResponse(p)).collect(Collectors.toList());
-        return personList;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<PersonResponseDto> getById(Long id) {
-        Optional<PersonResponseDto> responseOptional = Optional.empty();
-        Optional<Person> personOptional = personRepository.findById(id);
-        if(personOptional.isPresent()) responseOptional = Optional.of(PersonMapper.entityToResponse(personOptional.orElseThrow()));
-        return responseOptional;
-    }
     
 }

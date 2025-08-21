@@ -1,7 +1,5 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,26 +37,18 @@ public class PersonController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<?> viewById(@PathVariable Long id){
-        Optional<PersonResponseDto> responseOptional = personService.getById(id);
-        if(responseOptional.isPresent()) return ResponseEntity.ok(personService.getById(id).orElseThrow());
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<?> viewById(@PathVariable Long id) {
+         return ResponseEntity.ok(personService.getById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody PersonRequestDto person, @PathVariable Long id){
-
-        Optional<PersonResponseDto> responseDto = personService.update(id, person);
-
-        if (responseDto.isPresent()) return ResponseEntity.ok(responseDto.orElseThrow());
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(personService.update(id, person));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<PersonResponseDto> delete(@PathVariable Long id){
-        Optional<PersonResponseDto> responseDto = personService.delete(id);
-        if(responseDto.isPresent()) return ResponseEntity.ok(responseDto.orElseThrow());
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(personService.delete(id));
     }
 
 
