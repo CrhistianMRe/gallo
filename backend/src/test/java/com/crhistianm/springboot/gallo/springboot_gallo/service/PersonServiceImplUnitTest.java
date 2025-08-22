@@ -22,6 +22,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 
@@ -131,15 +132,15 @@ public class PersonServiceImplUnitTest {
         void testGetById(){
             PersonResponseDto expectedPerson = PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow());
 
-            assertEquals(expectedPerson, personServiceImpl.getById(1L).orElseThrow());
+            assertEquals(expectedPerson, personServiceImpl.getById(1L));
             verify(personRepository, times(1)).findById(anyLong());
         }
 
         @Test
         void testGetByIdEmpty(){
-            Optional<PersonResponseDto> expectedPerson = Optional.empty();
-
-            assertEquals(expectedPerson, personServiceImpl.getById(2L));
+            assertThrows(NotFoundException.class, () -> {
+                personServiceImpl.getById(2L);
+            });
             verify(personRepository, times(1)).findById(anyLong());
         }
 
@@ -175,7 +176,7 @@ public class PersonServiceImplUnitTest {
                 return personUpdated;
             });
 
-            PersonResponseDto actualResponse = personServiceImpl.update(1L, requestDto).orElseThrow();
+            PersonResponseDto actualResponse = personServiceImpl.update(1L, requestDto);
 
             Person personExpected = PersonMapper.requestToEntity(requestDto);
             personExpected.setId(1L);
@@ -190,8 +191,10 @@ public class PersonServiceImplUnitTest {
 
         @Test
         void testUpdateEmpty(){
-            Boolean isFound = personServiceImpl.update(2L, new PersonRequestDto()).isPresent();
-            assertFalse(isFound);
+            assertThrows(NotFoundException.class, () ->{
+                personServiceImpl.update(2L, new PersonRequestDto());
+            });
+            verify(personRepository, times(1)).findById(anyLong());
         }
         
     }
@@ -210,15 +213,16 @@ public class PersonServiceImplUnitTest {
 
         @Test
         void testDelete(){
-            Optional<PersonResponseDto> expectedResponse = Optional.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()));
+            PersonResponseDto expectedResponse = PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow());
             assertEquals(expectedResponse, personServiceImpl.delete(1L));
             verify(personRepository, times(1)).findById(anyLong());
         }
 
         @Test
         void testDeleteEmpty(){
-            Optional<PersonResponseDto> expectedResponse = Optional.empty();
-            assertEquals(expectedResponse, personServiceImpl.delete(2L));
+            assertThrows(NotFoundException.class, () ->{
+                personServiceImpl.delete(2L);
+            });
             verify(personRepository, times(1)).findById(anyLong());
         }
 
