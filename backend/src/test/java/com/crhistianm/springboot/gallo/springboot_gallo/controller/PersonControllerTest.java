@@ -25,6 +25,8 @@ import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
@@ -82,9 +84,8 @@ public class PersonControllerTest {
         @BeforeEach
         void setUp(){
             lenient().when(personService.getById(anyLong())).thenAnswer(invo -> {
-                Optional<PersonResponseDto> responseOptional = Optional.empty();
-                if(invo.getArgument(0, Long.class) == 2L) responseOptional = Optional.of(PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow()));
-                return responseOptional;
+                if(invo.getArgument(0, Long.class) != 2L) throw new NotFoundException(Person.class);
+                return PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow());
             });
 
         }
@@ -116,6 +117,7 @@ public class PersonControllerTest {
         @Test
         void testViewByIdNotFound() throws Exception {
             mockMvc.perform(get("/api/persons/1"))
+                .andExpect(jsonPath("$.message").value("Person not found"))
                 .andExpect(status().isNotFound());
         }
 
@@ -127,13 +129,10 @@ public class PersonControllerTest {
         @BeforeEach
         void setUp(){
             when(personService.update(anyLong(), any(PersonRequestDto.class))).thenAnswer(invo -> {
-                Optional<PersonResponseDto> personResponseOptional = Optional.empty();
-                if(invo.getArgument(0, Long.class) == 1L){
-                    PersonResponseDto personDto = PersonMapper.entityToResponse(PersonMapper.requestToEntity(invo.getArgument(1)));
-                    personDto.setId(invo.getArgument(0, Long.class));
-                    personResponseOptional = Optional.of(personDto);
-                }
-                return personResponseOptional;
+                if(invo.getArgument(0, Long.class) != 1L) throw new NotFoundException(Person.class);
+                PersonResponseDto personDto = PersonMapper.entityToResponse(PersonMapper.requestToEntity(invo.getArgument(1)));
+                personDto.setId(invo.getArgument(0, Long.class));
+                return personDto;
             });
         }
 
@@ -154,6 +153,7 @@ public class PersonControllerTest {
         void testUpdateNotFound() throws Exception {
             mockMvc.perform(put("/api/persons/2")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(givenPersonRequestDtoTwo().orElseThrow())))
+                .andExpect(jsonPath("$.message").value("Person not found"))
                 .andExpect(status().isNotFound());
         }
 
@@ -165,9 +165,8 @@ public class PersonControllerTest {
         @BeforeEach
         void setUp(){
             when(personService.delete(anyLong())).thenAnswer(invo -> {
-                Optional<PersonResponseDto> responseOptional = Optional.empty();
-                if(invo.getArgument(0, Long.class) == 1L) responseOptional = Optional.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()));
-                return responseOptional;
+                if(invo.getArgument(0, Long.class) != 1L) throw new NotFoundException(Person.class);
+                return PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow());
             });
         }
 
@@ -185,6 +184,7 @@ public class PersonControllerTest {
         @Test
         void testDeleteNotFound() throws Exception {
             mockMvc.perform(delete("/api/persons/2"))
+                .andExpect(jsonPath("$.message").value("Person not found"))
                 .andExpect(status().isNotFound());
         }
 
