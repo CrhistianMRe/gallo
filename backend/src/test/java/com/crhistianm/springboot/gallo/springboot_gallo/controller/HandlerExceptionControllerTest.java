@@ -4,11 +4,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.format.DateTimeParseException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.MethodParameter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +33,7 @@ public class HandlerExceptionControllerTest {
 
     @RestController
     @RequestMapping("exception")
-    private class TestExceptionController {
+    public class TestExceptionController {
 
         private Exception ex;
 
@@ -43,6 +48,30 @@ public class HandlerExceptionControllerTest {
 
     }
 
+    @Test
+    void testValidationExceptionHandler() throws Exception{
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(Object.class, "test");
+        bindingResult.addError(new FieldError("test", "example", "is an example test"));
+
+        MethodParameter parameter = new MethodParameter(this.getClass().getMethod("dummy", String.class), 0);
+
+        testController = new TestExceptionController(new MethodArgumentNotValidException(parameter, bindingResult));
+        mockmvc = MockMvcBuilders.standaloneSetup(testController).setControllerAdvice(HandlerExceptionController.class).build();
+
+        mockmvc.perform(get("/exception"))
+            .andExpect(jsonPath("$.example").value("the field example is an example test"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testDateTimeJsonParserExceptionHandler() throws Exception{
+        testController = new TestExceptionController(new DateTimeParseException("example message", new StringBuilder("exampleCharSquence"), 0));
+        mockmvc = MockMvcBuilders.standaloneSetup(testController).setControllerAdvice(HandlerExceptionController.class).build();
+
+        mockmvc.perform(get("/exception"))
+            .andExpect(jsonPath("$.exampleCharSquence").value("not valid, use yyyy/mm/dd"));
+
+    }
 
     @Test
     void testNotFoundExceptionHandler() throws Exception {
