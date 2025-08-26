@@ -14,15 +14,19 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.security.filter.JwtAuthenticationFilter;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.filter.JwtValidationFilter;
+import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfig {
 
+    private final AccountUserDetailsService accountService;
+
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+    public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration, AccountUserDetailsService accountService) {
         this.authenticationConfiguration = authenticationConfiguration;
+        this.accountService = accountService;
     } 
 
     @Bean
@@ -49,7 +53,7 @@ public class SpringSecurityConfig {
                     .requestMatchers("/v3/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
                     .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                    .addFilter(new JwtValidationFilter(authenticationManager()))
+                    .addFilter(new JwtValidationFilter(authenticationManager(), accountService))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
