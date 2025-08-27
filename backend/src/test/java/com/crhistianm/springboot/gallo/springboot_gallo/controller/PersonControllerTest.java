@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -29,6 +28,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -53,6 +53,12 @@ public class PersonControllerTest {
 
     @MockitoBean
     Validator validator;
+
+    @MockitoBean
+    org.springframework.validation.Validator validator2;
+
+    @MockitoBean
+    AccountUserDetailsService service;
 
     @Test
     @DisplayName("Testing post person into endpoint")
