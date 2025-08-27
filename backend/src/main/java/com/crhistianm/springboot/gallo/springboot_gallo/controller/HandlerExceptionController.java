@@ -1,7 +1,5 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,21 +11,33 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 
 @RestControllerAdvice
 public class HandlerExceptionController {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationException(MethodArgumentNotValidException ex){
+    @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class})
+    public ResponseEntity<?> handleValidationException(Exception ex){
+        int status = HttpStatus.BAD_REQUEST.value();
         Map<String, String> errors = new HashMap<String, String>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
+        if(ex instanceof MethodArgumentNotValidException){
+            MethodArgumentNotValidException notValidException = (MethodArgumentNotValidException) ex;
+            notValidException.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), "the field " + error.getField() + " " + error.getDefaultMessage());
-        });
+            });
+        }
+        if(ex instanceof HandlerMethodValidationException){
+            HandlerMethodValidationException validationException = (HandlerMethodValidationException)ex;
+            validationException.getAllErrors().stream().forEach(error ->{
+                errors.put("message",  error.getDefaultMessage());
+            });;
+            status = HttpStatus.FORBIDDEN.value();
+        }
 
-        return ResponseEntity.badRequest().body(errors);
+
+        return ResponseEntity.status(status).body(errors);
     }
 
     @ExceptionHandler(DateTimeParseException.class)
