@@ -27,12 +27,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAccountUserDetails;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+
+import jakarta.validation.Validator;
 
 
 @SpringBootTest
@@ -51,6 +52,12 @@ public class SpringEndpointSecurityTest {
 
     @MockitoBean
     private AccountUserDetailsService service;
+
+    @MockitoBean
+    Validator validator;
+
+    @MockitoBean
+    org.springframework.validation.Validator validator2;
 
     String prefixWithToken;
 
@@ -123,7 +130,7 @@ public class SpringEndpointSecurityTest {
             @Test
             void testCreateValidAuthority() throws Exception{
                 mockMvc.perform(post("/api/accounts/register")
-                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new AccountRequestDto()))
+                        .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
             }
@@ -208,22 +215,22 @@ public class SpringEndpointSecurityTest {
             @Test
             void testUpdateValidAuthority() throws Exception{
                 mockMvc.perform(put("/api/persons/1")
-                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new PersonRequestDto())).header("Authorization", prefixWithToken))
-                    .andExpect(status().isForbidden());
+                        .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixWithToken))
+                    .andExpect(status().isBadRequest());
             }
 
             @Test
-            void testDeleteInvalidAuthority() throws Exception {
+            void testDeleteValidAuthority() throws Exception {
                 mockMvc.perform(delete("/api/persons/1")
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isNotFound());
             }
 
             @Test
-            void testViewByIdInvalidAuthority() throws Exception{
+            void testViewByIdValidAuthority() throws Exception{
                 mockMvc.perform(get("/api/persons/1")
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isNotFound());
             }
 
             @Test

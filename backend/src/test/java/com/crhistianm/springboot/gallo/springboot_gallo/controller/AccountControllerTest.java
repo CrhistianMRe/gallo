@@ -24,6 +24,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
+import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Validator;
@@ -45,6 +46,10 @@ public class AccountControllerTest {
 
     @MockitoBean
     Validator validator;
+
+    @MockitoBean
+    AccountUserDetailsService service;
+
     
     @Test
     void testCreate() throws Exception{
