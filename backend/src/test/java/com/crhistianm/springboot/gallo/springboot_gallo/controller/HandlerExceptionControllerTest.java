@@ -1,22 +1,34 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrlTemplate;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.ElementType;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.MethodParameter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.method.MethodValidationResult;
+import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 
@@ -28,8 +40,6 @@ public class HandlerExceptionControllerTest {
 
     TestExceptionController testController;
 
-    //This dummy is for MethodParameter
-    public void dummy(String test){};
 
     @RestController
     @RequestMapping("exception")
@@ -48,21 +58,48 @@ public class HandlerExceptionControllerTest {
 
     }
 
-    @Test
-    void testValidationExceptionHandler() throws Exception{
-        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(Object.class, "test");
-        bindingResult.addError(new FieldError("test", "example", "is an example test"));
+    @Nested
+    class ValidationExceptionHandlerMethod {
 
-        MethodParameter parameter = new MethodParameter(this.getClass().getMethod("dummy", String.class), 0);
+        //This dummy is for MethodParameter
+        public void dummy(String test){};
 
-        testController = new TestExceptionController(new MethodArgumentNotValidException(parameter, bindingResult));
-        mockmvc = MockMvcBuilders.standaloneSetup(testController).setControllerAdvice(HandlerExceptionController.class).build();
+        @Test
+        void testMethodArgumentNotValidException() throws Exception{
+            BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(Object.class, "test");
+            bindingResult.addError(new FieldError("test", "example", "is an example test"));
 
-        mockmvc.perform(get("/exception"))
-            .andExpect(jsonPath("$.example").value("the field example is an example test"))
-            .andExpect(status().isBadRequest());
+            MethodParameter parameter = new MethodParameter(this.getClass().getMethod("dummy", String.class), 0);
+
+            testController = new TestExceptionController(new MethodArgumentNotValidException(parameter, bindingResult));
+            mockmvc = MockMvcBuilders.standaloneSetup(testController).setControllerAdvice(HandlerExceptionController.class).build();
+
+            mockmvc.perform(get("/exception"))
+                .andExpect(jsonPath("$.example").value("the field example is an example test"))
+                .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void testHandlerMethodValidationException() throws Exception{
+            List<MessageSourceResolvable> listError = new ArrayList<>();
+            listError.add(new FieldError("test", "example", "is an example test"));
+
+            List<ParameterValidationResult> listParameter = new ArrayList<>();
+            MethodParameter methodParam = new MethodParameter(this.getClass().getMethod("dummy", String.class), 0,0);
+            listParameter.add(new ParameterValidationResult(methodParam, null, listError, null, null, null, null));
+
+            MethodValidationResult methodValidationResult = MethodValidationResult
+                .create(ElementType.PARAMETER, this.getClass().getMethod("dummy", String.class), listParameter);
+
+            testController = new TestExceptionController(new HandlerMethodValidationException(methodValidationResult));
+            mockmvc = MockMvcBuilders.standaloneSetup(testController).setControllerAdvice(HandlerExceptionController.class).build();
+
+            mockmvc.perform(get("/exception"))
+                .andExpect(jsonPath("$.message").value("is an example test"))
+                .andExpect(status().isForbidden());
+        }
+
     }
-
     @Test
     void testDateTimeJsonParserExceptionHandler() throws Exception{
         testController = new TestExceptionController(new DateTimeParseException("example message", new StringBuilder("exampleCharSquence"), 0));
