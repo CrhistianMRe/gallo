@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Component
 public class CorrectGenderValidator implements ConstraintValidator<CorrectGender, String>{
 
     @Override
