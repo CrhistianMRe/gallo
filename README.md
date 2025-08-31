@@ -26,4 +26,6 @@
 
 ## Template docs
 - [Requirements](https://drive.google.com/file/d/1diq_zjKFh7muv0KoUWesED698ZbEQZOE/view?usp=sharing)
+- [DB rel-diagram](https://drive.google.com/file/d/17Mow6Cy2x-wizXpR6F3c3Lj6hZUB44Gi/view?usp=sharing)
+
 
