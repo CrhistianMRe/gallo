@@ -4,7 +4,7 @@
 Gallo is a multi-platform system composed of a backend REST API, a JavaFX desktop application, and an Android mobile client. All components communicate through a secure REST interface. The backend is built with Spring Boot and uses MariaDB, while both frontend clients consume the API. The project also includes a comprehensive testing strategy using JUnit and Mockito, with continuous integration workflows managed through GitHub Actions.
 
 ## My workflow
-[Workflow(Activity Diagram)](https://drive.google.com/file/d/1pbfhECpNCoFXqrq4_ybv9qA-STdyB9cL/view?usp=sharing)
+[Workflow(Activity Diagram)](https://drive.google.com/file/d/1L7UbmsDkHxn08zls8QkCsRoNf7n09437/view?usp=sharing)
 
 ## Technologies/Features
 ### Backend
