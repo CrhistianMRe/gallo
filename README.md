@@ -98,6 +98,13 @@ Tests implements JUnit, Mockito, AssertJ and H2 DE, intended to validate data/me
 
 </details>
 
+##### - Swagger 
+<details>
+<summary>Details</summary>
+
+Swagger implemented to document Gallo backend platform.
+
+</details>
 
 ### Desktop Client 
 - JavaFX  
