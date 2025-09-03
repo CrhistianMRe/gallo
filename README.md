@@ -121,5 +121,6 @@ Swagger implemented to document Gallo backend platform.
 ## Template docs
 - [Requirements](https://drive.google.com/file/d/1diq_zjKFh7muv0KoUWesED698ZbEQZOE/view?usp=sharing)
 - [DB rel-diagram](https://drive.google.com/file/d/17Mow6Cy2x-wizXpR6F3c3Lj6hZUB44Gi/view?usp=sharing)
+- [DB ER-diagram](https://drive.google.com/file/d/1G-CbavoAnz9QBjyq8I9cslvOH4q5mqhN/view?usp=sharing)
 
 
