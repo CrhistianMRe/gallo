@@ -14,6 +14,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
@@ -30,11 +31,19 @@ public class AccountServiceImpl implements AccountService{
 
     private final PasswordEncoder passwordEncoder;
 
-    public AccountServiceImpl(AccountRepository accountRepository, PersonRepository personRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
+    private final IdentityVerificationService identityService;
+
+    public AccountServiceImpl(AccountRepository accountRepository, PersonRepository personRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, IdentityVerificationService identityService){
         this.accountRepository = accountRepository;
         this.personRepository = personRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.identityService = identityService;
+    }
+
+    public AccountResponseDto settleResponseType(Account account){
+        if(identityService.isAdminAuthority()) return AccountMapper.entityToAdminResponse(account);
+        return AccountMapper.entityToResponse(account);
     }
 
     @Transactional
@@ -61,6 +70,13 @@ public class AccountServiceImpl implements AccountService{
         }
 
         return AccountMapper.entityToResponse(accountRepository.save(account));
+    }
+
+    @Transactional
+    @Override
+    public AccountResponseDto getById(Long id) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
+        return settleResponseType(account);
     }
 
     @Transactional(readOnly = true)
