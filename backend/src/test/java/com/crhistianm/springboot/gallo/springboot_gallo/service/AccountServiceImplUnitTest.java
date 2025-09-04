@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
+
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
@@ -25,6 +27,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseD
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
@@ -47,8 +50,56 @@ class AccountServiceImplUnitTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    @Mock
+    IdentityVerificationServiceImpl identityService;
+
     @InjectMocks
     AccountServiceImpl accountServiceImpl;
+
+    @Nested
+    class SettleResponseTypeTest{
+
+        @Test
+        void testResponseAdmin() {
+            when(identityService.isAdminAuthority()).thenReturn(true);
+            assertTrue(accountServiceImpl.settleResponseType(givenAccountEntityAdmin().orElseThrow()) instanceof AccountAdminResponseDto);
+        }
+
+        @Test
+        void testResponseUser() {
+            when(identityService.isAdminAuthority()).thenReturn(false);
+            assertTrue(accountServiceImpl.settleResponseType(givenAccountEntityAdmin().orElseThrow()) instanceof AccountUserResponseDto);
+        }
+
+    }
+
+    @Nested
+    class ViewModuleTest{
+
+        @BeforeEach
+        void setUp(){
+            when(accountRepository.findById(anyLong())).thenAnswer(invo -> {
+                Optional<Account> accountOptional = Optional.empty();
+                if(invo.getArgument(0, Long.class) == 1L) accountOptional = givenAccountEntityAdmin();
+                return accountOptional;
+            });
+        }
+
+        @Test
+        void testViewByIdNotFound(){
+            assertThrows(NotFoundException.class, () -> {
+                accountServiceImpl.getById(2L);
+            });
+            verify(accountRepository, times(1)).findById(anyLong());
+        }
+
+        @Test
+        void testViewById(){
+            assertEquals("admin@gmail.com", accountServiceImpl.getById(1L).getEmail());
+            verify(accountRepository, times(1)).findById(anyLong());
+        }
+
+    }
 
     @Nested
     class RegisterModuleTest{
