@@ -96,7 +96,7 @@ class AccountServiceImplUnitTest {
         }
 
         @Test
-        void testViewByIdNotFound(){
+        void testgetByIdNotFound(){
             assertThrows(NotFoundException.class, () -> {
                 accountServiceImpl.getById(2L);
             });
@@ -104,7 +104,7 @@ class AccountServiceImplUnitTest {
         }
 
         @Test
-        void testViewById(){
+        void testGetById(){
             assertEquals("admin@gmail.com", accountServiceImpl.getById(1L).getEmail());
             verify(accountRepository, times(1)).findById(anyLong());
         }
