@@ -3,12 +3,15 @@ package com.crhistianm.springboot.gallo.springboot_gallo.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
@@ -77,6 +80,13 @@ public class AccountServiceImpl implements AccountService{
     public AccountResponseDto getById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
         return settleResponseType(account);
+    }
+
+    @Override
+    @Transactional
+    public List<AccountAdminResponseDto> getAll() {
+        List<AccountAdminResponseDto> accountList = accountRepository.findAll().stream().map(a -> (AccountAdminResponseDto) AccountMapper.entityToAdminResponse(a)).collect(Collectors.toList());
+        return accountList;
     }
 
     @Transactional(readOnly = true)
