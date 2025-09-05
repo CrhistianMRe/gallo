@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -78,11 +79,20 @@ class AccountServiceImplUnitTest {
 
         @BeforeEach
         void setUp(){
-            when(accountRepository.findById(anyLong())).thenAnswer(invo -> {
+            lenient().when(accountRepository.findById(anyLong())).thenAnswer(invo -> {
                 Optional<Account> accountOptional = Optional.empty();
                 if(invo.getArgument(0, Long.class) == 1L) accountOptional = givenAccountEntityAdmin();
                 return accountOptional;
             });
+        }
+
+        @Test
+        void testGetAll(){
+            when(accountRepository.findAll()).thenReturn(List.of(givenAccountEntityAdmin().orElseThrow(), givenAccountEntityUser().orElseThrow()));
+            List<AccountAdminResponseDto> expectedList = List.of((AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityAdmin().orElseThrow()), 
+                    (AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityUser().orElseThrow()));
+            assertEquals(expectedList, accountServiceImpl.getAll());
+            verify(accountRepository, times(1)).findAll();
         }
 
         @Test

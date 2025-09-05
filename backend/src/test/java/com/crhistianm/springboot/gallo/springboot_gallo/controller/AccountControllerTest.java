@@ -14,6 +14,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
@@ -91,6 +94,17 @@ public class AccountControllerTest {
                 if(invo.getArgument(0, Long.class) == 1L) return AccountMapper.entityToAdminResponse(givenAccountEntityAdmin().orElseThrow());
                 return AccountMapper.entityToResponse(givenAccountEntityUser().orElseThrow());
             });
+        }
+
+        @Test
+        void testViewAll() throws Exception {
+            when(accountService.getAll()).thenReturn(List.of((AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityAdmin().orElseThrow()), 
+                    (AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityUser().orElseThrow())));
+            mockMvc.perform(get("/api/accounts"))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[1].id").value(1L))
+                .andExpect(jsonPath("$[0].email").value("admin@gmail.com"))
+                .andExpect(jsonPath("$[1].email").value("user@gmail.com"));
         }
 
         @Test
