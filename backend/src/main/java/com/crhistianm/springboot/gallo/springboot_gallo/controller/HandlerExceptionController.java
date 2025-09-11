@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
 
 @RestControllerAdvice
 public class HandlerExceptionController {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class, ValidationServiceException.class})
     public ResponseEntity<?> handleValidationException(Exception ex){
         int status = HttpStatus.BAD_REQUEST.value();
         Map<String, String> errors = new HashMap<String, String>();
@@ -35,8 +36,15 @@ public class HandlerExceptionController {
             });;
             status = HttpStatus.FORBIDDEN.value();
         }
-
-
+        if(ex instanceof ValidationServiceException){
+            ValidationServiceException validationException = (ValidationServiceException) ex;
+            errors.put("date", new Date().toString());
+            validationException.getFieldErrors().stream().forEach(error ->{
+                errors.put("message", "the field " + error.getName() + " " + error.getErrorMessage());
+            });
+            errors.put("status", String.valueOf(HttpStatus.NOT_FOUND.value()));
+            errors.put("location", validationException.getMethodSourceName());
+        }
         return ResponseEntity.status(status).body(errors);
     }
 

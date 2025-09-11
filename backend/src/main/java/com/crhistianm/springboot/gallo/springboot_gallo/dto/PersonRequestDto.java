@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.CorrectGender;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.UniquePhoneNumber;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -26,7 +25,6 @@ public class PersonRequestDto {
     private String lastName;
 
     @NotBlank
-    @UniquePhoneNumber
     @Size(max = 16)
     private String phoneNumber;
 

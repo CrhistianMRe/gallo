@@ -19,22 +19,26 @@ public class PersonServiceImpl implements PersonService{
 
     private final PersonRepository personRepository;
 
-    public PersonServiceImpl(PersonRepository personRepository){
+    private final PersonValidationService personValidationService;
+
+    public PersonServiceImpl(PersonRepository personRepository, PersonValidationService personValidationService){
         this.personRepository = personRepository;
+        this.personValidationService = personValidationService;
     }
 
     @Transactional
     @Override
     public PersonResponseDto save(PersonRequestDto personDto) {
+        personValidationService.validateRequest(null, personDto);
         Person person = PersonMapper.requestToEntity(personDto);
         return PersonMapper.entityToResponse(personRepository.save(person));
-
     }
 
     @Transactional
     @Override
     public PersonResponseDto update(Long id, PersonRequestDto personDto) {
         if(personRepository.findById(id).isEmpty()) throw new NotFoundException(Person.class);
+        personValidationService.validateRequest(id, personDto);
             Person person = PersonMapper.requestToEntity(personDto);
             person.setId(id);
         return PersonMapper.entityToResponse(personRepository.save(person));
@@ -48,6 +52,7 @@ public class PersonServiceImpl implements PersonService{
             personRepository.delete(personOptional.orElseThrow());
         return PersonMapper.entityToResponse(personOptional.orElseThrow());
     }
+
     @Transactional(readOnly = true)
     @Override
     public PersonResponseDto getById(Long id) {
@@ -61,19 +66,6 @@ public class PersonServiceImpl implements PersonService{
     public List<PersonResponseDto> getAll() {
         List<PersonResponseDto> personList = personRepository.findAll().stream().map(p -> PersonMapper.entityToResponse(p)).collect(Collectors.toList());
         return personList;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public boolean isPhoneNumberAvailable(String phoneNumber) {
-        return !personRepository.existsByPhoneNumber(phoneNumber);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public boolean isPersonRegistered(Long personId) {
-        Optional<Person> optionalPerson = personRepository.findById(personId);
-        return optionalPerson.isPresent();
     }
 
     
