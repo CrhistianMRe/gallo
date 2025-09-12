@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
@@ -19,13 +20,26 @@ public class PersonValidationServiceImpl implements PersonValidationService{
 
     private final PersonRepository personRepository;
 
-    public PersonValidationServiceImpl(PersonRepository personRepository) {
+    private final IdentityVerificationService identityService;
+
+    public PersonValidationServiceImpl(PersonRepository personRepository, IdentityVerificationService identityService) {
         this.personRepository = personRepository;
+        this.identityService = identityService;
     }
 
     @Override
     public void validateRequest(Long pathPersonId, PersonRequestDto personDto) {
         List<FieldInfoError> fields = new ArrayList<>();
+        //If is null it is basically a create not update request so this validation is not activated
+        if(pathPersonId != null && (!identityService.isAdminAuthority() && !identityService.isUserPersonEntityAllowed(pathPersonId))){
+            fields.add(new FieldInfoErrorBuilder()
+                    .name("path id")
+                    .value(pathPersonId)
+                    .type(pathPersonId.getClass())
+                    .ownerClass(PersonRequestDto.class)
+                    .errorMessage("is not allowed for this user!")
+                    .build());
+        }
         if(!isPhoneNumberAvailable(pathPersonId, personDto.getPhoneNumber())){
             fields.add(FieldInfoErrorMapper.classTargetToFieldInfo(personDto, "phoneNumber", "is already registered, user another one"));
         }
