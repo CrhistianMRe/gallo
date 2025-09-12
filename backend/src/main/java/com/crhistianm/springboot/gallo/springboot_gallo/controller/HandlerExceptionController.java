@@ -41,9 +41,9 @@ public class HandlerExceptionController {
             ValidationServiceException validationException = (ValidationServiceException) ex;
             errors.put("date", new Date().toString());
             validationException.getFieldErrors().stream().forEach(error ->{
-                errors.put(error.getName() + " ", "the field " + error.getName() + " " + error.getErrorMessage());
+                errors.put(error.getName(), "the field " + error.getName() + " " + error.getErrorMessage());
             });
-            errors.put("status", String.valueOf(HttpStatus.NOT_FOUND.value()));
+            errors.put("status", String.valueOf(HttpStatus.BAD_REQUEST.value()));
             errors.put("location", validationException.getMethodSourceName());
         }
         return ResponseEntity.status(status).body(errors);
