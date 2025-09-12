@@ -1,11 +1,5 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
-
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.AdminRequired;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.PersonNotAssigned;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.PersonRegistered;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.UniqueEmail;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,19 +8,15 @@ import jakarta.validation.constraints.NotNull;
 public class AccountRequestDto{
 
     @NotNull
-    @PersonNotAssigned
-    @PersonRegistered
     private Long personId;
 
     @NotBlank
-    @UniqueEmail
     @Email
     private String email;
 
     @NotBlank
     private String password;
 
-    @AdminRequired
     private boolean admin;
 
     public AccountRequestDto() {
