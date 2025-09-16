@@ -1,5 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenFieldInfoErrorOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenFieldInfoErrorTwo;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrlTemplate;
@@ -13,10 +15,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.annotation.Testable;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -30,7 +34,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
+import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 
 
 @WebMvcTest(HandlerExceptionControllerTest.TestExceptionController.class)
@@ -118,6 +125,23 @@ public class HandlerExceptionControllerTest {
             .andExpect(jsonPath("$.message").value("Object not found"))
             .andExpect(jsonPath("$.status").value("404"))
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldHandleValidationServiceException() throws Exception {
+        List<FieldInfoError> fields = new ArrayList<>();
+        fields.add(givenFieldInfoErrorOne().orElseThrow());
+        fields.add(givenFieldInfoErrorTwo().orElseThrow());
+
+        testController = new TestExceptionController(new ValidationServiceException("test", "somethingthatdoesntmakesense", fields));
+
+        mockmvc = MockMvcBuilders.standaloneSetup(testController).setControllerAdvice(HandlerExceptionController.class).build();
+
+        mockmvc.perform(get("/exception"))
+            .andExpect(jsonPath("$.test1").value("the field test1 test error message 1"))
+            .andExpect(jsonPath("$.test2").value("the field test2 test error message 2"))
+            .andExpect(jsonPath("$.status").value(String.valueOf(HttpStatus.BAD_REQUEST.value())))
+            .andExpect(jsonPath("$.location").value("method name not found"));
     }
 
 
