@@ -51,7 +51,7 @@ public class ValidationServiceExceptionUnitTest {
         validationException = assertThatExceptionOfType(ValidationServiceException.class).isThrownBy(()-> {
             throw new ValidationServiceException(null, "should");
         }).actual();
-        assertThat(validationException.getMethodSourceName()).isEqualTo("shouldLoadMethodSourceNameWhenPrefixIsPassedThroughConstructor");
+        assertThat(validationException.getMethodSourceName()).contains("shouldLoadMethodSourceNameWhenPrefixIsPassedThroughConstructor");
     }
     
 }

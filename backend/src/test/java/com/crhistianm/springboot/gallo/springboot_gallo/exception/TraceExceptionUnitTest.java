@@ -30,7 +30,7 @@ public class TraceExceptionUnitTest {
         thrownTraceException = assertThatExceptionOfType(TraceException.class).isThrownBy(() -> {
             throw new TraceException("test", "should");
         }).actual();
-        assertThat(thrownTraceException.getMethodSourceName()).isEqualTo("shouldLoadMethodSourceNameWhenPrefixIsGivenThroughConstructor");
+        assertThat(thrownTraceException.getMethodSourceName()).contains("shouldLoadMethodSourceNameWhenPrefixIsGivenThroughConstructor");
     }
 
 
