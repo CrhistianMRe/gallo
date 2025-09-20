@@ -33,6 +33,9 @@ public class PersonServiceImplUnitTest {
     @Mock
     PersonRepository personRepository;
 
+    @Mock
+    PersonValidationService personValidationService;
+
     @InjectMocks
     PersonServiceImpl personServiceImpl;
 
@@ -45,64 +48,6 @@ public class PersonServiceImplUnitTest {
             when(personRepository.save(any(Person.class))).thenReturn(new PersonBuilder().build());
             personServiceImpl.save(givenPersonRequestDtoOne().orElseThrow());
             verify(personRepository, times(1)).save(any(Person.class));
-        }
-
-    }
-
-    @Nested
-    class ValidationModuleTest{
-
-        @Nested
-        class IsPhoneNumberAvailableTest{
-
-            @BeforeEach
-            void setUp(){
-                //return true just on that number
-                when(personRepository.existsByPhoneNumber(anyString())).thenAnswer(invo -> {
-                    return invo.getArgument(0).equals("1122334455");
-                });
-            }
-
-            @Test
-            void testNotAvailable(){
-                assertFalse(personServiceImpl.isPhoneNumberAvailable("1122334455"));
-                verify(personRepository, times(1)).existsByPhoneNumber(anyString());
-            }
-
-            @Test
-            void testAvailable(){
-                assertTrue(personServiceImpl.isPhoneNumberAvailable("4455667788"));
-                verify(personRepository, times(1)).existsByPhoneNumber(anyString());
-            }
-
-
-        }
-
-        @Nested
-        class IsPersonRegisteredTest{
-
-            @BeforeEach
-            void setUp(){
-                when(personRepository.findById(anyLong())).thenAnswer(invo ->{
-                    Optional<Person> person = Optional.empty();
-                    if(invo.getArgument(0, Long.class) == 1L){
-                        person = Optional.of(PersonMapper.requestToEntity(givenPersonRequestDtoOne().orElseThrow()));
-                    }
-                    return person; 
-                });
-            }
-
-            @Test
-            void testNotRegistered(){
-                assertFalse(personServiceImpl.isPersonRegistered(2L));
-                verify(personRepository, times(1)).findById(anyLong());
-            }
-
-            @Test
-            void testRegistered(){
-                assertTrue(personServiceImpl.isPersonRegistered(1L));
-                verify(personRepository, times(1)).findById(anyLong());
-            }
         }
 
     }

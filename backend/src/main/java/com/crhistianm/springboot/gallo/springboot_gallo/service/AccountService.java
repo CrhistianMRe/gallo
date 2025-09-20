@@ -11,8 +11,6 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 
 public interface AccountService {
 
-    AccountResponseDto settleResponseType(Account account);
-
     AccountResponseDto save(AccountRequestDto accountDto);
 
     AccountResponseDto update(Long id, AccountUpdateRequestDto accountDto);
@@ -20,8 +18,5 @@ public interface AccountService {
     AccountResponseDto getById(Long id);
 
     List<AccountAdminResponseDto> getAll();
-    
-    boolean isEmailAvailable(String email);
 
-    boolean isPersonIdAssigned(Long personId);
 }

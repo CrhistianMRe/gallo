@@ -46,13 +46,6 @@ public class AccountRequestDtoAnnotationTest{
 
     Set<ConstraintViolation<AccountRequestDto>> violations;
 
-    @BeforeEach
-    void setUp(){
-            //To avoid message general validations until is needed
-            lenient().when(personService.isPersonRegistered(anyLong())).thenReturn(true);
-            lenient().when(personService.isPhoneNumberAvailable(anyString())).thenReturn(true);
-            lenient().when(accountService.isEmailAvailable(anyString())).thenReturn(true);
-    }
 
     @Nested
     class PersonIdFieldTest{
@@ -78,39 +71,6 @@ public class AccountRequestDtoAnnotationTest{
             assertThat(violations).hasSize(0);
         }
 
-        @Test
-        void testInvalidPersonNotAssigned(){
-            when(accountService.isPersonIdAssigned(anyLong())).thenReturn(true);
-            violations = validator.validate(account);
-            assertFalse(violations.isEmpty());
-            assertThat(violations).hasSize(1);
-            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("is already assigned to an account, please use another one");
-        }
-
-        @Test
-        void testValidPersonNotAssigned(){
-            when(accountService.isPersonIdAssigned(anyLong())).thenReturn(false);
-            violations = validator.validate(account);
-            assertTrue(violations.isEmpty());
-            assertThat(violations).hasSize(0);
-        }
-
-        @Test
-        void testInvalidPersonRegistered(){
-            when(personService.isPersonRegistered(anyLong())).thenReturn(false);
-            violations = validator.validate(account);
-            assertFalse(violations.isEmpty());
-            assertThat(violations).hasSize(1);
-            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("is not registered yet, register person first");
-        }
-        
-        @Test
-        void testValidPersonRegistered(){
-            when(personService.isPersonRegistered(anyLong())).thenReturn(true);
-            violations = validator.validate(account);
-            assertTrue(violations.isEmpty());
-            assertThat(violations).hasSize(0);
-        }
     }
 
     @Nested
@@ -132,22 +92,6 @@ public class AccountRequestDtoAnnotationTest{
 
         @Test
         void testValidNotBlank(){
-            violations = validator.validate(account);
-            assertTrue(violations.isEmpty());
-            assertThat(violations).hasSize(0);
-        }
-
-        @Test
-        void testInvalidUniqueEmail(){
-            when(accountService.isEmailAvailable(anyString())).thenReturn(false);
-            violations = validator.validate(account);
-            assertFalse(violations.isEmpty());
-            assertThat(violations).hasSize(1);
-            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("is already registered, user another one!");
-        }
-
-        @Test
-        void testValidUniqueEmail(){
             violations = validator.validate(account);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -197,39 +141,5 @@ public class AccountRequestDtoAnnotationTest{
 
     }
 
-    @Nested
-    class AdminFieldTest{
 
-        @BeforeEach
-        void setUp(){
-            account = givenAdminAccountRequestDto().orElseThrow();
-        }
-
-        @Test
-        void testInvalidAdminRequired(){
-            violations = validator.validate(account);
-            assertFalse(violations.isEmpty());
-            assertThat(violations).hasSize(1);
-            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("requires an admin user!");
-        }
-
-        @Test
-        void testValidAdminRequired(){
-            Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN"));
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("example@gmail.com", null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            violations = validator.validate(account);
-            assertTrue(violations.isEmpty());
-            assertThat(violations).hasSize(0);
-            SecurityContextHolder.clearContext();
-        }
-
-
-    }
-
-    
-
-
-    
 }

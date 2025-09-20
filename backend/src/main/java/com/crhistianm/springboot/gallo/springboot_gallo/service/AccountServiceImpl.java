@@ -36,24 +36,21 @@ public class AccountServiceImpl implements AccountService{
 
     private final PasswordEncoder passwordEncoder;
 
-    private final IdentityVerificationService identityService;
+    private final AccountValidationService validationService;
 
-    public AccountServiceImpl(AccountRepository accountRepository, PersonRepository personRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, IdentityVerificationService identityService){
+    public AccountServiceImpl(AccountRepository accountRepository, PersonRepository personRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AccountValidationService validationService){
         this.accountRepository = accountRepository;
         this.personRepository = personRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.identityService = identityService;
-    }
-
-    public AccountResponseDto settleResponseType(Account account){
-        if(identityService.isAdminAuthority()) return AccountMapper.entityToAdminResponse(account);
-        return AccountMapper.entityToResponse(account);
+        this.validationService = validationService;
     }
 
     @Transactional
     @Override
     public AccountResponseDto save(AccountRequestDto accountDto) {
+        validationService.validateRequest(accountDto);
+
         Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
 
         System.out.println(accountDto);
@@ -71,10 +68,9 @@ public class AccountServiceImpl implements AccountService{
         if (accountDto.isAdmin()){
             Optional<Role> optionalRoleAdmin = roleRepository.findByName("ROLE_ADMIN");
             optionalRoleAdmin.ifPresent(account::addRole);
-            return AccountMapper.entityToAdminResponse(accountRepository.save(account));
         }
 
-        return AccountMapper.entityToResponse(accountRepository.save(account));
+        return validationService.settleResponseType(accountRepository.save(account));
     }
 
     @Transactional
@@ -95,7 +91,7 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public AccountResponseDto getById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
-        return settleResponseType(account);
+        return validationService.settleResponseType(account);
     }
 
     @Override
@@ -105,17 +101,4 @@ public class AccountServiceImpl implements AccountService{
         return accountList;
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public boolean isEmailAvailable(String email) {
-        return !accountRepository.existsByEmail(email);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public boolean isPersonIdAssigned(Long personId){
-        Optional<Account> accountOptional = accountRepository.findAccountByPersonId(personId);
-        return accountOptional.isPresent();
-    }
-    
 }

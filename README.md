@@ -1,4 +1,7 @@
-# Gallo
+# Gallo [![wakatime](https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/d07694b7-06a4-40b5-b960-96c684a72f65.svg)](https://wakatime.com/@CrhistianMRe/projects/oisgwqpmpc?start=2025-09-03&end=2025-09-09)
+
+
+
 
 ## Description
 Gallo is a multi-platform system composed of a backend REST API, a JavaFX desktop application, and an Android mobile client. All components communicate through a secure REST interface. The backend is built with Spring Boot and uses MariaDB, while both frontend clients consume the API. The project also includes a comprehensive testing strategy using JUnit and Mockito, with continuous integration workflows managed through GitHub Actions.

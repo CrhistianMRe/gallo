@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.SelfDataTransaction;
 
 import jakarta.validation.Valid;
 
@@ -39,17 +37,17 @@ public class PersonController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<?> viewById(@SelfDataTransaction(targetClass = Person.class) @PathVariable Long id) {
+    public ResponseEntity<?> viewById(@PathVariable Long id) {
          return ResponseEntity.ok(personService.getById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@SelfDataTransaction(targetClass = Person.class) @PathVariable Long id, @Valid @RequestBody PersonRequestDto person){
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody PersonRequestDto person){
         return ResponseEntity.ok(personService.update(id, person));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<PersonResponseDto> delete(@SelfDataTransaction(targetClass = Person.class) @PathVariable Long id){
+    public ResponseEntity<PersonResponseDto> delete(@PathVariable Long id){
         return ResponseEntity.ok(personService.delete(id));
     }
 
