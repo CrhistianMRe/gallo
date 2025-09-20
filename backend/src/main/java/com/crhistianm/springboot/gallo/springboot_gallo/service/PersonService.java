@@ -18,12 +18,5 @@ public interface PersonService {
 
     List<PersonResponseDto> getAll();
 
-    boolean isPhoneNumberAvailable(String phoneNumber);
-
-    boolean isPersonRegistered(Long personId);
-
-
-
-
 }
 

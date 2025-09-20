@@ -18,6 +18,8 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
+import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
 
 public class Data {
 
@@ -138,4 +140,37 @@ public class Data {
                 .build());
     }
 
+    public static Optional<FieldInfoError> givenFieldInfoErrorOne(){
+        return Optional.of(new FieldInfoErrorBuilder()
+                    .name("test1")
+                    .value("testvalue1")
+                    .type(String.class)
+                    .ownerClass(String.class)
+                    .errorMessage("test error message 1")
+                    .build());
+    }
+
+    public static Optional<FieldInfoError> givenFieldInfoErrorTwo(){
+            return Optional.of(new FieldInfoErrorBuilder()
+                    .name("test2")
+                    .value(2L)
+                    .type(Long.class)
+                    .ownerClass(Long.class)
+                    .errorMessage("test error message 2")
+                    .build());
+    }
+
+    public static class SampleClass{
+
+        private Long testObjectLong;
+
+        private boolean testPrimitiveBoolean;
+
+        private int testPrimitiveInt;
+
+        private String testObjectString;
+
+        private Boolean testObjectBoolean;
+    
+    }
 }

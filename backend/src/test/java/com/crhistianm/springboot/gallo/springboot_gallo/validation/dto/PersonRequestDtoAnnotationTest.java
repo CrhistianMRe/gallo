@@ -4,9 +4,6 @@ import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPe
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -36,12 +33,6 @@ public class PersonRequestDtoAnnotationTest {
 
     @MockitoBean
     private PersonServiceImpl personService;
-
-    @BeforeEach
-    void setUp(){
-        //To avoid wrong validation type on tests
-        lenient().when(personService.isPhoneNumberAvailable(anyString())).thenReturn(true);
-    }
 
     @Nested
     class FirstNameFieldTest{
@@ -146,22 +137,6 @@ public class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidNotBlank(){
-            violations = validator.validate(person);
-            assertTrue(violations.isEmpty());
-            assertThat(violations).hasSize(0);
-        }
-
-        @Test
-        void testInvalidUniquePhoneNumber(){
-            when(personService.isPhoneNumberAvailable(anyString())).thenReturn(false);
-            violations = validator.validate(person);
-            assertFalse(violations.isEmpty());
-            assertThat(violations).hasSize(1);
-            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("is already registered, use another phone number");
-        }
-
-        @Test
-        void testValidUniquePhoneNumber(){
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);

@@ -18,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.RoleBuilder;
+
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
@@ -42,6 +44,9 @@ class AccountServiceImplUnitTest {
     AccountRepository accountRepository;
 
     @Mock
+    AccountValidationService accountValidationService;
+
+    @Mock
     RoleRepository roleRepository;
 
     @Mock
@@ -51,28 +56,8 @@ class AccountServiceImplUnitTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
-    @Mock
-    IdentityVerificationServiceImpl identityService;
-
     @InjectMocks
     AccountServiceImpl accountServiceImpl;
-
-    @Nested
-    class SettleResponseTypeTest{
-
-        @Test
-        void testResponseAdmin() {
-            when(identityService.isAdminAuthority()).thenReturn(true);
-            assertTrue(accountServiceImpl.settleResponseType(givenAccountEntityAdmin().orElseThrow()) instanceof AccountAdminResponseDto);
-        }
-
-        @Test
-        void testResponseUser() {
-            when(identityService.isAdminAuthority()).thenReturn(false);
-            assertTrue(accountServiceImpl.settleResponseType(givenAccountEntityAdmin().orElseThrow()) instanceof AccountUserResponseDto);
-        }
-
-    }
 
     @Nested
     class ViewModuleTest{
@@ -105,6 +90,9 @@ class AccountServiceImplUnitTest {
 
         @Test
         void testGetById(){
+            when(accountValidationService.settleResponseType(any(Account.class))).thenAnswer(invo ->
+                    AccountMapper.entityToAdminResponse(invo.getArgument(0,Account.class)));
+
             assertEquals("admin@gmail.com", accountServiceImpl.getById(1L).getEmail());
             verify(accountRepository, times(1)).findById(anyLong());
         }
@@ -125,6 +113,13 @@ class AccountServiceImplUnitTest {
                         .id(1L)
                         .build()));
             when(accountRepository.save(any())).thenAnswer(arg -> arg.getArgument(0));
+            when(accountValidationService.settleResponseType(any(Account.class))).thenAnswer(invo ->{
+                Account account = invo.getArgument(0, Account.class);
+                if(account.getRoles().stream().filter(role -> role.getName().equals("ROLE_ADMIN")).findFirst().isPresent()){
+                    return AccountMapper.entityToAdminResponse(account);
+                }
+                return AccountMapper.entityToResponse(account);
+            });
         }
 
         @DisplayName("Testing role user assignment")
@@ -145,12 +140,10 @@ class AccountServiceImplUnitTest {
             when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(givenRoleAdmin());
             AccountRequestDto accountAdminDto = givenAdminAccountRequestDto().orElseThrow();
 
-            AccountResponseDto accountResponseDto = accountServiceImpl.save(accountAdminDto);
+            AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountAdminDto);
 
-            AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountResponseDto;
 
             //Both roles
-            assertTrue(accountResponseDto instanceof AccountAdminResponseDto);
             assertEquals(Arrays.asList(givenRoleResponseDtoUser().orElseThrow(), givenRoleResponseDtoAdmin().orElseThrow()), accountAdminResponseDto.getRoles());
             verify(roleRepository, times(2)).findByName(anyString());
         }
@@ -158,8 +151,9 @@ class AccountServiceImplUnitTest {
         @DisplayName("Testing service person assignment")
         @Test
         void testAssignPerson(){
+            when(roleRepository.findByName("ROLE_USER")).thenReturn(givenRoleUser());
+            when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(givenRoleAdmin());
             AccountRequestDto accountCreateDto = givenAdminAccountRequestDto().orElseThrow();
-
 
             AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountCreateDto);
             PersonResponseDto answer = PersonMapper.entityToResponse(PersonMapper.requestToEntity(givenPersonRequestDtoOne().orElseThrow()));
@@ -171,63 +165,6 @@ class AccountServiceImplUnitTest {
         }
 
     }
-
-    @Nested
-    class ValidationModuleTest{
-
-        @Nested
-        class IsEmailAvailableTest{
-
-            @BeforeEach
-            void setUp(){
-                when(accountRepository.existsByEmail(anyString())).thenAnswer(invo -> {
-                    return invo.getArgument(0).equals("came.29meca@gmail.com");
-                });
-
-            }
-
-            @Test
-            void testAvailable(){
-                assertFalse(accountServiceImpl.isEmailAvailable("came.29meca@gmail.com"));
-                verify(accountRepository, times(1)).existsByEmail(anyString());
-            }
-
-            @Test
-            void testNotAvailable(){
-                assertTrue(accountServiceImpl.isEmailAvailable("example@gmail.com"));
-                verify(accountRepository, times(1)).existsByEmail(anyString());
-            }
-
-        }
-
-        @Nested
-        class IsPersonIdAssignedTest{
-
-            @BeforeEach
-            void setUp(){
-                when(accountRepository.findAccountByPersonId(anyLong())).thenAnswer(invo ->{
-                    Optional<Account> account = Optional.empty();
-                    if(invo.getArgument(0, Long.class) == 1L) account = Optional.of(AccountMapper.requestToEntity(givenUserAccountRequestDto().orElseThrow()));
-                    return account;
-                });
-            }
-
-            @Test
-            void testNotAssigned(){
-                assertFalse(accountServiceImpl.isPersonIdAssigned(2L));
-                verify(accountRepository, times(1)).findAccountByPersonId(anyLong());
-            }
-
-            @Test
-            void testAssigned(){
-                assertTrue(accountServiceImpl.isPersonIdAssigned(1L));
-                verify(accountRepository, times(1)).findAccountByPersonId(anyLong());
-            }
-
-        }
-
-    }
-
 
 
 

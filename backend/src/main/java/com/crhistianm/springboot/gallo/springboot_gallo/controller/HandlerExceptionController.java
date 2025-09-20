@@ -3,6 +3,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -14,14 +15,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
 
 @RestControllerAdvice
 public class HandlerExceptionController {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class, ValidationServiceException.class})
     public ResponseEntity<?> handleValidationException(Exception ex){
         int status = HttpStatus.BAD_REQUEST.value();
-        Map<String, String> errors = new HashMap<String, String>();
+        Map<String, String> errors = new LinkedHashMap<String, String>();
         if(ex instanceof MethodArgumentNotValidException){
             MethodArgumentNotValidException notValidException = (MethodArgumentNotValidException) ex;
             notValidException.getBindingResult().getFieldErrors().forEach(error -> {
@@ -35,8 +37,15 @@ public class HandlerExceptionController {
             });;
             status = HttpStatus.FORBIDDEN.value();
         }
-
-
+        if(ex instanceof ValidationServiceException){
+            ValidationServiceException validationException = (ValidationServiceException) ex;
+            errors.put("date", new Date().toString());
+            validationException.getFieldErrors().stream().forEach(error ->{
+                errors.put(error.getName(), "the field " + error.getName() + " " + error.getErrorMessage());
+            });
+            errors.put("status", String.valueOf(HttpStatus.BAD_REQUEST.value()));
+            errors.put("location", validationException.getMethodSourceName());
+        }
         return ResponseEntity.status(status).body(errors);
     }
 
