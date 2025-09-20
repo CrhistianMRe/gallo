@@ -223,5 +223,22 @@
       </plugins>
     </build>
   </profile>
+
+  <profile>
+    <id>mapper-tests</id>
+    <build>
+      <plugins>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <includes>
+              <include>**/mapper/*Test.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+
 </profiles>
 </project>
