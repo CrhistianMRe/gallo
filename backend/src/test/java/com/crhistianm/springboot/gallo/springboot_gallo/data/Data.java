@@ -160,4 +160,17 @@ public class Data {
                     .build());
     }
 
+    public static class SampleClass{
+
+        private Long testObjectLong;
+
+        private boolean testPrimitiveBoolean;
+
+        private int testPrimitiveInt;
+
+        private String testObjectString;
+
+        private Boolean testObjectBoolean;
+    
+    }
 }
