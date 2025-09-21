@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.dto;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonRequestDtoOne;
 import static org.assertj.core.api.Assertions.assertThat;

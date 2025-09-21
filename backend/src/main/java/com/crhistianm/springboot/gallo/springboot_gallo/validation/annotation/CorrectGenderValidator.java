@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation;
+package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation;
 
 import org.springframework.stereotype.Component;
 
