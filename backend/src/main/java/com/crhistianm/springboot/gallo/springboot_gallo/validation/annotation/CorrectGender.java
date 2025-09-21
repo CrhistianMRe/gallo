@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation;
+package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
