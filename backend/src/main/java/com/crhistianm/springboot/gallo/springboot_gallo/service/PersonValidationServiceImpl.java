@@ -1,16 +1,13 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.FieldInfoErrorMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
@@ -20,30 +17,26 @@ public class PersonValidationServiceImpl implements PersonValidationService{
 
     private final PersonRepository personRepository;
 
-    private final IdentityVerificationService identityService;
-
-    public PersonValidationServiceImpl(PersonRepository personRepository, IdentityVerificationService identityService) {
+    public PersonValidationServiceImpl(PersonRepository personRepository) {
         this.personRepository = personRepository;
-        this.identityService = identityService;
     }
 
     @Override
-    public void validateRequest(Long pathPersonId, PersonRequestDto personDto) {
-        List<FieldInfoError> fields = new ArrayList<>();
-        //If is null it is basically a create not update request so this validation is not activated
-        if(pathPersonId != null && (!identityService.isAdminAuthority() && !identityService.isUserPersonEntityAllowed(pathPersonId))){
-            fields.add(new FieldInfoErrorBuilder()
-                    .name("path id")
-                    .value(pathPersonId)
-                    .type(pathPersonId.getClass())
-                    .ownerClass(PersonRequestDto.class)
-                    .errorMessage("is not allowed for this user!")
-                    .build());
-        }
+    public Optional<FieldInfoError> validateUniquePhoneNumber(Long pathPersonId, PersonRequestDto personDto){
+        FieldInfoError field = null;
         if(!isPhoneNumberAvailable(pathPersonId, personDto.getPhoneNumber())){
-            fields.add(FieldInfoErrorMapper.classTargetToFieldInfo(personDto, "phoneNumber", "is already registered, user another one"));
+            field = FieldInfoErrorMapper.classTargetToFieldInfo(personDto, "phoneNumber", "is already registered, user another one");
         }
-        if(!fields.isEmpty()) throw new ValidationServiceException(fields);
+        return Optional.ofNullable(field);
+    }
+
+    @Override
+    public Optional<FieldInfoError> validatePersonRegistered(AccountRequestDto accountDto){
+        FieldInfoError field = null;
+        if(!isPersonRegistered(accountDto.getPersonId())) {
+            field = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, "personId", "is not registered, register first!");
+        }
+        return Optional.ofNullable(field);
     }
 
     @Transactional(readOnly = true)
