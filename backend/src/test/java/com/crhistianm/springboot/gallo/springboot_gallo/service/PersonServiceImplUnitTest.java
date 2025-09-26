@@ -25,10 +25,14 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.PersonValidator;
 
 
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceImplUnitTest {
+
+    @Mock
+    PersonValidator personValidator;
 
     @Mock
     PersonRepository personRepository;
