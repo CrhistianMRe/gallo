@@ -5,9 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyChar;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
@@ -33,7 +36,6 @@ import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponse
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
 import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
 
@@ -42,7 +44,7 @@ public class AccountValidationServiceUnitTest {
 
     @Mock
     AccountRepository accountRepository;
-    
+
     @Mock
     IdentityVerificationService identityService;
 
@@ -55,6 +57,94 @@ public class AccountValidationServiceUnitTest {
     @Spy
     @InjectMocks
     AccountValidationServiceImpl spyAccountValidationService;
+
+    @Nested
+    class ValidatePersonAssignedMethodTest {
+
+        AccountRequestDto accountRequestDto;
+
+        FieldInfoError field;
+
+        @BeforeEach
+        void setUp(){
+            accountRequestDto = new AccountRequestDto();
+            doAnswer(invo -> {
+                return !invo.getArgument(1, Long.class).equals(1L);
+            }).when(spyAccountValidationService).isPersonIdAssigned(isNull(), anyLong());
+        }
+
+        @Test
+        void returnsOptionalFieldInfoError(){
+            accountRequestDto.setPersonId(2L);
+            Optional<FieldInfoError> fieldOptional;
+
+            fieldOptional = spyAccountValidationService.validatePersonAssigned(accountRequestDto);
+
+            assertThat(fieldOptional).isNotEmpty();
+
+            field = fieldOptional.orElseThrow();
+
+            assertThat(field.getName()).isEqualTo("personId");
+            assertThat(field.getType()).isEqualTo(Long.class);
+            assertThat(field.getValue()).isEqualTo(2L);
+            assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
+            assertThat(field.getErrorMessage()).isEqualTo("is already assigned, use another person!");
+
+            verify(spyAccountValidationService, times(1)).validatePersonAssigned(any(AccountRequestDto.class));
+
+        }
+
+        @Test
+        void returnsEmptyOptionalFieldInfoError(){
+            Optional<FieldInfoError> fieldOptional;
+            accountRequestDto.setPersonId(1L);
+            fieldOptional = spyAccountValidationService.validatePersonAssigned(accountRequestDto);
+            assertThat(fieldOptional).isEmpty();
+        }
+
+    }
+
+    @Nested
+    class ValidateUniqueEmailMethodTest {
+
+        AccountRequestDto accountRequestDto;
+
+        FieldInfoError field;
+
+        @BeforeEach
+        void setUp() {
+            accountRequestDto = new AccountRequestDto();
+            doAnswer(invo -> {
+                return invo.getArgument(1, String.class).equals("example@gmail.com");
+            }).when(spyAccountValidationService).isEmailAvailable(anyLong(), anyString());
+        }
+
+        @Test
+        void returnsOptionalFieldInfoError() {
+            accountRequestDto.setEmail("invalid@gmail.com");
+            Optional<FieldInfoError> fieldOptional;
+            fieldOptional = spyAccountValidationService.validateUniqueEmail(2L, accountRequestDto);
+
+            assertThat(fieldOptional).isNotEmpty();
+            field = fieldOptional.orElseThrow();
+
+            assertThat(field.getName()).isEqualTo("email");
+            assertThat(field.getValue()).isEqualTo("invalid@gmail.com");
+            assertThat(field.getType()).isEqualTo(String.class);
+            assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
+            assertThat(field.getErrorMessage()).isEqualTo("is not available, user another one!");
+            verify(spyAccountValidationService).isEmailAvailable(anyLong(), anyString());
+        }
+
+        @Test
+        void returnsEmptyOptionalFieldInfoError() {
+            accountRequestDto.setEmail("example@gmail.com");
+            Optional<FieldInfoError> fieldOptional;
+            fieldOptional = spyAccountValidationService.validateUniqueEmail(2L, accountRequestDto);
+            assertThat(fieldOptional).isEmpty();
+        }
+
+    }
 
     @Nested
     class SettleResponseTypeTest {
@@ -72,6 +162,7 @@ public class AccountValidationServiceUnitTest {
         }
 
     }
+
 
     @Nested
     class IsEmailAvailableTest {
@@ -134,6 +225,7 @@ public class AccountValidationServiceUnitTest {
             } 
 
         }
+    }
 
         @Nested
         class IsPersonIdAssignedTest {
@@ -166,6 +258,7 @@ public class AccountValidationServiceUnitTest {
 
             }
 
+            
             @Nested
             class UpdateRequestTest {
 
@@ -198,199 +291,8 @@ public class AccountValidationServiceUnitTest {
 
             }
 
-            @Nested
-            class ValidateRequestTest {
-
-                AccountRequestDto requestDto;
-
-                List<FieldInfoError> fields;
-
-                @BeforeEach
-                void setUp(){
-                    //nothing adds error 
-                    requestDto = new AccountRequestDto();
-                    fields = new ArrayList<>();
-                    requestDto.setPersonId(1L); 
-                    requestDto.setEmail("example@gmail.com"); 
-                    lenient().doAnswer(invo ->{
-                        return invo.getArgument(0, Long.class).equals(1L);
-                    }).when(personValidationService).isPersonRegistered(anyLong());
-                    lenient().doAnswer(invo -> {
-                        return !invo.getArgument(1, Long.class).equals(1L);
-                    }).when(spyAccountValidationService).isPersonIdAssigned(isNull(), anyLong());
-                    lenient().doAnswer(invo -> {
-                        return invo.getArgument(1, String.class).equals("example@gmail.com");
-                    }).when(spyAccountValidationService).isEmailAvailable(isNull(), anyString());
-                }
-
-                @Test
-                void shouldNotThrowExceptionWhenFieldsInfoErrorIsEmpty(){
-                    assertDoesNotThrow(() -> spyAccountValidationService.validateRequest(requestDto));
-                    verify(personValidationService, times(1)).isPersonRegistered(anyLong());
-                    verify(spyAccountValidationService, times(1)).isPersonIdAssigned(isNull(), anyLong());
-                    verify(spyAccountValidationService, times(1)).isEmailAvailable(isNull(), anyString());
-                    verify(identityService, times(0)).isAdminAuthority();
-                }
-
-                @Test
-                void shouldThrowExceptionWhenAllConditionsAreMet(){
-                    doReturn(false).when(identityService).isAdminAuthority();
-                    requestDto.setPersonId(2L);
-                    requestDto.setEmail("badexample@gmail.com");
-                    requestDto.setAdmin(true);
-
-                    fields = assertThatExceptionOfType(ValidationServiceException.class)
-                        .isThrownBy(() -> {
-                            spyAccountValidationService.validateRequest(requestDto);
-                        }).actual().getFieldErrors();
-
-                    verify(personValidationService, times(1)).isPersonRegistered(anyLong());
-                    verify(spyAccountValidationService, times(1)).isPersonIdAssigned(isNull(), anyLong());
-                    verify(spyAccountValidationService, times(1)).isEmailAvailable(isNull(), anyString());
-                    verify(identityService, times(1)).isAdminAuthority();
-
-                    assertThat(fields).hasSize(4);
-
-                    FieldInfoError fieldRegistered = fields.stream().filter(error -> error.getErrorMessage().contains("registered")).findFirst().orElseThrow();
-                    FieldInfoError fieldAssigned = fields.stream().filter(error -> error.getErrorMessage().contains("assigned")).findFirst().orElseThrow();
-                    FieldInfoError fieldEmail = fields.stream().filter(error -> error.getErrorMessage().contains("available")).findFirst().orElseThrow();
-                    FieldInfoError fieldAdmin = fields.stream().filter(error -> error.getErrorMessage().contains("admin")).findFirst().orElseThrow();
-
-                    //field registered
-                    assertThat(fieldRegistered.getName()).isEqualTo("personId");
-                    assertThat(fieldRegistered.getOwnerClass()).isEqualTo(AccountRequestDto.class);
-                    assertThat(fieldRegistered.getErrorMessage()).isEqualTo("is not registered, register first!");
-                    assertThat(fieldRegistered.getType()).isEqualTo(Long.class);
-                    assertThat(fieldRegistered.getValue()).isEqualTo(2L);
-
-                    //field assigned
-                    assertThat(fieldAssigned.getName()).isEqualTo("personId");
-                    assertThat(fieldAssigned.getOwnerClass()).isEqualTo(AccountRequestDto.class);
-                    assertThat(fieldAssigned.getErrorMessage()).isEqualTo("is already assigned, use another person!");
-                    assertThat(fieldAssigned.getType()).isEqualTo(Long.class);
-                    assertThat(fieldAssigned.getValue()).isEqualTo(2L);
-
-                    //field email
-                    assertThat(fieldEmail.getName()).isEqualTo("email");
-                    assertThat(fieldEmail.getOwnerClass()).isEqualTo(AccountRequestDto.class);
-                    assertThat(fieldEmail.getErrorMessage()).isEqualTo("is not available, user another one!");
-                    assertThat(fieldEmail.getType()).isEqualTo(String.class);
-                    assertThat(fieldEmail.getValue()).isEqualTo("badexample@gmail.com");
-
-                    //field admin
-                    assertThat(fieldAdmin.getName()).isEqualTo("admin");
-                    assertThat(fieldAdmin.getOwnerClass()).isEqualTo(AccountRequestDto.class);
-                    assertThat(fieldAdmin.getErrorMessage()).isEqualTo("requires an admin user!");
-                    assertThat(fieldAdmin.getType()).isPrimitive();
-                    assertThat(String.valueOf(fieldAdmin.getType())).isEqualTo("boolean");
-                    assertThat(fieldAdmin.getValue()).isEqualTo(true);
-                }
-
-                @Test
-                void shouldThrowExceptionWhenPersonIsNotRegistered() {
-                    doReturn(false).when(personValidationService).isPersonRegistered(anyLong());
-                    requestDto.setPersonId(1L);
-                    fields = assertThatExceptionOfType(ValidationServiceException.class)
-                        .isThrownBy(()->{
-                            spyAccountValidationService.validateRequest(requestDto);
-                        }).actual().getFieldErrors();
-
-                    FieldInfoError field = fields.get(0);
-
-                    verify(personValidationService, times(1)).isPersonRegistered(anyLong());
-                    verify(spyAccountValidationService, times(1)).isPersonIdAssigned(isNull(), anyLong());
-                    verify(spyAccountValidationService, times(1)).isEmailAvailable(isNull(), anyString());
-                    verify(identityService, times(0)).isAdminAuthority();
-
-                    assertThat(fields).hasSize(1);
-                    assertThat(field.getName()).isEqualTo("personId");
-                    assertThat(field.getType()).isEqualTo(Long.class);
-                    assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
-                    assertThat(field.getErrorMessage()).isEqualTo("is not registered, register first!");
-                    assertThat(field.getValue()).isEqualTo(1L);
-                }
-
-                @Test
-                void shouldThrowExceptionWhenPersonIdIsAlreadyAssigned() {
-                    doReturn(true).when(spyAccountValidationService).isPersonIdAssigned(isNull(), anyLong());
-
-                    fields = assertThatExceptionOfType(ValidationServiceException.class)
-                        .isThrownBy(() -> {
-                            spyAccountValidationService.validateRequest(requestDto);
-                        }).actual().getFieldErrors();
-
-                    FieldInfoError field = fields.get(0);
-
-                    verify(personValidationService, times(1)).isPersonRegistered(anyLong());
-                    verify(spyAccountValidationService, times(1)).isPersonIdAssigned(isNull(), anyLong());
-                    verify(spyAccountValidationService, times(1)).isEmailAvailable(isNull(), anyString());
-                    verify(identityService, times(0)).isAdminAuthority();
-
-                    assertThat(fields).hasSize(1);
-
-                    assertThat(field.getName()).isEqualTo("personId");
-                    assertThat(field.getType()).isEqualTo(Long.class);
-                    assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
-                    assertThat(field.getErrorMessage()).isEqualTo("is already assigned, use another person!");
-                    assertThat(field.getValue()).isEqualTo(1L);
-                }
-
-                @Test
-                void shouldThrowExceptionWhenEmailIsNotAvailable() {
-                    doReturn(false).when(spyAccountValidationService).isEmailAvailable(isNull(), anyString());
-
-                    fields = assertThatExceptionOfType(ValidationServiceException.class)
-                        .isThrownBy(() -> {
-                            spyAccountValidationService.validateRequest(requestDto);
-                        }).actual().getFieldErrors();
-
-                    FieldInfoError field = fields.get(0);
-
-                    verify(personValidationService, times(1)).isPersonRegistered(anyLong());
-                    verify(spyAccountValidationService, times(1)).isPersonIdAssigned(isNull(), anyLong());
-                    verify(spyAccountValidationService, times(1)).isEmailAvailable(isNull(), anyString());
-                    verify(identityService, times(0)).isAdminAuthority();
-
-                    assertThat(fields).hasSize(1);
-
-                    assertThat(field.getName()).isEqualTo("email");
-                    assertThat(field.getType()).isEqualTo(String.class);
-                    assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
-                    assertThat(field.getErrorMessage()).isEqualTo("is not available, user another one!");
-                    assertThat(field.getValue()).isEqualTo("example@gmail.com");
-                }
-
-                @Test
-                void shouldThrowExceptionWhenFieldAdminIsTrueAndLoggedInUserIsNotAdmin(){
-                    requestDto.setAdmin(true);
-                    doReturn(false).when(identityService).isAdminAuthority();
-
-                    fields = assertThatExceptionOfType(ValidationServiceException.class)
-                        .isThrownBy(() -> {
-                            spyAccountValidationService.validateRequest(requestDto);
-                        }).actual().getFieldErrors();
-
-                    FieldInfoError field = fields.get(0);
-
-                    verify(personValidationService, times(1)).isPersonRegistered(anyLong());
-                    verify(spyAccountValidationService, times(1)).isPersonIdAssigned(isNull(), anyLong());
-                    verify(spyAccountValidationService, times(1)).isEmailAvailable(isNull(), anyString());
-                    verify(identityService, times(1)).isAdminAuthority();
-
-                    assertThat(fields).hasSize(1);
-
-                    assertThat(field.getName()).isEqualTo("admin");
-                    assertThat(field.getType()).isPrimitive();
-                    assertThat(String.valueOf(field.getType())).isEqualTo("boolean");
-                    assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
-                    assertThat(field.getErrorMessage()).isEqualTo("requires an admin user!");
-                    assertThat(field.getValue()).isEqualTo(true);
-                }
-
-            }
-
         }
 
-    }
+    
 }
 

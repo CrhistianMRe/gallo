@@ -36,9 +36,13 @@ import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.AccountValidator;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceImplUnitTest {
+
+    @Mock
+    AccountValidator accountValidator;
 
     @Mock
     AccountRepository accountRepository;

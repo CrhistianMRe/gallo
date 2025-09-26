@@ -1,26 +1,18 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonEntityOne;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonEntityTwo;
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonRequestDtoOne;
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonRequestDtoTwo;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.api.ThrowableAssertAlternative;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,9 +22,9 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
@@ -52,6 +44,94 @@ public class PersonValidationServiceUnitTest {
     @Spy
     @InjectMocks
     PersonValidationServiceImpl spyPersonValidationService;
+
+    @Nested 
+    class ValidateUniquePhoneNumberMethodTest{
+
+        FieldInfoError field; 
+
+        PersonRequestDto personRequestDto;
+
+        @BeforeEach
+        void setUp(){
+            personRequestDto = new PersonRequestDto();
+            doAnswer(invo ->{
+                return invo.getArgument(1, String.class).equals("1111");
+            }).when(spyPersonValidationService).isPhoneNumberAvailable(anyLong(), anyString());
+        }
+
+        @Test
+        void returnsOptionalFieldInfoError() {
+            personRequestDto.setPhoneNumber("2222");
+            
+            Optional<FieldInfoError> fieldOptional; 
+
+            fieldOptional = spyPersonValidationService.validateUniquePhoneNumber(2L, personRequestDto);
+
+            assertThat(fieldOptional).isNotEmpty();
+
+            field = fieldOptional.orElseThrow();
+
+            assertThat(field.getName()).isEqualTo("phoneNumber");
+            assertThat(field.getValue()).isEqualTo("2222");
+            assertThat(field.getOwnerClass()).isEqualTo(PersonRequestDto.class);
+            assertThat(field.getType()).isEqualTo(String.class);
+            assertThat(field.getErrorMessage()).isEqualTo("is already registered, user another one");
+
+            verify(spyPersonValidationService).isPhoneNumberAvailable(anyLong(), anyString());
+        }
+
+        @Test
+        void returnsEmptyOptionalFieldInfoError() {
+            Optional<FieldInfoError> fieldOptional;
+            personRequestDto.setPhoneNumber("1111");
+            fieldOptional = spyPersonValidationService.validateUniquePhoneNumber(2L, personRequestDto);
+            assertThat(fieldOptional).isEmpty();
+        }
+    }
+
+    @Nested
+    class ValidatePersonRegisteredMethodTest{
+
+        FieldInfoError field;
+
+        AccountRequestDto accountRequestDto;
+
+        @BeforeEach
+        void setUp(){
+            accountRequestDto = new AccountRequestDto();
+            doAnswer(invo ->{
+                return invo.getArgument(0, Long.class).equals(1L);
+            }).when(spyPersonValidationService).isPersonRegistered(anyLong());
+        }
+
+        @Test
+        void returnsOptionalFieldInfoError() {
+            Optional<FieldInfoError> fieldOptional;
+            accountRequestDto.setPersonId(2L);
+            fieldOptional = spyPersonValidationService.validatePersonRegistered(accountRequestDto);
+
+            assertThat(fieldOptional).isNotEmpty();
+
+            field = fieldOptional.orElseThrow();
+
+            assertThat(field.getName()).isEqualTo("personId");
+            assertThat(field.getErrorMessage()).isEqualTo("is not registered, register first!");
+            assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
+            assertThat(field.getType()).isEqualTo(Long.class);
+            assertThat(field.getValue()).isEqualTo(2L);
+
+            verify(spyPersonValidationService, times(1)).isPersonRegistered(anyLong());
+        }
+
+        @Test
+        void returnsEmptyOptionalFieldInfoError() {
+            Optional<FieldInfoError> fieldOptional;
+            accountRequestDto.setPersonId(1L);
+            fieldOptional = spyPersonValidationService.validatePersonRegistered(accountRequestDto);
+            assertThat(fieldOptional).isEmpty();
+        }
+    }
 
     @Nested
     class IsPersonRegistered {
@@ -138,150 +218,8 @@ public class PersonValidationServiceUnitTest {
             }
 
         }
-
     }
-
-    @Nested
-    class ValidateRequestMethodTest {
-
-        PersonRequestDto personRequestDto;
         
-        @BeforeEach
-        void setUp(){
-            personRequestDto = new PersonRequestDto();
-            lenient().doAnswer(invo ->{
-                return invo.getArgument(1, String.class).equals("1111");
-            }).when(spyPersonValidationService).isPhoneNumberAvailable(eq(null), anyString());
-        }
-
-        @Test
-        void shouldNotThrowExceptionWhenFieldInfoErrorListIsEmpty() {
-            personRequestDto.setPhoneNumber("1111");
-            assertDoesNotThrow(() ->{
-                spyPersonValidationService.validateRequest(null, personRequestDto);
-            });
-            verify(identityService, times(0)).isUserPersonEntityAllowed(anyLong());
-            verify(identityService, times(0)).isAdminAuthority();
-        }
-
-        @Test
-        void shouldThrowExceptionWhenAnyAuthorityPhoneNumberIsNotAvailable() {
-            List<FieldInfoError> expectedFieldErrors = new ArrayList<>();
-            personRequestDto.setPhoneNumber("2222");
-
-            ThrowableAssertAlternative<ValidationServiceException> alternative;
-            alternative = assertThatExceptionOfType(ValidationServiceException.class).isThrownBy(() -> {
-                spyPersonValidationService.validateRequest(null, personRequestDto);
-            });
-
-            expectedFieldErrors = alternative.actual().getFieldErrors();
-
-            assertThat(expectedFieldErrors).extracting(error -> error.getName()).containsOnlyOnce("phoneNumber");
-            assertThat(expectedFieldErrors).extracting(error -> error.getErrorMessage()).containsOnlyOnce("is already registered, user another one");
-            assertThat(expectedFieldErrors).hasSize(1);
-            verify(identityService, times(0)).isUserPersonEntityAllowed(anyLong());
-            verify(identityService, times(0)).isAdminAuthority();
-        }
-
-        @Test
-        void shouldNotThrowExceptionWhenAnyAuthorityPhoneNumberIsAvailable() {
-            personRequestDto.setPhoneNumber("1111");
-            assertDoesNotThrow(()-> spyPersonValidationService.validateRequest(null, personRequestDto));
-            verify(identityService, times(0)).isUserPersonEntityAllowed(anyLong());
-            verify(identityService, times(0)).isAdminAuthority();
-        }
-
-
-        @Nested
-        class UpdateRequestTest {
-
-            @BeforeEach
-            void setUp(){
-                personRequestDto = new PersonRequestDto();
-                doAnswer(invo ->{
-                    return invo.getArgument(1, String.class).equals("1111");
-                }).when(spyPersonValidationService).isPhoneNumberAvailable(anyLong(), anyString());
-
-                lenient().when(identityService.isUserPersonEntityAllowed(anyLong())).thenAnswer(invo -> {
-                    return invo.getArgument(0, Long.class).equals(1L);
-                });
-            }
-
-            @Test
-            void shouldThrowExceptionWithTwoErrorsWhenAllConditionsAreMet() {
-                when(identityService.isAdminAuthority()).thenReturn(false);
-
-                List<FieldInfoError> expectedFieldErrors = new ArrayList<>();
-                personRequestDto.setPhoneNumber("2222");
-
-                expectedFieldErrors = assertThatExceptionOfType(ValidationServiceException.class)
-                    .isThrownBy(()-> spyPersonValidationService.validateRequest(2L, personRequestDto)).actual().getFieldErrors();
-
-                assertThat(expectedFieldErrors).hasSize(2);
-
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getErrorMessage).containsOnlyOnce("is already registered, user another one");
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getErrorMessage).containsOnlyOnce("is not allowed for this user!");
-
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getName).containsOnlyOnce("phoneNumber");
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getName).containsOnlyOnce("path id");
-
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getValue).containsOnlyOnce("2222");
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getValue).containsOnlyOnce(2L);
-
-                FieldInfoError phoneError = expectedFieldErrors.stream().filter(error -> error.getName().equals("phoneNumber")).findFirst().orElseThrow();
-                FieldInfoError pathIdError = expectedFieldErrors.stream().filter(error -> error.getName().equals("path id")).findFirst().orElseThrow();
-
-                assertThat(phoneError.getOwnerClass()).isEqualTo(PersonRequestDto.class);
-                assertThat(pathIdError.getOwnerClass()).isEqualTo(PersonRequestDto.class);
-
-                assertThat(phoneError.getType()).isEqualTo(String.class);
-                assertThat(pathIdError.getType()).isEqualTo(Long.class);
-            }
-
-            @Test
-            void shouldNotThrowExceptionWhenAllUserConditionsAreValid(){
-                when(identityService.isAdminAuthority()).thenReturn(false);
-
-                personRequestDto.setPhoneNumber("1111");
-
-                assertDoesNotThrow(() -> spyPersonValidationService.validateRequest(1L, personRequestDto));
-            }
-
-            @Test
-            void shouldThrowExceptionWhenUserIsNotAllowed() {
-                when(identityService.isAdminAuthority()).thenReturn(false);
-                personRequestDto.setPhoneNumber("1111");
-
-                List<FieldInfoError> expectedFieldErrors = new ArrayList<>();
-
-                expectedFieldErrors = assertThatExceptionOfType(ValidationServiceException.class).isThrownBy(() -> {
-                    spyPersonValidationService.validateRequest(2L, personRequestDto);
-                }).actual().getFieldErrors();
-
-                assertThat(expectedFieldErrors).hasSize(1);
-                //I extracting everyithing as is given manually
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getErrorMessage).contains("is not allowed for this user!");
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getValue).contains(2L);
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getName).contains("path id");
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getOwnerClass).first().isEqualTo(PersonRequestDto.class);
-                assertThat(expectedFieldErrors).extracting(FieldInfoError::getType).first().isEqualTo(Long.class);
-            }
-
-            @Test
-            void shouldNotThrowExceptionWhenAllAdminConditionsAreValid(){
-                personRequestDto.setPhoneNumber("1111");
-                when(identityService.isAdminAuthority()).thenReturn(true);
-                assertDoesNotThrow(() ->{
-                    spyPersonValidationService.validateRequest(2L, personRequestDto);
-
-                });
-                verify(identityService, times(0)).isUserPersonEntityAllowed(anyLong());
-            }
-
-
-        }
-        
-    }
-    
 }
+    
 
