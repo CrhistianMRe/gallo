@@ -217,6 +217,9 @@
             <includes>
               <include>**/validation/*Test.java</include>
               <include>**/validation/dto/*Test.java</include>
+              <include>**/validation/annotation/dto/*Test.java</include>
+              <include>**/validation/annotation/*Test.java</include>
+              <include>**/validation/service/*Test.java</include>
             </includes>
           </configuration>
         </plugin>

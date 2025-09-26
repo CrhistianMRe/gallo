@@ -13,23 +13,24 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.PersonValidator;
 
 @Service
 public class PersonServiceImpl implements PersonService{
 
     private final PersonRepository personRepository;
 
-    private final PersonValidationService personValidationService;
+    private final PersonValidator personValidator;
 
-    public PersonServiceImpl(PersonRepository personRepository, PersonValidationService personValidationService){
+    public PersonServiceImpl(PersonRepository personRepository, PersonValidator personValidator){
         this.personRepository = personRepository;
-        this.personValidationService = personValidationService;
+        this.personValidator = personValidator;
     }
 
     @Transactional
     @Override
     public PersonResponseDto save(PersonRequestDto personDto) {
-        personValidationService.validateRequest(null, personDto);
+        personValidator.validateRequest(null, personDto);
         Person person = PersonMapper.requestToEntity(personDto);
         return PersonMapper.entityToResponse(personRepository.save(person));
     }
@@ -38,7 +39,7 @@ public class PersonServiceImpl implements PersonService{
     @Override
     public PersonResponseDto update(Long id, PersonRequestDto personDto) {
         if(personRepository.findById(id).isEmpty()) throw new NotFoundException(Person.class);
-        personValidationService.validateRequest(id, personDto);
+        personValidator.validateRequest(id, personDto);
             Person person = PersonMapper.requestToEntity(personDto);
             person.setId(id);
         return PersonMapper.entityToResponse(personRepository.save(person));

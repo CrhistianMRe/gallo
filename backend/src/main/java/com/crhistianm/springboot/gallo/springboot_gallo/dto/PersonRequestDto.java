@@ -3,7 +3,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 import java.time.LocalDate;
 
 
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.CorrectGender;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.CorrectGender;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
