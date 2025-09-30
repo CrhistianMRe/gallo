@@ -29,6 +29,11 @@ public class HandlerExceptionController {
             notValidException.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), "the field " + error.getField() + " " + error.getDefaultMessage());
             });
+            if(errors.isEmpty()){
+            notValidException.getBindingResult().getAllErrors().forEach(e -> {
+                    errors.put("message:",  e.getObjectName() + " " + e.getDefaultMessage());
+                });
+            }
         }
         if(ex instanceof HandlerMethodValidationException){
             HandlerMethodValidationException validationException = (HandlerMethodValidationException)ex;
@@ -46,6 +51,7 @@ public class HandlerExceptionController {
             errors.put("status", String.valueOf(HttpStatus.BAD_REQUEST.value()));
             errors.put("location", validationException.getMethodSourceName());
         }
+
         return ResponseEntity.status(status).body(errors);
     }
 

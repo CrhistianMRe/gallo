@@ -81,6 +81,7 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public AccountResponseDto update(Long id, AccountUpdateRequestDto accountDto) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
+        accountValidator.validateUpdateRequest(id, accountDto, account.getPerson().getId());
 
         if(accountDto.getPersonId() != null) account.setPerson(personRepository.findById(accountDto.getPersonId()).orElseThrow(() -> new NotFoundException(Person.class)));
         if(accountDto.getEmail() != null) account.setEmail(accountDto.getEmail());
@@ -88,7 +89,7 @@ public class AccountServiceImpl implements AccountService{
         if(accountDto.getPassword() != null) account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         if(!accountDto.getRoles().isEmpty()) account.setRoles(accountDto.getRoles().stream().map(role -> RoleMapper.requestToEntity(role)).collect(Collectors.toList()));
 
-        return settleResponseType(accountRepository.save(account));
+        return validationService.settleResponseType(accountRepository.save(account));
     }
 
     @Transactional

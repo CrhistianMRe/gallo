@@ -9,5 +9,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
 public interface RoleRepository extends CrudRepository <Role, Long>{
 
     Optional<Role> findByName(String name);
+
+    boolean existsByName(String name);
     
 }
