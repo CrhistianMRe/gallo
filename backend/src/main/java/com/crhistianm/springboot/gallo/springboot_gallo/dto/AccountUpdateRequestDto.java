@@ -3,6 +3,15 @@ package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.NotEmptyRequest;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.group.FirstCheck;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.group.SecondCheck;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
+
+
+@NotEmptyRequest(groups = FirstCheck.class, hasSuper = true)
 public class AccountUpdateRequestDto extends AbstractAccountRequestDto{
 
     private Boolean enabled;
@@ -22,11 +31,13 @@ public class AccountUpdateRequestDto extends AbstractAccountRequestDto{
     }
 
     @Override
+    @Email(groups = SecondCheck.class)
     public String getEmail() {
         return super.getEmail();
     }
 
     @Override
+    @Size(min = 4, groups = SecondCheck.class)
     public String getPassword() {
         return super.getPassword();
     }

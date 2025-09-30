@@ -11,15 +11,22 @@ public class FieldInfoErrorMapper {
     public static FieldInfoError classTargetToFieldInfo(Object targetClass, String fieldTargetName, String errorMessage) {
         Field field;
         FieldInfoError fieldInfo = null;
+        boolean isSuperField = true;
+        Class<?> selectedClass = targetClass.getClass();
 
         try {
-            field = targetClass.getClass().getDeclaredField(fieldTargetName);
+            for (Field f : targetClass.getClass().getDeclaredFields()) {
+                if(f.getName().equals(fieldTargetName)) isSuperField = false;
+            }
+            if(isSuperField) selectedClass = selectedClass.getSuperclass();
+
+            field = selectedClass.getDeclaredField(fieldTargetName);
             field.setAccessible(true);
             fieldInfo = new FieldInfoErrorBuilder()
                 .name(field.getName())
                 .type(field.getType())
                 .value(field.get(targetClass))
-                .ownerClass(targetClass.getClass())
+                .ownerClass(selectedClass)
                 .errorMessage(errorMessage)
                 .build();
         } catch (Exception e) {
