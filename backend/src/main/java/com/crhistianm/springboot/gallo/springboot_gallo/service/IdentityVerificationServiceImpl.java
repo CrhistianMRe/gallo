@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
@@ -67,10 +67,10 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
     }
 
     @Override
-    public Optional<FieldInfoError> validateAdminRequired(AccountRequestDto accountDto, Boolean value){
+    public Optional<FieldInfoError> validateAdminRequired(AbstractAccountRequestDto accountDto, String fieldName){
         FieldInfoError infoError = null;
-        if(value && !isAdminAuthority()){
-            infoError = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, "admin", "requires an admin user!");
+        if(!isAdminAuthority()){
+            infoError = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, fieldName, "requires an admin user!");
         } 
         return Optional.ofNullable(infoError);
     }
