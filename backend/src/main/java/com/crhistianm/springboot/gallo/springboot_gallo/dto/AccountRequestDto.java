@@ -5,52 +5,36 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 //Id not in dto as it is auto incremental on db
-public class AccountRequestDto{
-
-    @NotNull
-    private Long personId;
-
-    @NotBlank
-    @Email
-    private String email;
-
-    @NotBlank
-    private String password;
+public class AccountRequestDto extends AbstractAccountRequestDto{
 
     private boolean admin;
 
     public AccountRequestDto() {
+        super(null, null, null);
     }
 
     public AccountRequestDto(String email, String password, Long personId, boolean admin) {
-        this.email = email;
-        this.password = password;
+        super(email, password, personId);
         this.admin = admin;
-        this.personId = personId;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Long getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(Long personId) {
-        this.personId = personId;
-    }
-
+    @Override
+    @Email
+    @NotBlank
     public String getEmail() {
-        return email;
+        return super.getEmail();
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    @NotNull
+    public Long getPersonId() {
+        return super.getPersonId();
+    }
+
+    @Override
+    @NotBlank
+    public String getPassword() {
+        return super.getPassword();
     }
 
     public boolean isAdmin() {
@@ -65,8 +49,8 @@ public class AccountRequestDto{
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((personId == null) ? 0 : personId.hashCode());
-        result = prime * result + ((email == null) ? 0 : email.hashCode());
+        result = prime * result + ((this.getPersonId()== null) ? 0 : this.getPersonId().hashCode());
+        result = prime * result + ((this.getEmail() == null) ? 0 : this.getEmail().hashCode());
         return result;
     }
 
@@ -79,22 +63,22 @@ public class AccountRequestDto{
         if (getClass() != obj.getClass())
             return false;
         AccountRequestDto other = (AccountRequestDto) obj;
-        if (personId == null) {
-            if (other.personId != null)
+        if (this.getPersonId() == null) {
+            if (other.getPersonId() != null)
                 return false;
-        } else if (!personId.equals(other.personId))
+        } else if (!this.getPersonId().equals(other.getPersonId()))
             return false;
-        if (email == null) {
-            if (other.email != null)
+        if (this.getEmail()== null) {
+            if (other.getEmail()!= null)
                 return false;
-        } else if (!email.equals(other.email))
+        } else if (!this.getEmail().equals(other.getEmail()))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "AccountRequestDto [personId=" + personId + ", email=" + email + ", password=" + password + ", admin="
+        return "AccountRequestDto [personId=" + this.getPersonId() + ", email=" + this.getEmail() + ", password=" + this.getPassword()+ ", admin="
                 + admin + "]";
     }
 

@@ -3,44 +3,32 @@ package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountUpdateRequestDto {
-
-    private String email;
-
-    private String password;
+public class AccountUpdateRequestDto extends AbstractAccountRequestDto{
 
     private Boolean enabled;
 
     private List<RoleRequestDto> roles;
-    
-    private Long personId;
 
     public AccountUpdateRequestDto() {
+        super(null, null, null);
         this.roles = new ArrayList<>();
     }
 
     public AccountUpdateRequestDto(String email, String password, Boolean enabled, List<RoleRequestDto> roles, Long personId) {
-        this.email = email;
-        this.password = password;
+        super(email, password, personId);
+        this.roles = new ArrayList<>();
         this.enabled = enabled;
         this.roles = roles;
-        this.personId = personId;
     }
 
+    @Override
     public String getEmail() {
-        return email;
+        return super.getEmail();
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
+    @Override
     public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        return super.getPassword();
     }
 
     public void setEnabled(Boolean enabled) {
@@ -59,22 +47,15 @@ public class AccountUpdateRequestDto {
         this.roles = roles;
     }
 
-    public Long getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(Long personId) {
-        this.personId = personId;
-    }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((email == null) ? 0 : email.hashCode());
-        result = prime * result + ((enabled == null) ? 0 : enabled.hashCode());
-        result = prime * result + ((roles == null) ? 0 : roles.hashCode());
-        result = prime * result + ((personId == null) ? 0 : personId.hashCode());
+        result = prime * result + ((this.getEmail() == null) ? 0 : this.getEmail().hashCode());
+        result = prime * result + ((this.getPassword() == null) ? 0 : this.getPassword().hashCode());
+        result = prime * result + ((this.enabled == null) ? 0 : enabled.hashCode());
+        result = prime * result + ((this.getPersonId() == null) ? 0 : this.getPersonId().hashCode());
         return result;
     }
 
@@ -87,36 +68,34 @@ public class AccountUpdateRequestDto {
         if (getClass() != obj.getClass())
             return false;
         AccountUpdateRequestDto other = (AccountUpdateRequestDto) obj;
-        if (email == null) {
-            if (other.email != null)
+        if (this.getEmail() == null) {
+            if (other.getEmail() != null)
                 return false;
-        } else if (!email.equals(other.email))
+        } else if (!this.getEmail().equals(other.getEmail()))
+            return false;
+        if (getPassword() == null) {
+            if (other.getPassword() != null)
+                return false;
+        } else if (!this.getPassword().equals(other.getPassword()))
             return false;
         if (enabled == null) {
             if (other.enabled != null)
                 return false;
         } else if (!enabled.equals(other.enabled))
             return false;
-        if (roles == null) {
-            if (other.roles != null)
+        if (this.getPersonId() == null) {
+            if (other.getPersonId()!= null)
                 return false;
-        } else if (!roles.equals(other.roles))
-            return false;
-        if (personId == null) {
-            if (other.personId != null)
-                return false;
-        } else if (!personId.equals(other.personId))
+        } else if (!this.getPersonId().equals(other.getPersonId()))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "AccountUpdateRequestDto [email=" + email + ", password=" + password + ", enabled=" + enabled
-                + ", roles=" + roles + ", personId=" + personId + "]";
+        return "AccountUpdateRequestDto [email=" + this.getEmail() + ", password=" + this.getPassword() + ", enabled="
+                + enabled + ", roles=" + roles + ", personId=" + this.getPersonId() + "]";
     }
-
-
 
 }
 

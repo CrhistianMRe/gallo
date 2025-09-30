@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
@@ -31,7 +32,7 @@ public class PersonValidationServiceImpl implements PersonValidationService{
     }
 
     @Override
-    public Optional<FieldInfoError> validatePersonRegistered(AccountRequestDto accountDto){
+    public Optional<FieldInfoError> validatePersonRegistered(AbstractAccountRequestDto accountDto){
         FieldInfoError field = null;
         if(!isPersonRegistered(accountDto.getPersonId())) {
             field = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, "personId", "is not registered, register first!");
