@@ -2,6 +2,8 @@ package com.crhistianm.springboot.gallo.springboot_gallo.validation.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
@@ -30,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
 import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountValidationService;
@@ -73,11 +76,11 @@ public class AccountValidatorUnitTest {
 
             lenient().doAnswer(invo ->{
                 FieldInfoError field = null;
-                if(!invo.getArgument(0, AccountRequestDto.class).getPersonId().equals(1L)){
+                if(!invo.getArgument(1, AccountRequestDto.class).getPersonId().equals(1L)){
                     field = new FieldInfoErrorBuilder().name("assigned").build();
                 }
                 return Optional.ofNullable(field);
-            }).when(accountService).validatePersonAssigned(any(AccountRequestDto.class));
+            }).when(accountService).validatePersonAssigned(isNull(), any(AccountRequestDto.class));
 
             doAnswer(invo ->{
                 FieldInfoError field = null;
@@ -86,22 +89,23 @@ public class AccountValidatorUnitTest {
                 }
                 return Optional.ofNullable(field);
             }).when(accountService).validateUniqueEmail(isNull(), any(AccountRequestDto.class));
-
-            doAnswer(invo ->{
-                FieldInfoError field = null;
-                if(!invo.getArgument(1, Boolean.class)){
-                    field = new FieldInfoErrorBuilder().name("isadmin").build();
-                }
-                return Optional.ofNullable(field);
-            }).when(identityService).validateAdminRequired(any(AccountRequestDto.class), anyBoolean());
+            
+             doAnswer(invo ->{
+                 FieldInfoError field = null;
+                 AccountRequestDto dto = invo.getArgument(0, AccountRequestDto.class);
+                 if(!dto.isAdmin()){
+                     field = new FieldInfoErrorBuilder().name("isadmin").build();
+                 }
+                 return Optional.ofNullable(field);
+             }).when(identityService).validateAdminRequired(any(AccountRequestDto.class), anyString());
         }
 
         @AfterEach
         void verifyMethodValidation(){
             verify(personService, times(1)).validatePersonRegistered(any(AccountRequestDto.class));
-            verify(accountService, times(1)).validatePersonAssigned(any(AccountRequestDto.class));
+            verify(accountService, times(1)).validatePersonAssigned(isNull(), any(AccountRequestDto.class));
             verify(accountService, times(1)).validateUniqueEmail(isNull(), any(AccountRequestDto.class));
-            verify(identityService, times(1)).validateAdminRequired(any(AccountRequestDto.class), anyBoolean());
+            verify(identityService, times(1)).validateAdminRequired(any(AccountRequestDto.class), anyString());
         }
 
         @Test
@@ -113,10 +117,7 @@ public class AccountValidatorUnitTest {
             assertDoesNotThrow(() -> {
                 accountValidator.validateRequest(accountRequestDto);
             });
-            verify(personService, times(1)).validatePersonRegistered(any(AccountRequestDto.class));
-            verify(accountService, times(1)).validatePersonAssigned(any(AccountRequestDto.class));
-            verify(accountService, times(1)).validateUniqueEmail(isNull(), any(AccountRequestDto.class));
-            verify(identityService, times(1)).validateAdminRequired(any(AccountRequestDto.class), anyBoolean());
+
         }
 
         @Test
@@ -166,7 +167,7 @@ public class AccountValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWithOnlyPersonAssignedError(){
-            doReturn(Optional.of(new FieldInfoErrorBuilder().name("assigned").build())).when(accountService).validatePersonAssigned(any(AccountRequestDto.class));
+            doReturn(Optional.of(new FieldInfoErrorBuilder().name("assigned").build())).when(accountService).validatePersonAssigned(isNull(), any(AccountRequestDto.class));
 
             accountRequestDto.setEmail("example@gmail.com");
             accountRequestDto.setPersonId(1L);
