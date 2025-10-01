@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
@@ -117,7 +118,7 @@ public class PersonValidationServiceUnitTest {
 
             assertThat(field.getName()).isEqualTo("personId");
             assertThat(field.getErrorMessage()).isEqualTo("is not registered, register first!");
-            assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
+            assertThat(field.getOwnerClass()).isEqualTo(AbstractAccountRequestDto.class);
             assertThat(field.getType()).isEqualTo(Long.class);
             assertThat(field.getValue()).isEqualTo(2L);
 
