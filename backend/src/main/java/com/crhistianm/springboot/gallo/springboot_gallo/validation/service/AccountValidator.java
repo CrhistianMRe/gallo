@@ -47,17 +47,17 @@ public class AccountValidator {
         if(!fields.isEmpty()) throw new ValidationServiceException(fields);
     }
 
-    public void validateUpdateRequest(Long pathId, AccountUpdateRequestDto accountDto) {
+    public void validateUpdateRequest(Long accountPathId, AccountUpdateRequestDto accountDto, Long personId) {
         List<FieldInfoError> fields = new ArrayList<>();
 
-        identityService.validateUserAllowance(accountDto.getPersonId()).ifPresent(fields::add);
+        identityService.validateUserAllowance(personId).ifPresent(fields::add);
 
         if(accountDto.getPersonId() != null){ 
             personService.validatePersonRegistered(accountDto).ifPresent(fields::add);
-            accountService.validatePersonAssigned(pathId, accountDto).ifPresent(fields::add);
+            accountService.validatePersonAssigned(accountPathId, accountDto).ifPresent(fields::add);
             identityService.validateAdminRequired(accountDto, "personId").ifPresent(fields::add);
         }
-        if(accountDto.getEmail() != null) accountService.validateUniqueEmail(pathId, accountDto).ifPresent(fields::add);
+        if(accountDto.getEmail() != null) accountService.validateUniqueEmail(accountPathId, accountDto).ifPresent(fields::add);
         if(accountDto.isEnabled() != null) identityService.validateAdminRequired(accountDto, "enabled").ifPresent(fields::add);
         if(!accountDto.getRoles().isEmpty()) {
             identityService.validateAdminRequired(accountDto, "roles").ifPresent(fields::add);
