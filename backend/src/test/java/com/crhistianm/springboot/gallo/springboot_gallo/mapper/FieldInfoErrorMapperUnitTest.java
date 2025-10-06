@@ -5,8 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.data.Data;
+import com.crhistianm.springboot.gallo.springboot_gallo.data.Data.DummyBaseClass;
 import com.crhistianm.springboot.gallo.springboot_gallo.data.Data.SampleClass;
 import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 
@@ -45,6 +50,20 @@ public class FieldInfoErrorMapperUnitTest {
             assertThat(field.getValue()).isEqualTo(null);
             assertThat(field.getErrorMessage()).isEqualTo("test");
             assertThat(field.getOwnerClass()).isEqualTo(SampleClass.class);
+        }
+
+        @Test
+        void returnsSuperObjectField() {
+            SampleClass sClass = new SampleClass();
+            field = FieldInfoErrorMapper.classTargetToFieldInfo(sClass, "surnames", "test");
+
+            assertThat(field).extracting(
+                    FieldInfoError::getName, 
+                    FieldInfoError::getType, 
+                    FieldInfoError::getValue,
+                    FieldInfoError::getErrorMessage,
+                    FieldInfoError::getOwnerClass)
+                .contains("surnames", List.class, new ArrayList<>(), "test", DummyBaseClass.class);
         }
 
         @Test

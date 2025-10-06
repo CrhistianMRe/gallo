@@ -3,9 +3,11 @@ package com.crhistianm.springboot.gallo.springboot_gallo.data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Set;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
@@ -160,7 +162,7 @@ public class Data {
                     .build());
     }
 
-    public static class SampleClass{
+    public static class SampleClass extends DummyBaseClass {
 
         private Long testObjectLong;
 
@@ -173,4 +175,68 @@ public class Data {
         private Boolean testObjectBoolean;
     
     }
+
+    public static class DummyBaseClass {
+
+        private String name;
+
+        private List<String> surnames = new ArrayList<>();
+
+        public DummyBaseClass() {
+        }
+
+        public DummyBaseClass(String name) {
+            this.name = name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setSurnames(List<String> surnames) {
+            this.surnames = surnames;
+        }
+
+        public List<String> getSurnames() {
+            return surnames;
+        }
+
+    }
+
+    public static class ChildClass extends DummyBaseClass{
+
+        Set<String> cars = new HashSet<>();
+
+        Boolean hasLicense;
+
+        public ChildClass() {
+        }
+        
+        public ChildClass(Boolean hasLicense, String name) {
+            super(name);
+            this.hasLicense = hasLicense;
+        }
+
+        public void setCars(Set<String> cars) {
+            this.cars = cars;
+        }
+
+        public Set<String> getCars() {
+            return cars;
+        }
+
+        public void setHasLicense(Boolean hasLicense) {
+            this.hasLicense = hasLicense;
+        }
+
+        public Boolean getHasLicense() {
+            return hasLicense;
+        }
+
+    }
+
 }
