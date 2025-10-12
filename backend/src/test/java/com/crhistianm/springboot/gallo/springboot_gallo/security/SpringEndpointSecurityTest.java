@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAccountUserDetails;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
@@ -150,6 +152,16 @@ public class SpringEndpointSecurityTest {
                     .andExpect(status().isOk());
             }
 
+            @Test
+            void shouldReturnNotFoundStatusWhenPatchRequestIsSent() throws Exception {
+                mockMvc.perform(patch("/api/accounts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new AccountUpdateRequestDto()))
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isNotFound());
+            }
+
+
         }
         
         @Nested
@@ -235,6 +247,15 @@ public class SpringEndpointSecurityTest {
                 mockMvc.perform(get("/api/accounts")
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isForbidden());
+            }
+
+            @Test
+            void shouldReturnNotFoundStatusWhenPatchRequestIsSent() throws Exception {
+                mockMvc.perform(patch("/api/accounts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new AccountUpdateRequestDto()))
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isNotFound());
             }
 
         }

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.PrePersist;
-//import jakarta.persistence.PreUpdate;
+import jakarta.persistence.PreUpdate;
 
 @Embeddable
 public class Audit {
@@ -21,10 +21,10 @@ public class Audit {
         this.enabled = true;
     }
 
-    //@PreUpdate
-    //public void PreUpdate(){
-        //this.updatedAt= LocalDateTime.now();
-    //}
+    @PreUpdate
+    public void PreUpdate(){
+        this.updatedAt = LocalDateTime.now();
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

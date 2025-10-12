@@ -32,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
@@ -78,7 +79,7 @@ public class AccountValidationServiceUnitTest {
             accountRequestDto.setPersonId(2L);
             Optional<FieldInfoError> fieldOptional;
 
-            fieldOptional = spyAccountValidationService.validatePersonAssigned(accountRequestDto);
+            fieldOptional = spyAccountValidationService.validatePersonAssigned(null, accountRequestDto);
 
             assertThat(fieldOptional).isNotEmpty();
 
@@ -87,10 +88,10 @@ public class AccountValidationServiceUnitTest {
             assertThat(field.getName()).isEqualTo("personId");
             assertThat(field.getType()).isEqualTo(Long.class);
             assertThat(field.getValue()).isEqualTo(2L);
-            assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
+            assertThat(field.getOwnerClass()).isEqualTo(AbstractAccountRequestDto.class);
             assertThat(field.getErrorMessage()).isEqualTo("is already assigned, use another person!");
 
-            verify(spyAccountValidationService, times(1)).validatePersonAssigned(any(AccountRequestDto.class));
+            verify(spyAccountValidationService, times(1)).isPersonIdAssigned(isNull(), anyLong());
 
         }
 
@@ -98,7 +99,7 @@ public class AccountValidationServiceUnitTest {
         void returnsEmptyOptionalFieldInfoError(){
             Optional<FieldInfoError> fieldOptional;
             accountRequestDto.setPersonId(1L);
-            fieldOptional = spyAccountValidationService.validatePersonAssigned(accountRequestDto);
+            fieldOptional = spyAccountValidationService.validatePersonAssigned(null ,accountRequestDto);
             assertThat(fieldOptional).isEmpty();
         }
 
@@ -131,7 +132,7 @@ public class AccountValidationServiceUnitTest {
             assertThat(field.getName()).isEqualTo("email");
             assertThat(field.getValue()).isEqualTo("invalid@gmail.com");
             assertThat(field.getType()).isEqualTo(String.class);
-            assertThat(field.getOwnerClass()).isEqualTo(AccountRequestDto.class);
+            assertThat(field.getOwnerClass()).isEqualTo(AbstractAccountRequestDto.class);
             assertThat(field.getErrorMessage()).isEqualTo("is not available, user another one!");
             verify(spyAccountValidationService).isEmailAvailable(anyLong(), anyString());
         }

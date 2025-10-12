@@ -14,11 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
+import com.crhistianm.springboot.gallo.springboot_gallo.mapper.RoleMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
@@ -71,6 +73,21 @@ public class AccountServiceImpl implements AccountService{
             Optional<Role> optionalRoleAdmin = roleRepository.findByName("ROLE_ADMIN");
             optionalRoleAdmin.ifPresent(account::addRole);
         }
+
+        return validationService.settleResponseType(accountRepository.save(account));
+    }
+
+    @Transactional
+    @Override
+    public AccountResponseDto update(Long id, AccountUpdateRequestDto accountDto) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
+        accountValidator.validateUpdateRequest(id, accountDto, account.getPerson().getId());
+
+        if(accountDto.getPersonId() != null) account.setPerson(personRepository.findById(accountDto.getPersonId()).orElseThrow(() -> new NotFoundException(Person.class)));
+        if(accountDto.getEmail() != null) account.setEmail(accountDto.getEmail());
+        if(accountDto.isEnabled() != null) account.getAudit().setEnabled(accountDto.isEnabled());
+        if(accountDto.getPassword() != null) account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+        if(!accountDto.getRoles().isEmpty()) account.setRoles(accountDto.getRoles().stream().map(role -> RoleMapper.requestToEntity(role)).collect(Collectors.toList()));
 
         return validationService.settleResponseType(accountRepository.save(account));
     }

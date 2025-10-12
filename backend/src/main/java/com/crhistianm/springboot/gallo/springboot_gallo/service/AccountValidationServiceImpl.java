@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
@@ -32,7 +33,7 @@ public class AccountValidationServiceImpl implements AccountValidationService{
     }
 
     @Override
-    public Optional<FieldInfoError> validateUniqueEmail(Long accountId, AccountRequestDto accountDto){
+    public Optional<FieldInfoError> validateUniqueEmail(Long accountId, AbstractAccountRequestDto accountDto){
         FieldInfoError field = null;
         if(!isEmailAvailable(accountId, accountDto.getEmail())){
             field = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, "email", "is not available, user another one!");
@@ -41,9 +42,9 @@ public class AccountValidationServiceImpl implements AccountValidationService{
     }
 
     @Override
-    public Optional<FieldInfoError> validatePersonAssigned(AccountRequestDto accountDto){
+    public Optional<FieldInfoError> validatePersonAssigned(Long pathId, AbstractAccountRequestDto accountDto){
         FieldInfoError field = null;
-        if(isPersonIdAssigned(null, accountDto.getPersonId())) {
+        if(isPersonIdAssigned(pathId, accountDto.getPersonId())) {
             field = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, "personId", "is already assigned, use another person!");
         }
         return Optional.ofNullable(field);
@@ -59,7 +60,7 @@ public class AccountValidationServiceImpl implements AccountValidationService{
     @Transactional(readOnly = true)
     @Override
     public boolean isPersonIdAssigned(Long accountId, Long personId){
-        if(accountId != null && accountRepository.findById(accountId).orElseThrow().getPerson().getId().equals(personId)) return true;
+        if(accountId != null && accountRepository.findById(accountId).orElseThrow().getPerson().getId().equals(personId)) return false;
         Optional<Account> accountOptional = accountRepository.findAccountByPersonId(personId);
         return accountOptional.isPresent();
     }
