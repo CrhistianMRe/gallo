@@ -13,7 +13,7 @@ import jakarta.validation.Payload;
 @Constraint(validatedBy = NotEmptyRequestValidator.class)
 public @interface NotEmptyRequest {
 
-    String message() default "should at least contain 1 field";
+    String message() default "{dto.validation.NotEmptyRequest}";
 
     Class<?>[] groups() default {};
     

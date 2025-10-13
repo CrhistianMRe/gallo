@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,8 +33,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private final Environment env;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, Environment env) {
         this.authenticationManager = authenticationManager;
+        this.env = env;
     }
 
     @Override
@@ -90,7 +94,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Map<String, String> body = new HashMap<String, String>();
         body.put("token", token);
         body.put("email", email);
-        body.put("message", String.format("You have successfully logged in!"));
+        body.put("message", String.format(env.getProperty("filter.authentication.successful")));
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setContentType(CONTENT_TYPE);
@@ -104,7 +108,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         Map<String, String> body = new HashMap<String, String>();
 
-        body.put("message", "email or password not valid, authentication failed!");
+        body.put("message", env.getProperty("filter.authentication.unsuccessful"));
         body.put("error", failed.getMessage());
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));

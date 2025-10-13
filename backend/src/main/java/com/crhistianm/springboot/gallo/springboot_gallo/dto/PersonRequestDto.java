@@ -38,10 +38,10 @@ public class PersonRequestDto {
 
     @DecimalMin("0.50")
     @DecimalMax("3.00")
-    @Digits(integer = 1, fraction = 2, message = "is not correct, use meters for correct format. EX: 1.70")
+    @Digits(integer = 1, fraction = 2, message = "{dto.validation.annotation.digits.height}")
     private Double height;
 
-    @Digits(integer = 3, fraction = 1, message = "is not correct, use kilograms for correct format. EX: 80.0")
+    @Digits(integer = 3, fraction = 1, message = "{dto.validation.annotation.digits.weight}")
     @DecimalMin("20.0")
     @DecimalMax("200.0")
     private Double weight;

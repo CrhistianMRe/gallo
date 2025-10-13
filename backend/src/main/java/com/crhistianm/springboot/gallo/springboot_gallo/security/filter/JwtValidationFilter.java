@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,9 +33,12 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
 
     private final AccountUserDetailsService accountService;
 
-    public JwtValidationFilter(AuthenticationManager authenticationManager, AccountUserDetailsService accountService) {
+    private final Environment env;
+
+    public JwtValidationFilter(AuthenticationManager authenticationManager, AccountUserDetailsService accountService, Environment env) {
         super(authenticationManager);
         this.accountService = accountService;
+        this.env= env;
     }
 
     @Override
@@ -76,7 +80,7 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
                 Map<String, String> body = new HashMap<String, String>();
 
                 body.put("error", e.getMessage());
-                body.put("message", "Invalid token!");
+                body.put("message", env.getProperty("filter.validation.token"));
 
                 response.getWriter().write(new ObjectMapper().writeValueAsString(body));
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());

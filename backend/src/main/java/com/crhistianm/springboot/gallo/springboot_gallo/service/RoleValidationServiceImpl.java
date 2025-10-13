@@ -3,6 +3,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,18 +17,24 @@ public class RoleValidationServiceImpl implements RoleValidationService {
 
     private final RoleRepository roleRepository;
 
-    public RoleValidationServiceImpl(RoleRepository roleRepository) {
+    private final Environment env;
+
+    public RoleValidationServiceImpl(RoleRepository roleRepository, Environment env) {
         this.roleRepository = roleRepository;
+        this.env = env;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<FieldInfoError> validateRoleExists(RoleRequestDto roleDto) {
         List<FieldInfoError> fields = new ArrayList<>();
-        String MESSAGE = "role field does not exist in db";
 
-        if(!roleRepository.existsById(roleDto.getId())) fields.add(FieldInfoErrorMapper.classTargetToFieldInfo(roleDto, "id", MESSAGE));
-        if(!roleRepository.existsByName(roleDto.getName())) fields.add(FieldInfoErrorMapper.classTargetToFieldInfo(roleDto, "name", MESSAGE));
+        if(!roleRepository.existsById(roleDto.getId())) {
+            fields.add(FieldInfoErrorMapper.classTargetToFieldInfo(roleDto, "id", env.getProperty("role.validation.RoleExists")));
+        }
+        if(!roleRepository.existsByName(roleDto.getName())) {
+            fields.add(FieldInfoErrorMapper.classTargetToFieldInfo(roleDto, "name", env.getProperty("role.validation.RoleExists")));
+        }
         
         return fields;
     }

@@ -3,6 +3,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
 import java.util.Optional;
 
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +25,11 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
 
     private final AccountRepository accountRepository;
 
-    public IdentityVerificationServiceImpl(AccountRepository accountRepository) {
+    private final Environment env;
+
+    public IdentityVerificationServiceImpl(AccountRepository accountRepository, Environment env) {
         this.accountRepository = accountRepository;
+        this.env = env;
     }
 
     @Override
@@ -60,7 +64,7 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
                     .value(pathPersonId)
                     .type(pathPersonId.getClass())
                     .ownerClass(PersonRequestDto.class)
-                    .errorMessage("is not allowed for this user!")
+                    .errorMessage(env.getProperty("identity.validation.UserAllowance"))
                     .build();
         }
         return Optional.ofNullable(infoError);
@@ -70,7 +74,7 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
     public Optional<FieldInfoError> validateAdminRequired(AbstractAccountRequestDto accountDto, String fieldName){
         FieldInfoError infoError = null;
         if(!isAdminAuthority()){
-            infoError = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, fieldName, "requires an admin user!");
+            infoError = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, fieldName, env.getProperty("identity.validation.AdminRequired"));
         } 
         return Optional.ofNullable(infoError);
     }

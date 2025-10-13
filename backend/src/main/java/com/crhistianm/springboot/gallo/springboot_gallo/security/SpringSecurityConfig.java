@@ -2,6 +2,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,9 +25,12 @@ public class SpringSecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration, AccountUserDetailsService accountService) {
+    private final Environment environment;
+
+    public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration, AccountUserDetailsService accountService, Environment environment) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.accountService = accountService;
+        this.environment = environment;
     } 
 
     @Bean
@@ -55,8 +59,8 @@ public class SpringSecurityConfig {
                     .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
                     .requestMatchers("/v3/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                    .addFilter(new JwtValidationFilter(authenticationManager(), accountService))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager(), environment))
+                    .addFilter(new JwtValidationFilter(authenticationManager(), accountService, environment))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
