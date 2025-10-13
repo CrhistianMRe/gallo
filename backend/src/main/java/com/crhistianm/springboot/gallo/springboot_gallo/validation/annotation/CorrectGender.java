@@ -13,7 +13,7 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CorrectGender{
 
-    String message() default "is not a valid gender, use M, F or NT";
+    String message() default "{dto.validation.CorrectGender}";
 
     Class<?>[] groups() default {};
     
