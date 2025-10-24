@@ -29,6 +29,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.env.Environment;
+import org.springframework.mock.env.MockEnvironment;
+import org.springframework.mock.env.MockPropertySource;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
@@ -51,6 +54,9 @@ public class AccountValidationServiceUnitTest {
 
     @Mock
     PersonValidationService personValidationService;
+
+    @Mock
+    Environment env;
 
     @InjectMocks
     AccountValidationServiceImpl accountValidationService;
@@ -76,6 +82,7 @@ public class AccountValidationServiceUnitTest {
 
         @Test
         void returnsOptionalFieldInfoError(){
+            doReturn("person env").when(env).getProperty("account.validation.PersonAssigned");
             accountRequestDto.setPersonId(2L);
             Optional<FieldInfoError> fieldOptional;
 
@@ -89,7 +96,7 @@ public class AccountValidationServiceUnitTest {
             assertThat(field.getType()).isEqualTo(Long.class);
             assertThat(field.getValue()).isEqualTo(2L);
             assertThat(field.getOwnerClass()).isEqualTo(AbstractAccountRequestDto.class);
-            assertThat(field.getErrorMessage()).isEqualTo("is already assigned, use another person!");
+            assertThat(field.getErrorMessage()).isEqualTo("person env");
 
             verify(spyAccountValidationService, times(1)).isPersonIdAssigned(isNull(), anyLong());
 
@@ -122,6 +129,7 @@ public class AccountValidationServiceUnitTest {
 
         @Test
         void returnsOptionalFieldInfoError() {
+            doReturn("email env").when(env).getProperty("account.validation.UniqueEmail");
             accountRequestDto.setEmail("invalid@gmail.com");
             Optional<FieldInfoError> fieldOptional;
             fieldOptional = spyAccountValidationService.validateUniqueEmail(2L, accountRequestDto);
@@ -133,7 +141,7 @@ public class AccountValidationServiceUnitTest {
             assertThat(field.getValue()).isEqualTo("invalid@gmail.com");
             assertThat(field.getType()).isEqualTo(String.class);
             assertThat(field.getOwnerClass()).isEqualTo(AbstractAccountRequestDto.class);
-            assertThat(field.getErrorMessage()).isEqualTo("is not available, user another one!");
+            assertThat(field.getErrorMessage()).isEqualTo("email env");
             verify(spyAccountValidationService).isEmailAvailable(anyLong(), anyString());
         }
 

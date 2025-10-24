@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.env.Environment;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
@@ -46,6 +48,9 @@ public class PersonValidationServiceUnitTest {
     @InjectMocks
     PersonValidationServiceImpl spyPersonValidationService;
 
+    @Mock
+    Environment env;
+
     @Nested 
     class ValidateUniquePhoneNumberMethodTest{
 
@@ -63,6 +68,7 @@ public class PersonValidationServiceUnitTest {
 
         @Test
         void returnsOptionalFieldInfoError() {
+            doReturn("phoneNumber env").when(env).getProperty("person.validation.UniquePhoneNumber");
             personRequestDto.setPhoneNumber("2222");
             
             Optional<FieldInfoError> fieldOptional; 
@@ -77,7 +83,7 @@ public class PersonValidationServiceUnitTest {
             assertThat(field.getValue()).isEqualTo("2222");
             assertThat(field.getOwnerClass()).isEqualTo(PersonRequestDto.class);
             assertThat(field.getType()).isEqualTo(String.class);
-            assertThat(field.getErrorMessage()).isEqualTo("is already registered, user another one");
+            assertThat(field.getErrorMessage()).isEqualTo("phoneNumber env");
 
             verify(spyPersonValidationService).isPhoneNumberAvailable(anyLong(), anyString());
         }
@@ -108,6 +114,7 @@ public class PersonValidationServiceUnitTest {
 
         @Test
         void returnsOptionalFieldInfoError() {
+            doReturn("registered env").when(env).getProperty("person.validation.PersonRegistered");
             Optional<FieldInfoError> fieldOptional;
             accountRequestDto.setPersonId(2L);
             fieldOptional = spyPersonValidationService.validatePersonRegistered(accountRequestDto);
@@ -117,7 +124,7 @@ public class PersonValidationServiceUnitTest {
             field = fieldOptional.orElseThrow();
 
             assertThat(field.getName()).isEqualTo("personId");
-            assertThat(field.getErrorMessage()).isEqualTo("is not registered, register first!");
+            assertThat(field.getErrorMessage()).isEqualTo("registered env");
             assertThat(field.getOwnerClass()).isEqualTo(AbstractAccountRequestDto.class);
             assertThat(field.getType()).isEqualTo(Long.class);
             assertThat(field.getValue()).isEqualTo(2L);

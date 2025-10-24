@@ -11,20 +11,17 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonServiceImpl;
 
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
-@SpringBootTest
 public class PersonRequestDtoAnnotationTest {
 
-    @Autowired
     private Validator validator;
 
     private PersonRequestDto person;
@@ -33,6 +30,11 @@ public class PersonRequestDtoAnnotationTest {
 
     @MockitoBean
     private PersonServiceImpl personService;
+
+    @BeforeEach
+    void setUp(){
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
+    }
 
     @Nested
     class FirstNameFieldTest{
@@ -233,7 +235,7 @@ public class PersonRequestDtoAnnotationTest {
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
-            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("is not a valid gender, use M, F or NT");
+            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("{dto.validation.CorrectGender}");
         }
 
         @Test
@@ -291,7 +293,7 @@ public class PersonRequestDtoAnnotationTest {
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
-            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("is not correct, use meters for correct format. EX: 1.70");
+            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("{dto.validation.annotation.digits.height}");
         }
 
         @Test
@@ -349,7 +351,7 @@ public class PersonRequestDtoAnnotationTest {
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
-            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("is not correct, use kilograms for correct format. EX: 80.0");
+            assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("{dto.validation.annotation.digits.weight}");
         }
 
         @Test

@@ -3,6 +3,8 @@ package com.crhistianm.springboot.gallo.springboot_gallo.service;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.env.Environment;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
@@ -29,6 +32,9 @@ public class RoleValidationServiceImplUnitTest {
     @Mock
     RoleRepository repository;
 
+    @Mock
+    Environment env;
+
     @InjectMocks
     RoleValidationServiceImpl roleService;
 
@@ -39,6 +45,7 @@ public class RoleValidationServiceImplUnitTest {
         @BeforeEach
         void setUp() {
             fields = new ArrayList<>();
+            lenient().doReturn("role env").when(env).getProperty("role.validation.RoleExists");
             doAnswer(invo ->{
                 return invo.getArgument(0, Long.class).equals(1L);
             }).when(repository).existsById(anyLong());
@@ -64,7 +71,7 @@ public class RoleValidationServiceImplUnitTest {
             assertThat(fields).hasSize(1);
 
             assertThat(fields).extracting(FieldInfoError::getName, FieldInfoError::getErrorMessage, FieldInfoError::getValue)
-                .contains(tuple("id", "role field does not exist in db", 2L));
+                .contains(tuple("id", "role env", 2L));
 
             verify(repository, times(1)).existsById(2L);
             verify(repository, times(1)).existsByName("ROLE_ADMIN");
@@ -79,7 +86,7 @@ public class RoleValidationServiceImplUnitTest {
             FieldInfoError fieldName = fields.get(0);
 
             assertThat(fieldName.getName()).isEqualTo("name");
-            assertThat(fieldName.getErrorMessage()).isEqualTo("role field does not exist in db");
+            assertThat(fieldName.getErrorMessage()).isEqualTo("role env");
             assertThat(fieldName.getValue()).isEqualTo("ROLE_MANAGER");
 
 
@@ -100,7 +107,7 @@ public class RoleValidationServiceImplUnitTest {
                 .contains(tuple("name", "ROLE_WRONG"));
 
             assertThat(fields).extracting(FieldInfoError::getErrorMessage)
-                .containsExactlyInAnyOrder("role field does not exist in db", "role field does not exist in db");
+                .containsExactlyInAnyOrder("role env", "role env");
 
             verify(repository, times(1)).existsById(3L);
             verify(repository, times(1)).existsByName("ROLE_WRONG");
