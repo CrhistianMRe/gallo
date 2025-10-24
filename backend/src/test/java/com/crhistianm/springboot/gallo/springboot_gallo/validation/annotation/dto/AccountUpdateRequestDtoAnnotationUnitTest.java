@@ -7,7 +7,6 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.group.GroupsOrder;
 
@@ -15,7 +14,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
-public class AccountUpdateRequestDtoAnnotationUnitTest {
+public class AccountUpdateRequestDtoAnnotationUnitTest{
 
     Validator validator;
 
@@ -38,7 +37,7 @@ public class AccountUpdateRequestDtoAnnotationUnitTest {
             String violation = violations.stream().map(ConstraintViolation::getMessage).findFirst().orElseThrow();
 
             assertThat(violations).hasSize(1);
-            assertThat(violation).isEqualTo("should at least contain 1 field");
+            assertThat(violation).isEqualTo("{dto.validation.NotEmptyRequest}");
         }
 
         @Test
