@@ -1,5 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.PersonValidator;
@@ -22,9 +24,12 @@ public class PersonServiceImpl implements PersonService{
 
     private final PersonValidator personValidator;
 
-    public PersonServiceImpl(PersonRepository personRepository, PersonValidator personValidator){
+    private final IdentityVerificationService identityService;
+
+    public PersonServiceImpl(PersonRepository personRepository, PersonValidator personValidator, IdentityVerificationService identityService){
         this.personRepository = personRepository;
         this.personValidator = personValidator;
+        this.identityService = identityService;
     }
 
     @Transactional
@@ -50,7 +55,10 @@ public class PersonServiceImpl implements PersonService{
     public PersonResponseDto delete(Long id) {
         Optional<Person> personOptional = personRepository.findById(id);
         if(personOptional.isEmpty())throw new NotFoundException(Person.class);
-            personRepository.delete(personOptional.orElseThrow());
+        identityService.validateUserAllowance(id).ifPresent(f -> {
+            throw new ValidationServiceException(new ArrayList<>(List.of(f)));
+        });
+        personRepository.delete(personOptional.orElseThrow());
         return PersonMapper.entityToResponse(personOptional.orElseThrow());
     }
 
@@ -59,6 +67,9 @@ public class PersonServiceImpl implements PersonService{
     public PersonResponseDto getById(Long id) {
         Optional<Person> personOptional = personRepository.findById(id);
         if(personOptional.isEmpty()) throw new NotFoundException(Person.class);
+        identityService.validateUserAllowance(id).ifPresent(f -> {
+            throw new ValidationServiceException(new ArrayList<>(List.of(f)));
+        });
         return PersonMapper.entityToResponse(personOptional.orElseThrow());
     }
 
