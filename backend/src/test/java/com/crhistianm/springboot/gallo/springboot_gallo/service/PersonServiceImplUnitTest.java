@@ -5,10 +5,13 @@ import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPe
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonEntityTwo;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -18,12 +21,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
+import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.PersonValidator;
 
@@ -39,6 +45,9 @@ public class PersonServiceImplUnitTest {
 
     @Mock
     PersonValidationService personValidationService;
+
+    @Mock
+    IdentityVerificationService identityVerificationService;
 
     @InjectMocks
     PersonServiceImpl personServiceImpl;
@@ -61,9 +70,15 @@ public class PersonServiceImplUnitTest {
 
         @BeforeEach
         void setUp(){
+            lenient().doAnswer(invo -> {
+                FieldInfoError field = null;
+                if(invo.getArgument(0, Long.class).equals(120L)) field = new FieldInfoErrorBuilder().name("identity").build();
+                return Optional.ofNullable(field);
+            }).when(identityVerificationService).validateUserAllowance(anyLong());
             lenient().when(personRepository.findById(anyLong())).thenAnswer(invo -> {
                 Optional<Person> responseOptional = Optional.empty();
                 if(invo.getArgument(0, Long.class) == 1L) responseOptional = givenPersonEntityOne();
+                if(invo.getArgument(0, Long.class) == 120L) responseOptional = givenPersonEntityOne();
                 return responseOptional;
             });
         }
@@ -91,6 +106,17 @@ public class PersonServiceImplUnitTest {
                 personServiceImpl.getById(2L);
             });
             verify(personRepository, times(1)).findById(anyLong());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenGetByIdUserAllowanceIsInvalid() {
+            FieldInfoError field = null;
+
+            field = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> personServiceImpl.getById(120L)).actual().getFieldErrors().get(0);
+
+            assertThat(field).isNotNull();
+            assertThat(field).extracting(FieldInfoError::getName).isEqualTo("identity");
         }
 
     }
@@ -153,9 +179,15 @@ public class PersonServiceImplUnitTest {
 
         @BeforeEach
         void setUp(){
+            lenient().doAnswer(invo -> {
+                FieldInfoError field = null;
+                if(invo.getArgument(0, Long.class).equals(120L)) field = new FieldInfoErrorBuilder().name("identity").build();
+                return Optional.ofNullable(field);
+            }).when(identityVerificationService).validateUserAllowance(anyLong());
             when(personRepository.findById(anyLong())).thenAnswer(invo ->{
                 Optional<Person> personDb = Optional.empty();
                 if(invo.getArgument(0, Long.class) == 1L) personDb = givenPersonEntityOne();
+                if(invo.getArgument(0, Long.class) == 120L) personDb = givenPersonEntityOne();
                 return personDb;
             });
         }
@@ -173,6 +205,17 @@ public class PersonServiceImplUnitTest {
                 personServiceImpl.delete(2L);
             });
             verify(personRepository, times(1)).findById(anyLong());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenDeleteUserAllowanceIsInvalid() {
+            FieldInfoError field = null;
+
+            field = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> personServiceImpl.getById(120L)).actual().getFieldErrors().get(0);
+
+            assertThat(field).isNotNull();
+            assertThat(field).extracting(FieldInfoError::getName).isEqualTo("identity");
         }
 
     }
