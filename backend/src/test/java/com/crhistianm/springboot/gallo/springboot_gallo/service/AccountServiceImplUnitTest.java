@@ -23,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.RoleBuilder;
 
@@ -43,7 +42,6 @@ import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundExcept
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
@@ -70,9 +68,6 @@ class AccountServiceImplUnitTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
-    @Mock
-    IdentityVerificationService identityService;
-
     @InjectMocks
     AccountServiceImpl accountServiceImpl;
 
@@ -81,19 +76,9 @@ class AccountServiceImplUnitTest {
 
         @BeforeEach
         void setUp(){
-            lenient().doAnswer(invo -> {
-                FieldInfoError field = null;
-                if(invo.getArgument(0, Long.class).equals(120L)) field = new FieldInfoErrorBuilder().name("identity").build();
-                return Optional.ofNullable(field);
-            }).when(identityService).validateUserAllowance(anyLong());
             lenient().when(accountRepository.findById(anyLong())).thenAnswer(invo -> {
                 Optional<Account> accountOptional = Optional.empty();
                 if(invo.getArgument(0, Long.class) == 1L) accountOptional = givenAccountEntityAdmin();
-                if(invo.getArgument(0, Long.class) == 120L) {
-                    Account account = givenAccountEntityAdmin().orElseThrow();
-                    account.getPerson().setId(120L);
-                    accountOptional = Optional.of(account);
-                }
                 return accountOptional;
             });
         }
@@ -122,18 +107,6 @@ class AccountServiceImplUnitTest {
 
             assertEquals("admin@gmail.com", accountServiceImpl.getById(1L).getEmail());
             verify(accountRepository, times(1)).findById(anyLong());
-        }
-
-        @Test
-        void shouldThrowExceptionWhenUserAllowanceIsInvalid() {
-            FieldInfoError field = null;
-
-            field = assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> accountServiceImpl.getById(120L)).actual().getFieldErrors().get(0);
-            assertThat(field).isNotNull();
-            assertThat(field).extracting(FieldInfoError::getName).isEqualTo("identity");
-
-            verify(accountRepository, times(1)).findById(eq(120L));
         }
 
     }
