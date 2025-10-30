@@ -42,7 +42,9 @@ public class AccountValidator {
         //Null id as is account creation
         accountService.validateUniqueEmail(null, accountDto).ifPresent(fields::add);
 
-        identityService.validateAdminRequired(accountDto, "admin").ifPresent(fields::add);
+        if(accountDto.isAdmin()){
+            identityService.validateAdminRequired(accountDto, "admin").ifPresent(fields::add);
+        }
 
         if(!fields.isEmpty()) throw new ValidationServiceException(fields);
     }
