@@ -94,10 +94,10 @@ public class AccountValidatorUnitTest {
                 return Optional.ofNullable(field);
             }).when(accountService).validateUniqueEmail(isNull(), any(AccountRequestDto.class));
             
-             doAnswer(invo ->{
+             lenient().doAnswer(invo ->{
                  FieldInfoError field = null;
                  AccountRequestDto dto = invo.getArgument(0, AccountRequestDto.class);
-                 if(!dto.isAdmin()){
+                 if(dto.getPassword() != null && dto.getPassword().contains("adminerror")){
                      field = new FieldInfoErrorBuilder().name("isadmin").build();
                  }
                  return Optional.ofNullable(field);
@@ -109,7 +109,6 @@ public class AccountValidatorUnitTest {
             verify(personService, times(1)).validatePersonRegistered(any(AccountRequestDto.class));
             verify(accountService, times(1)).validatePersonAssigned(isNull(), any(AccountRequestDto.class));
             verify(accountService, times(1)).validateUniqueEmail(isNull(), any(AccountRequestDto.class));
-            verify(identityService, times(1)).validateAdminRequired(any(AccountRequestDto.class), anyString());
         }
 
         @Test
@@ -121,14 +120,15 @@ public class AccountValidatorUnitTest {
             assertDoesNotThrow(() -> {
                 accountValidator.validateRequest(accountRequestDto);
             });
-
+            verify(identityService, times(1)).validateAdminRequired(any(AccountRequestDto.class), anyString());
         }
 
         @Test
         void shouldThrowExceptionWith4ErrorsWhenAllConditionsAreMet(){
             accountRequestDto.setEmail("invalid@gmail.com");
+            accountRequestDto.setPassword("adminerror");
             accountRequestDto.setPersonId(2L);
-            accountRequestDto.setAdmin(false);
+            accountRequestDto.setAdmin(true);
             
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> {
@@ -146,6 +146,8 @@ public class AccountValidatorUnitTest {
             assertThat(fieldAssigned).isNotEmpty();
             assertThat(fieldEmail).isNotEmpty();
             assertThat(fieldIsAdmin).isNotEmpty();
+
+            verify(identityService, times(1)).validateAdminRequired(any(AccountRequestDto.class), anyString());
         }
 
         @Test
@@ -154,7 +156,6 @@ public class AccountValidatorUnitTest {
 
             accountRequestDto.setEmail("example@gmail.com");
             accountRequestDto.setPersonId(1L);
-            accountRequestDto.setAdmin(true);
 
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> {
@@ -167,6 +168,7 @@ public class AccountValidatorUnitTest {
 
             assertThat(fieldRegistered).isNotEmpty();
 
+            verify(identityService, times(0)).validateAdminRequired(any(AccountRequestDto.class), anyString());
         }
 
         @Test
@@ -175,7 +177,6 @@ public class AccountValidatorUnitTest {
 
             accountRequestDto.setEmail("example@gmail.com");
             accountRequestDto.setPersonId(1L);
-            accountRequestDto.setAdmin(true);
 
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() ->{
@@ -187,6 +188,8 @@ public class AccountValidatorUnitTest {
             assertThat(fields).hasSize(1);
 
             assertThat(fieldAssigned).isNotEmpty();
+
+            verify(identityService, times(0)).validateAdminRequired(any(AccountRequestDto.class), anyString());
         }
 
         @Test
@@ -205,13 +208,16 @@ public class AccountValidatorUnitTest {
             assertThat(fields).hasSize(1);
 
             assertThat(fieldEmail).isNotEmpty();
+
+            verify(identityService, times(1)).validateAdminRequired(any(AccountRequestDto.class), anyString());
         }
         
         @Test
         void shouldThrowExceptionWithOnlyAdminRequiredError(){
             accountRequestDto.setEmail("example@gmail.com");
+            accountRequestDto.setPassword("adminerror");
             accountRequestDto.setPersonId(1L);
-            accountRequestDto.setAdmin(false);
+            accountRequestDto.setAdmin(true);
 
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() ->{
@@ -223,10 +229,14 @@ public class AccountValidatorUnitTest {
             assertThat(fields).hasSize(1);
 
             assertThat(fieldIsAdmin).isNotEmpty();
+
+            verify(identityService, times(1)).validateAdminRequired(any(AccountRequestDto.class), anyString());
         }
 
-
     }
+
+
+    
 
     @Nested
     class ValidateUpdateRequestMethodTest {
