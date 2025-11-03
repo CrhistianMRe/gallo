@@ -7,11 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.RETURNS_SMART_NULLS;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
@@ -33,12 +36,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAccountUserDetails;
+import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.dto.AccountRequestDtoAnnotationTest;
 
 @ExtendWith(MockitoExtension.class)
 public class IdentityVerificationServiceImplUnitTest {
@@ -187,6 +194,55 @@ public class IdentityVerificationServiceImplUnitTest {
             verify(spyServiceIdentity, times(1)).validateUserAllowance(eq(2L));
             verify(environment, times(1)).getProperty("identity.validation.UserAllowance");
         }
+
+    }
+
+    @Nested
+    class ValidateAdminRequiredMethod {
+
+        Optional<FieldInfoError> fieldOptional;
+
+
+        @BeforeEach
+        void setUp() {
+            fieldOptional = Optional.empty();
+        }
+
+        @Test
+        void shouldReturnErrorOptionalWhenAuthorityIsNotAdmin() {
+            doReturn("errormessage").when(environment).getProperty(anyString());
+            doReturn(false).when(spyServiceIdentity).isAdminAuthority();
+            AccountRequestDto accountDto = new AccountRequestDto();
+            accountDto.setEmail("test");
+            fieldOptional = spyServiceIdentity.validateAdminRequired(accountDto, "email");
+
+            assertThat(fieldOptional).isNotEmpty();
+
+            FieldInfoError field = fieldOptional.orElseThrow();
+
+            assertThat(field).extracting(FieldInfoError::getName).isEqualTo("email");
+            assertThat(field).extracting(FieldInfoError::getErrorMessage).isEqualTo("errormessage");
+            assertThat(field).extracting(FieldInfoError::getValue).isEqualTo("test");
+            assertThat(field).extracting(FieldInfoError::getOwnerClass).isEqualTo(AbstractAccountRequestDto.class);
+            assertThat(field).extracting(FieldInfoError::getType).isEqualTo(String.class);
+
+            verify(spyServiceIdentity, times(1)).isAdminAuthority();
+            verify(environment, times(1)).getProperty(anyString());
+        }
+
+        @Test
+        void shouldReturnEmptyOptionalWhenAuthorityIsAdmin() {
+            doReturn(true).when(spyServiceIdentity).isAdminAuthority();
+            AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto();
+            accountDto.setEnabled(true);
+
+            fieldOptional = spyServiceIdentity.validateAdminRequired(accountDto, "enabled");
+            assertThat(fieldOptional).isEmpty();
+
+            verify(spyServiceIdentity, times(1)).isAdminAuthority();
+            verifyNoInteractions(environment);
+        }
+
 
     }
 }
