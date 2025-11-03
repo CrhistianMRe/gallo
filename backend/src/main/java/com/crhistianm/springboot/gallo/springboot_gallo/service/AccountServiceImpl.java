@@ -96,7 +96,7 @@ public class AccountServiceImpl implements AccountService{
         return validationService.settleResponseType(accountRepository.save(account));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public AccountResponseDto getById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
@@ -107,7 +107,7 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<AccountAdminResponseDto> getAll() {
         List<AccountAdminResponseDto> accountList = accountRepository.findAll().stream().map(a -> (AccountAdminResponseDto) AccountMapper.entityToAdminResponse(a)).collect(Collectors.toList());
         return accountList;
