@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,11 @@ public class AccountController {
     @PatchMapping("/{id}")
     public ResponseEntity<AccountResponseDto> update(@PathVariable Long id, @Validated(GroupsOrder.class) @RequestBody AccountUpdateRequestDto requestDto){
         return ResponseEntity.ok(accountService.update(id, requestDto)); 
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AccountResponseDto> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(accountService.delete(id));
     }
 
     @GetMapping("/{id}")
