@@ -96,6 +96,14 @@ public class AccountServiceImpl implements AccountService{
         return validationService.settleResponseType(accountRepository.save(account));
     }
 
+    @Transactional
+    @Override
+    public AccountResponseDto delete(Long id) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
+        accountRepository.delete(account);
+        return validationService.settleResponseType(account);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public AccountResponseDto getById(Long id) {

@@ -15,6 +15,8 @@ public interface AccountService {
 
     AccountResponseDto update(Long id, AccountUpdateRequestDto accountDto);
 
+    AccountResponseDto delete(Long id);
+
     AccountResponseDto getById(Long id);
 
     List<AccountAdminResponseDto> getAll();
