@@ -69,4 +69,10 @@ public class AccountValidator {
         if(!fields.isEmpty()) throw new ValidationServiceException(fields);
     }
 
+    public void validateByIdRequest(Long personId) {
+        identityService.validateUserAllowance(personId).ifPresent(f -> {
+            throw new ValidationServiceException(new ArrayList<>(List.of(f)));
+        });
+    }
+
 }
