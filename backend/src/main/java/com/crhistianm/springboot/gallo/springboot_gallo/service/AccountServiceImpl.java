@@ -100,6 +100,7 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public AccountResponseDto delete(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
+        accountValidator.validateByIdRequest(account.getPerson().getId());
         accountRepository.delete(account);
         return validationService.settleResponseType(account);
     }
