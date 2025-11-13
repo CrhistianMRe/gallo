@@ -46,7 +46,7 @@ public class Data {
         PersonRequestDto person = new PersonRequestDto();
         person.setFirstName("one");
         person.setLastName("1one");
-        person.setBirthDate(LocalDate.now());
+        person.setBirthDate(LocalDate.of(2004, 01, 01));
         person.setGender("M");
         person.setPhoneNumber("123123123");
         return Optional.of(person);

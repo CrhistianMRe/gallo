@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,10 +36,12 @@ import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
@@ -477,6 +481,119 @@ class AccountServiceImplUnitTest {
 
 
     }
+
+    @Nested
+    class DeleteModuleTest {
+
+        @BeforeEach
+        void setUp() {
+
+            doAnswer(invo -> {
+                Account account = null;
+                if(invo.getArgument(0, Long.class).equals(1L)) {
+                    account = givenAccountEntityUser().orElseThrow();
+                    account.getPerson().setId(1L);
+                }
+                if(invo.getArgument(0, Long.class).equals(2L)) {
+                    account = givenAccountEntityAdmin().orElseThrow();
+                    account.getPerson().setId(2L);
+                }
+                if(invo.getArgument(0, Long.class).equals(10L)) {
+                    account = givenAccountEntityAdmin().orElseThrow();
+                    account.getPerson().setId(1L);
+                    account.setEmail("settleadmin");
+                }
+                return Optional.ofNullable(account);
+            }).when(accountRepository).findById(anyLong());
+
+            lenient().doAnswer(invo -> {
+                if(invo.getArgument(0, Long.class).equals(2L)) throw new ValidationServiceException();
+                return null;
+            }).when(accountValidator).validateByIdRequest(anyLong());
+
+            lenient().doAnswer(invo -> {
+                Account account = invo.getArgument(0, Account.class);
+                if(account.getEmail().equals("settleadmin")) return AccountMapper.entityToAdminResponse(account);
+                return AccountMapper.entityToResponse(account);
+            }).when(accountValidationService).settleResponseType(any(Account.class));
+
+        }
+
+        @Test
+        void shouldReturnAdminResponseDtoWhenDeleteIsSuccessfull() {
+            AccountAdminResponseDto adminResponse = (AccountAdminResponseDto) accountServiceImpl.delete(10L);
+
+            assertThat(adminResponse).extracting(AccountAdminResponseDto::getAudit)
+                .extracting(Audit::getUpdatedAt, Audit::getCreatedAt, Audit::isEnabled)
+                .contains(
+                            LocalDateTime.of(2004, 01, 01, 1, 1, 1, 1), 
+                            LocalDateTime.of(2004, 02, 01, 1, 1, 1, 1),
+                            true);
+
+            assertThat(adminResponse).extracting(AccountAdminResponseDto::getId).isEqualTo(1L);
+            assertThat(adminResponse).extracting(AccountAdminResponseDto::getEmail).isEqualTo("settleadmin");
+            assertThat(adminResponse.getRoles()).extracting(RoleResponseDto::getName)
+                .containsExactly("ROLE_ADMIN", "ROLE_USER");
+
+            assertThat(adminResponse).extracting(AccountAdminResponseDto::getPerson)
+                .extracting(
+                        PersonResponseDto::getFirstName,
+                        PersonResponseDto::getLastName, 
+                        PersonResponseDto::getBirthDate, 
+                        PersonResponseDto::getGender, 
+                        PersonResponseDto::getPhoneNumber)
+                .containsExactly(
+                            "one",
+                            "1one",
+                            LocalDate.of(2004, 01, 01),
+                            "M",
+                            "123123123"
+                        );
+
+            verify(accountRepository, times(1)).findById(eq(10L));
+            verify(accountValidator, times(1)).validateByIdRequest(eq(1L));
+            verify(accountRepository, times(1)).delete(any(Account.class));
+            verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
+        }
+
+        @Test
+        void shouldReturnUserResponseDtoWhenDeleteIsSuccessfull() {
+
+            AccountUserResponseDto userResponse = (AccountUserResponseDto) accountServiceImpl.delete(1L);
+
+            assertThat(userResponse).extracting(AccountUserResponseDto::getEmail).isEqualTo("user@gmail.com");
+
+            verify(accountRepository, times(1)).findById(eq(1L));
+            verify(accountValidator, times(1)).validateByIdRequest(eq(1L));
+            verify(accountRepository, times(1)).delete(any(Account.class));
+            verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenRequestIsInvalid() {
+            assertThatExceptionOfType(ValidationServiceException.class).isThrownBy(()-> accountServiceImpl.delete(2L));
+            verify(accountRepository, times(1)).findById(eq(2L));
+            verify(accountValidator, times(1)).validateByIdRequest(eq(2L));
+            verifyNoMoreInteractions(accountRepository);
+            verifyNoInteractions(accountValidationService);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenAccountPathIdIsNotFound() {
+            String errorMessage = assertThatExceptionOfType(NotFoundException.class)
+                .isThrownBy(() -> accountServiceImpl.delete(100L)).actual().getMessage();
+
+            assertThat(errorMessage).isEqualTo("Account not found");
+
+            verify(accountRepository, times(1)).findById(100L);
+            verifyNoMoreInteractions(accountRepository);
+            verifyNoInteractions(accountValidator);
+            verifyNoInteractions(accountValidationService);
+        }
+
+
+    }
+
 
 
 
