@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -25,6 +26,10 @@ import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
@@ -131,5 +136,75 @@ public class AccountControllerTest {
 
 
     }
+
+    @Nested
+    class DeleteModuleTest {
+
+        @BeforeEach
+        void setUp() {
+            doAnswer(invo -> {
+                Long id = invo.getArgument(0, Long.class);
+                if(id.equals(99L)) throw new NotFoundException(Account.class);
+                if(id.equals(1L)) return new AccountUserResponseDto("testemail");
+                PersonResponseDto personDto = new PersonResponseDto();
+                personDto.setId(1L);
+
+                AccountAdminResponseDto accountDto = new AccountAdminResponseDto();
+                accountDto.setEmail("testemail");
+                accountDto.setPerson(personDto);
+                accountDto.setRoles(new ArrayList<>(List.of(new RoleResponseDto(1L, "roleone"), new RoleResponseDto(2L, "roletwo"))));
+                accountDto.setId(20L);
+                return accountDto;
+            }).when(accountService).delete(anyLong());
+        }
+
+        @Nested
+        class AccountAdminResponseDtoTest {
+
+            @Test
+            void shouldReturnResponseWhenAccountIsDeleted() throws Exception {
+                mockMvc.perform(delete("/api/accounts/20"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(20L))
+                    .andExpect(jsonPath("$.email").value("testemail"))
+                    .andExpect(jsonPath("$.roles[0].id").value(1L))
+                    .andExpect(jsonPath("$.roles[1].id").value(2L))
+                    .andExpect(jsonPath("$.roles[0].name").value("roleone"))
+                    .andExpect(jsonPath("$.roles[1].name").value("roletwo"))
+                    .andExpect(jsonPath("$.person.id").value(1L));
+            }
+
+            @Test
+            void shouldReturnNotFoundMessageWhenPathIdIsNotFound() throws Exception {
+                mockMvc.perform(delete("/api/accounts/99"))
+                    .andExpect(jsonPath("$.message").value("Account not found"));
+            }
+
+        }
+
+
+        @Nested
+        class AccountUserResponseDtoTest {
+
+            @Test
+            void shouldReturnResponseWhenAccountIsDeleted() throws Exception {
+                mockMvc.perform(delete("/api/accounts/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.email").value("testemail"));
+            }
+
+            @Test
+            void shouldReturnNotFoundMessageWhenPathIdIsNotFound() throws Exception {
+                mockMvc.perform(delete("/api/accounts/99"))
+                    .andExpect(jsonPath("$.message").value("Account not found"));
+            }
+
+        }
+
+
+
+    }
     
 }
+
+

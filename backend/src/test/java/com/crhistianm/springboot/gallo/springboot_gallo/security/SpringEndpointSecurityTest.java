@@ -161,6 +161,13 @@ public class SpringEndpointSecurityTest {
                     .andExpect(status().isNotFound());
             }
 
+            @Test
+            void shouldReturnNotFoundStatusWhenDeleteRequestIsSent() throws Exception {
+                mockMvc.perform(delete("/api/accounts/1")
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.message").value("Account not found"));
+            }
 
         }
         
@@ -256,6 +263,14 @@ public class SpringEndpointSecurityTest {
                         .content(objectMapper.writeValueAsString(new AccountUpdateRequestDto()))
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isNotFound());
+            }
+
+            @Test
+            void shouldReturnNotFoundStatusWhenDeleteRequestIsSent() throws Exception {
+                mockMvc.perform(delete("/api/accounts/1")
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.message").value("Account not found"));
             }
 
         }
