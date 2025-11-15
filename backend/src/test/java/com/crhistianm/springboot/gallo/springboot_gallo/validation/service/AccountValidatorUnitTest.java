@@ -18,6 +18,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import org.jboss.jandex.FieldInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -871,6 +872,39 @@ public class AccountValidatorUnitTest {
 
         }
 
+
+    }
+
+    @Nested
+    class ValidateByIdRequestMethodTest {
+
+        @BeforeEach
+        void setUp() {
+            doAnswer(invo ->{
+                FieldInfoError field = null;
+                if(invo.getArgument(0, Long.class).equals(1L)) {
+                    field = new FieldInfoError();
+                    field.setName("exampleError");
+                }
+                return Optional.ofNullable(field);
+            }).when(identityService).validateUserAllowance(anyLong());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenUserIsNotAllowed() {
+            FieldInfoError field = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> accountValidator.validateByIdRequest(1L)).actual().getFieldErrors().get(0);
+
+            assertThat(field).extracting(FieldInfoError::getName).isEqualTo("exampleError");
+
+            verify(identityService).validateUserAllowance(eq(1L));
+        }
+
+        @Test
+        void shouldNotThrowExceptionWhenUserIsAllowed() {
+            assertDoesNotThrow(() -> accountValidator.validateByIdRequest(2L));
+            verify(identityService).validateUserAllowance(eq(2L));
+        }
 
     }
 
