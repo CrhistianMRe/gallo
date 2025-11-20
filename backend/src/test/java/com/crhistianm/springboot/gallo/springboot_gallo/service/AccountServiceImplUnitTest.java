@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.mapping.Array;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,9 +75,6 @@ class AccountServiceImplUnitTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
-    @Mock
-    IdentityVerificationService identityService;
-
     @InjectMocks
     AccountServiceImpl accountServiceImpl;
 
@@ -87,9 +85,12 @@ class AccountServiceImplUnitTest {
         void setUp(){
             lenient().doAnswer(invo -> {
                 FieldInfoError field = null;
-                if(invo.getArgument(0, Long.class).equals(120L)) field = new FieldInfoErrorBuilder().name("identity").build();
+                if(invo.getArgument(0, Long.class).equals(120L)) {
+                    field = new FieldInfoErrorBuilder().name("error").build();
+                    throw new ValidationServiceException(new ArrayList<>(List.of(field)));
+                }
                 return Optional.ofNullable(field);
-            }).when(identityService).validateUserAllowance(anyLong());
+            }).when(accountValidator).validateByIdRequest(anyLong());
             lenient().when(accountRepository.findById(anyLong())).thenAnswer(invo -> {
                 Optional<Account> accountOptional = Optional.empty();
                 if(invo.getArgument(0, Long.class) == 1L) accountOptional = givenAccountEntityAdmin();
@@ -112,11 +113,13 @@ class AccountServiceImplUnitTest {
         }
 
         @Test
-        void testgetByIdNotFound(){
+        void testGetByIdNotFound(){
             assertThrows(NotFoundException.class, () -> {
                 accountServiceImpl.getById(2L);
             });
             verify(accountRepository, times(1)).findById(anyLong());
+            verifyNoInteractions(accountValidator);
+            verifyNoInteractions(accountValidationService);
         }
 
         @Test
@@ -126,18 +129,21 @@ class AccountServiceImplUnitTest {
 
             assertEquals("admin@gmail.com", accountServiceImpl.getById(1L).getEmail());
             verify(accountRepository, times(1)).findById(anyLong());
+            verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
         }
 
         @Test
-        void shouldThrowExceptionWhenUserAllowanceIsInvalid() {
+        void shouldThrowExceptionWhenRequestByIdIsInvalid() {
             FieldInfoError field = null;
 
             field = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> accountServiceImpl.getById(120L)).actual().getFieldErrors().get(0);
             assertThat(field).isNotNull();
-            assertThat(field).extracting(FieldInfoError::getName).isEqualTo("identity");
+            assertThat(field).extracting(FieldInfoError::getName).isEqualTo("error");
 
             verify(accountRepository, times(1)).findById(eq(120L));
+            verify(accountValidator).validateByIdRequest(eq(120L));
+            verifyNoInteractions(accountValidationService);
         }
 
     }
