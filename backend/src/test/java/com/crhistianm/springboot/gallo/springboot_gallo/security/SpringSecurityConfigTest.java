@@ -3,15 +3,34 @@ package com.crhistianm.springboot.gallo.springboot_gallo.security;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
+import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
+
+@ExtendWith(SpringExtension.class)
+@Import(SpringSecurityConfig.class)
 public class SpringSecurityConfigTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @MockitoBean
+    AuthenticationConfiguration aConfiguration;
+
+    @MockitoBean
+    AccountUserDetailsService accountUserDetailsService;
+
+    @MockitoBean
+    SecurityFilterChain securityFilterChain;
+
+
 
     //Just test the bean component as the service never returns password and shall not. 
     @Test
