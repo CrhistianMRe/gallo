@@ -42,16 +42,13 @@ public class AccountServiceImpl implements AccountService{
 
     private final AccountValidationService validationService;
 
-    private final IdentityVerificationService identityService;
-
-    public AccountServiceImpl(AccountRepository accountRepository, PersonRepository personRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AccountValidator accountValidator, AccountValidationService validationService, IdentityVerificationService identityService){
+    public AccountServiceImpl(AccountRepository accountRepository, PersonRepository personRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AccountValidator accountValidator, AccountValidationService validationService){
         this.accountRepository = accountRepository;
         this.personRepository = personRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.accountValidator = accountValidator;
         this.validationService = validationService;
-        this.identityService = identityService;
     }
 
     @Transactional
@@ -109,9 +106,7 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public AccountResponseDto getById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
-        identityService.validateUserAllowance(account.getPerson().getId()).ifPresent(f ->{
-            throw new ValidationServiceException(new ArrayList<>(List.of(f)));
-        });
+        accountValidator.validateByIdRequest(account.getPerson().getId());
         return validationService.settleResponseType(account);
     }
 
