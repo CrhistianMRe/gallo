@@ -76,7 +76,6 @@ public class AccountControllerTest {
 
         //It is a different instance as objectMapper changes it obviously
         when(accountService.save(accountDto)).thenReturn(accountResponseDto);
-        System.out.println(objectMapper.writeValueAsString(accountResponseDto));
 
         //Given
         mockMvc.perform(post("/api/accounts/register")

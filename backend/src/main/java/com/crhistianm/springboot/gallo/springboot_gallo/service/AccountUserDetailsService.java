@@ -34,8 +34,6 @@ public class AccountUserDetailsService implements UserDetailsService{
 
         Account account = accountOptional.orElseThrow();
 
-        System.out.println("----------------------------------------------------" + account);
-        
         //get roles
         List<GrantedAuthority> authorities = account.getRoles().stream()
             .map(role -> new SimpleGrantedAuthority(role.getName()))
