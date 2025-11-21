@@ -36,7 +36,6 @@ public class AccountTest {
         Account accountResult = accountRepository.save(account);
         if(accountResult.getAudit().getCreatedAt() != null){
             result = true;
-            System.out.println("Date ________________-----: " + accountResult.getAudit().getCreatedAt());
         };
         assertTrue(result);
     }

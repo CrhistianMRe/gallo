@@ -58,14 +58,11 @@ public class AccountServiceImpl implements AccountService{
 
         Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
 
-        System.out.println(accountDto);
-
         Optional<Person> optionalPerson = personRepository.findById(accountDto.getPersonId());
 
         Account account = AccountMapper.requestToEntity(accountDto);
 
         optionalPerson.ifPresent(account::setPerson);
-        optionalRoleUser.ifPresent(System.out::println);
         optionalRoleUser.ifPresent(account::addRole);
 
         account.setPassword(passwordEncoder.encode(account.getPassword()));
