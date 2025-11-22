@@ -2,6 +2,9 @@ package com.crhistianm.springboot.gallo.springboot_gallo.controller;
 
 import static org.mockito.Mockito.*;
 
+import org.aspectj.runtime.internal.PerObjectMap;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,17 +13,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultHandler;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.config.ControllerValidatorConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
@@ -31,8 +41,6 @@ import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityC
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import jakarta.validation.Validator;
 
 //Select controller class
 @WebMvcTest(PersonController.class)
@@ -52,36 +60,65 @@ public class PersonControllerTest {
     ObjectMapper objectMapper;
 
     @MockitoBean
-    Validator validator;
-
-    @MockitoBean
-    org.springframework.validation.Validator validator2;
-
-    @MockitoBean
     AccountUserDetailsService service;
 
-    @Test
-    @DisplayName("Testing post person into endpoint")
-    void testCreate() throws Exception {
-        
-        PersonResponseDto person = new PersonResponseDto();
-        person.setId(1L);
-        person.setFirstName(givenPersonRequestDtoOne().orElseThrow().getFirstName());
-        person.setLastName(givenPersonRequestDtoOne().orElseThrow().getLastName());
-        
-        when(personService.save(givenPersonRequestDtoOne().orElseThrow())).thenReturn(person);
+    @Nested
+    @Import(ControllerValidatorConfig.class)
+    class RegisterModuleTest {
 
-        //Given
-        mockMvc.perform(post("/api/persons/register")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(givenPersonRequestDtoOne().orElseThrow())))
+        PersonRequestDto personRequest;
 
-            //Then
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").value(1L))
-            .andExpect(jsonPath("$.firstName").value("one"))
-            .andExpect(jsonPath("$.lastName").value("1one"));
+        @BeforeEach
+        void setUp () {
+            //All valid fields
+            personRequest = new PersonRequestDto();
+            personRequest.setFirstName("exampleFirst");
+            personRequest.setLastName("exampleLast");
+            personRequest.setPhoneNumber("12345678");
+            personRequest.setBirthDate(LocalDate.of(2010, 02, 23));
+            personRequest.setGender("M");
+            personRequest.setHeight(1.60);
+            personRequest.setWeight(60.00);
+
+            doAnswer(invo -> {
+                PersonResponseDto personResponseDto = PersonMapper.entityToResponse(PersonMapper.requestToEntity(invo.getArgument(0, PersonRequestDto.class)));
+                personResponseDto.setId(1L);
+                return personResponseDto;
+            }).when(personService).save(any(PersonRequestDto.class));
+        }
+
+        @Test
+        @DisplayName("Testing post person into endpoint")
+        void testCreate() throws Exception {
+
+            //Given
+            mockMvc.perform(post("/api/persons/register")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(personRequest)))
+
+                //Then
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.firstName").value("exampleFirst"))
+                .andExpect(jsonPath("$.lastName").value("exampleLast"))
+                .andExpect(jsonPath("$.phoneNumber").value("12345678"))
+                .andExpect(jsonPath("$.birthDate").value(Matchers.contains(2010, 02, 23)))
+                .andExpect(jsonPath("$.gender").value("M"))
+                .andExpect(jsonPath("$.height").value(1.60))
+                .andExpect(jsonPath("$.weight").value(60.00));
+        }
+
+        @Test
+        void shouldReturnErrorWhenDtoFieldIsInvalid() throws Exception {
+            personRequest.setPhoneNumber("");
+
+            mockMvc.perform(request(HttpMethod.POST, "/api/persons/register")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(personRequest)))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.phoneNumber").value("the field phoneNumber must not be blank"));
+        }
+
     }
 
     @Nested
