@@ -5,18 +5,22 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -27,22 +31,29 @@ import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
+import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceExceptionUnitTest;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
+import com.crhistianm.springboot.gallo.springboot_gallo.mapper.RoleMapper;
+import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.v3.core.util.Json;
 import jakarta.validation.Validator;
 
-@WebMvcTest(AccountController.class)
+@WebMvcTest(controllers = AccountController.class)
 @Import({SpringSecurityConfig.class, JacksonConfig.class})
 //remove security filters as is not needed in these tests
 @AutoConfigureMockMvc(addFilters = false)
@@ -58,12 +69,8 @@ public class AccountControllerTest {
     ObjectMapper objectMapper;
 
     @MockitoBean
-    Validator validator;
-
-    @MockitoBean
     AccountUserDetailsService service;
 
-    
     @Test
     void testCreate() throws Exception{
         AccountRequestDto accountDto = givenAdminAccountRequestDto().orElseThrow(); 
@@ -203,6 +210,78 @@ public class AccountControllerTest {
 
 
     }
+
+    @Nested
+    class UpdateModuleTest {
+
+        AccountUpdateRequestDto requestDto;
+
+        @BeforeEach
+        void setUp() {
+            requestDto = new AccountUpdateRequestDto();
+            requestDto.setEmail("email@gmail.com");
+            requestDto.setEnabled(true);
+            requestDto.setPassword("12345");
+            requestDto.setPersonId(1L);
+            requestDto.setRoles(new ArrayList<>(List.of(new RoleRequestDto(1L, "role"))));
+            
+            doAnswer(invo -> {
+                AccountAdminResponseDto responseDto = null;
+                if(invo.getArgument(0, Long.class).equals(1L)) {
+
+                    AccountUpdateRequestDto argRequest = invo.getArgument(1, AccountUpdateRequestDto.class);
+
+                    Account tempAcc = new Account();
+                    tempAcc.setEmail(argRequest.getEmail());
+                    tempAcc.getAudit().setEnabled(argRequest.isEnabled());
+                    tempAcc.setPassword(argRequest.getPassword());
+                    tempAcc.setPerson(new Person());
+                    tempAcc.getPerson().setId(argRequest.getPersonId());
+                    tempAcc.setRoles(new ArrayList<>((argRequest.getRoles().stream().map(RoleMapper::requestToEntity).collect(Collectors.toList()))));
+
+                    responseDto = (AccountAdminResponseDto) AccountMapper.entityToAdminResponse(tempAcc);
+                    responseDto.setId(1L);
+                } else {
+                    throw new NotFoundException(Account.class);
+                }
+                return responseDto;
+            }).when(accountService).update(anyLong(), any(AccountUpdateRequestDto.class));
+        }
+
+
+        @Test
+        void shouldReturnResponseWhenAccountIsUpdated() throws Exception {
+            mockMvc.perform(patch("/api/accounts/1")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.email").value("email@gmail.com"))
+                .andExpect(jsonPath("$.audit.enabled").value(true))
+                .andExpect(jsonPath("$.person.id").value(1L))
+                .andExpect(jsonPath("$.roles[0].id").value(1L))
+                .andExpect(jsonPath("$.roles[0].name").value("role"))
+                .andExpect(status().isOk());
+        }
+
+        @Test
+        void shouldReturnNotFoundMessageWhenPathIdIsNotFound() throws Exception {
+            mockMvc.perform(patch("/api/accounts/2")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Account not found"));
+        }
+
+        @Test
+        void shouldReturnFieldMessageWhenFieldIsInvalid() throws Exception {
+            requestDto.setEmail("email");
+            mockMvc.perform(patch("/api/accounts/1")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.email").value("the field email must be a well-formed email address"));
+        }
+
+
+    }
+
     
 }
 
