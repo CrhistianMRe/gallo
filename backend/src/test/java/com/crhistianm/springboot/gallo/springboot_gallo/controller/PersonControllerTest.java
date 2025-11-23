@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.headers.ContentTypeOptionsDsl;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultHandler;
@@ -167,10 +168,23 @@ public class PersonControllerTest {
     }
 
     @Nested
+    @Import(ControllerValidatorConfig.class)
     class UpdateModuleTest{
+
+        PersonRequestDto personRequest;
 
         @BeforeEach
         void setUp(){
+
+            personRequest = new PersonRequestDto();
+            personRequest.setFirstName("exampleFirst");
+            personRequest.setLastName("exampleLast");
+            personRequest.setPhoneNumber("12345678");
+            personRequest.setBirthDate(LocalDate.of(2010, 02, 23));
+            personRequest.setGender("M");
+            personRequest.setHeight(1.60);
+            personRequest.setWeight(60.00);
+
             when(personService.update(anyLong(), any(PersonRequestDto.class))).thenAnswer(invo -> {
                 if(invo.getArgument(0, Long.class) != 1L) throw new NotFoundException(Person.class);
                 PersonResponseDto personDto = PersonMapper.entityToResponse(PersonMapper.requestToEntity(invo.getArgument(1)));
@@ -182,22 +196,34 @@ public class PersonControllerTest {
         @Test
         void testUpdate() throws Exception {
             mockMvc.perform(put("/api/persons/1")
-                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(givenPersonRequestDtoOne().orElseThrow())))
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(personRequest)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.firstName").value("one"))
-                .andExpect(jsonPath("$.lastName").value("1one"))
+                .andExpect(jsonPath("$.firstName").value("exampleFirst"))
+                .andExpect(jsonPath("$.lastName").value("exampleLast"))
+                .andExpect(jsonPath("$.phoneNumber").value("12345678"))
+                .andExpect(jsonPath("$.birthDate").value(Matchers.contains(2010, 02, 23)))
                 .andExpect(jsonPath("$.gender").value("M"))
-                .andExpect(jsonPath("$.phoneNumber").value("123123123"));
+                .andExpect(jsonPath("$.height").value(1.60))
+                .andExpect(jsonPath("$.weight").value(60.00));
         }
 
         @Test
         void testUpdateNotFound() throws Exception {
             mockMvc.perform(put("/api/persons/2")
-                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(givenPersonRequestDtoTwo().orElseThrow())))
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(personRequest)))
                 .andExpect(jsonPath("$.message").value("Person not found"))
                 .andExpect(status().isNotFound());
+        }
+
+        @Test
+        void shouldReturnErrorWhenDtoFieldIsInvalid() throws Exception {
+            personRequest.setPhoneNumber("");
+            mockMvc.perform(put("/api/persons/1")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(personRequest)))
+                .andExpect(jsonPath("$.phoneNumber").value("the field phoneNumber must not be blank"))
+                .andExpect(status().isBadRequest());
         }
 
     }
