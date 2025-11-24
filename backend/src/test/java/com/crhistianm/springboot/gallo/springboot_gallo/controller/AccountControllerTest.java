@@ -11,10 +11,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultHandler;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -27,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.config.ControllerValidatorConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
@@ -48,6 +52,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
 import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
+import com.crhistianm.springboot.gallo.springboot_gallo.type.RequestType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.core.util.Json;
@@ -71,29 +76,50 @@ public class AccountControllerTest {
     @MockitoBean
     AccountUserDetailsService service;
 
-    @Test
-    void testCreate() throws Exception{
-        AccountRequestDto accountDto = givenAdminAccountRequestDto().orElseThrow(); 
 
-        Person person = new PersonBuilder().id(1L).build();
-        AccountAdminResponseDto accountResponseDto = new AccountAdminResponseDto();
-        accountResponseDto.setEmail("erikadmin@gmail.com");
-        accountResponseDto.setPerson(PersonMapper.entityToResponse(person));
-            
+    @Nested
+    class RegisterModuleTest {
 
-        //It is a different instance as objectMapper changes it obviously
-        when(accountService.save(accountDto)).thenReturn(accountResponseDto);
+        AccountRequestDto requestDto;
 
-        //Given
-        mockMvc.perform(post("/api/accounts/register")
-                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accountDto)))
+        @BeforeEach
+        void setUp() {
+            requestDto = new AccountRequestDto();
+            requestDto.setEmail("email@gmail.com");
+            requestDto.setPassword("12345");
+            requestDto.setPersonId(1L);
+            doAnswer(invo ->{
+                Account account = AccountMapper.requestToEntity(invo.getArgument(0, AccountRequestDto.class));
+                Person person = new Person();
+                person.setId(1L);
+                account.setPerson(person);
+                return AccountMapper.entityToAdminResponse(account);
+            }).when(accountService).save(any(AccountRequestDto.class));
+        }
 
-                 //Then
-            .andExpect(status().isCreated())
-                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                 .andExpect(jsonPath("$.email").value("erikadmin@gmail.com"))
-                 .andExpect(jsonPath("$.person.id").value(1L));
+        @Test
+        void testCreate() throws Exception{
+            //Given
+            mockMvc.perform(post("/api/accounts/register")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
+                //Then
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.email").value("email@gmail.com"))
+                .andExpect(jsonPath("$.person.id").value(1L));
+        }
+
+        @Test
+        void shouldReturnFieldMessageWhenFieldIsInvalid() throws Exception {
+            requestDto.setPassword("");
+            mockMvc.perform(request(HttpMethod.POST, "/api/accounts/register")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.password").value("the field password must not be blank"));
+        }
+
     }
+
 
     @Nested
     class ViewModuleTest {
