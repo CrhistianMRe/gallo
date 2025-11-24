@@ -43,34 +43,32 @@ public class PersonServiceImpl implements PersonService{
     @Transactional
     @Override
     public PersonResponseDto update(Long id, PersonRequestDto personDto) {
-        if(personRepository.findById(id).isEmpty()) throw new NotFoundException(Person.class);
+        personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
         personValidator.validateRequest(id, personDto);
-            Person person = PersonMapper.requestToEntity(personDto);
-            person.setId(id);
+        Person person = PersonMapper.requestToEntity(personDto);
+        person.setId(id);
         return PersonMapper.entityToResponse(personRepository.save(person));
     }
 
     @Transactional
     @Override
     public PersonResponseDto delete(Long id) {
-        Optional<Person> personOptional = personRepository.findById(id);
-        if(personOptional.isEmpty())throw new NotFoundException(Person.class);
+        Person person = personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
         identityService.validateUserAllowance(id).ifPresent(f -> {
             throw new ValidationServiceException(new ArrayList<>(List.of(f)));
         });
-        personRepository.delete(personOptional.orElseThrow());
-        return PersonMapper.entityToResponse(personOptional.orElseThrow());
+        personRepository.delete(person);
+        return PersonMapper.entityToResponse(person);
     }
 
     @Transactional(readOnly = true)
     @Override
     public PersonResponseDto getById(Long id) {
-        Optional<Person> personOptional = personRepository.findById(id);
-        if(personOptional.isEmpty()) throw new NotFoundException(Person.class);
+        Person person = personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
         identityService.validateUserAllowance(id).ifPresent(f -> {
             throw new ValidationServiceException(new ArrayList<>(List.of(f)));
         });
-        return PersonMapper.entityToResponse(personOptional.orElseThrow());
+        return PersonMapper.entityToResponse(person);
     }
 
     @Transactional(readOnly = true)
