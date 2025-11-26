@@ -35,7 +35,7 @@ public class ValidationServiceException extends TraceException  {
     }
 
     public ValidationServiceException(String message, List<FieldInfoError> fieldList) {
-        super(message, "valiate");
+        super(message, "validate");
         loadErrorList(fieldList);
     }
 
