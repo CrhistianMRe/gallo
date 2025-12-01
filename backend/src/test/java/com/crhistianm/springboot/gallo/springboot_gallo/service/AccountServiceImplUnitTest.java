@@ -153,7 +153,13 @@ class AccountServiceImplUnitTest {
 
         @BeforeEach
         void setUp(){
-            when(personRepository.findById(anyLong())).thenReturn(Optional.of(new PersonBuilder()
+            doAnswer(invo -> {
+                if(invo.getArgument(0, AccountRequestDto.class).getPersonId().equals(10L)) {
+                    throw new ValidationServiceException();
+                }
+                return null;
+            }).when(accountValidator).validateRequest(any(AccountRequestDto.class));
+            lenient().when(personRepository.findById(anyLong())).thenReturn(Optional.of(new PersonBuilder()
                         .firstName("one")
                         .lastName("1one")
                         .phoneNumber(givenPersonRequestDtoTwo().orElseThrow().getPhoneNumber())
@@ -161,8 +167,8 @@ class AccountServiceImplUnitTest {
                         .gender(givenPersonRequestDtoTwo().orElseThrow().getGender())
                         .id(1L)
                         .build()));
-            when(accountRepository.save(any())).thenAnswer(arg -> arg.getArgument(0));
-            when(accountValidationService.settleResponseType(any(Account.class))).thenAnswer(invo ->{
+            lenient().when(accountRepository.save(any())).thenAnswer(arg -> arg.getArgument(0));
+            lenient().when(accountValidationService.settleResponseType(any(Account.class))).thenAnswer(invo ->{
                 Account account = invo.getArgument(0, Account.class);
                 if(account.getRoles().stream().filter(role -> role.getName().equals("ROLE_ADMIN")).findFirst().isPresent()){
                     return AccountMapper.entityToAdminResponse(account);
@@ -211,6 +217,15 @@ class AccountServiceImplUnitTest {
             assertNotNull(accountAdminResponseDto.getPerson());
             verify(personRepository, times(1)).findById(anyLong());
             assertEquals(answer, (accountAdminResponseDto.getPerson()));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenUserRequestIsInvalid() {
+            AccountRequestDto requestDto = givenUserAccountRequestDto().orElseThrow();
+            requestDto.setPersonId(10L);
+
+            assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> accountServiceImpl.save(requestDto));
         }
 
     }
