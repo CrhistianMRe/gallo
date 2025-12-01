@@ -33,7 +33,6 @@ import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.PersonValidator;
 
-
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceImplUnitTest {
 
@@ -55,12 +54,41 @@ public class PersonServiceImplUnitTest {
     @Nested
     class RegisterModuleTest{
 
+        @BeforeEach
+        void setUp() {
+
+            lenient().doAnswer(invo -> {
+                return invo.getArgument(0, Person.class);
+            }).when(personRepository).save(any(Person.class));
+
+            lenient().doAnswer(invo -> {
+                if(invo.getArgument(1, PersonRequestDto.class).getPhoneNumber().equals("666")) {
+                    throw new ValidationServiceException();
+                }
+                return null;
+            }).when(personValidator).validateRequest(eq(null), any(PersonRequestDto.class));
+        }
+
+
         @Test
         void testSave(){
             //Return an instance for the mapper
-            when(personRepository.save(any(Person.class))).thenReturn(new PersonBuilder().build());
             personServiceImpl.save(givenPersonRequestDtoOne().orElseThrow());
+
             verify(personRepository, times(1)).save(any(Person.class));
+            verify(personValidator, times(1)).validateRequest(isNull(), any(PersonRequestDto.class));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenRequestIsInvalid() {
+            PersonRequestDto requestDto = givenPersonRequestDtoOne().orElseThrow();
+            requestDto.setPhoneNumber("666");
+
+            assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> personServiceImpl.save(requestDto));
+
+            verify(personValidator, times(1)).validateRequest(eq(null), any(PersonRequestDto.class));
+            verifyNoInteractions(personRepository);
         }
 
     }
