@@ -152,21 +152,31 @@ public class PersonServiceImplUnitTest {
     @Nested
     class UpdateModuleTest {
 
+        PersonRequestDto requestDto;
+
         @BeforeEach
         void setUp(){
+            requestDto = new PersonRequestDto();
             when(personRepository.findById(anyLong())).thenAnswer(invo -> {
                 if(invo.getArgument(0, Long.class) == 1L){
                     return Optional.of(new Person());
                 }
                 return Optional.empty();
             });
+
+            lenient().doAnswer(args -> {
+                if(args.getArgument(1, PersonRequestDto.class).getFirstName().equals("error")) {
+                    throw new ValidationServiceException();
+                }
+                return null;
+            }).when(personValidator).validateRequest(anyLong(), any(PersonRequestDto.class));
         }
         
 
 
         @Test
         void testUpdate(){
-            PersonRequestDto requestDto = givenPersonRequestDtoOne().orElseThrow();
+            requestDto = givenPersonRequestDtoOne().orElseThrow();
 
             //Mock person updated already
             when(personRepository.save(any(Person.class))).thenAnswer(invo ->{
@@ -198,6 +208,17 @@ public class PersonServiceImplUnitTest {
                 personServiceImpl.update(2L, new PersonRequestDto());
             });
             verify(personRepository, times(1)).findById(anyLong());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenRequestIsInvalid() {
+            requestDto = givenPersonRequestDtoOne().orElseThrow();
+            requestDto.setFirstName("error");
+
+            assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> personServiceImpl.update(1L, requestDto));
+            verify(personRepository, times(1)).findById(eq(1L));
+            verifyNoMoreInteractions(personRepository);
         }
         
     }
