@@ -211,6 +211,18 @@ public class SpringEndpointSecurityTest {
 
         }
 
+        @Nested
+        class BodyPart {
+
+            @Test
+            void shouldReturnOkStatusWhenViewAllGetRequestIsSent() throws Exception {
+                mockMvc.perform(get("/api/body-parts")
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isOk());
+            }
+
+        }
+
     }
 
     @Nested
@@ -310,6 +322,18 @@ public class SpringEndpointSecurityTest {
             void testCreateValidAuthority() throws Exception{
                 mockMvc.perform(post("/api/persons/register").header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
+            }
+
+        }
+
+        @Nested
+        class BodyPart {
+
+            @Test
+            void shouldReturnOkStatusWhenViewAllGetRequestIsSent() throws Exception {
+                mockMvc.perform(get("/api/body-parts")
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isOk());
             }
 
         }
