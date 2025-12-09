@@ -58,6 +58,7 @@ public class SpringSecurityConfig {
                     .requestMatchers(HttpMethod.DELETE, "/api/accounts/{id}").hasAnyRole("ADMIN", "USER")
                     .requestMatchers(HttpMethod.GET, "/api/accounts").hasAnyRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/api/body-parts").hasAnyRole("ADMIN", "USER")
+                    .requestMatchers(HttpMethod.GET, "/api/workouts/{id}").hasAnyRole("ADMIN", "USER")
                     .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
                     .requestMatchers("/v3/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
