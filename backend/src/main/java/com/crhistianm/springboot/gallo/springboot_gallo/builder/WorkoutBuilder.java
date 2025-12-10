@@ -1,6 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.builder;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
@@ -12,7 +12,7 @@ public class WorkoutBuilder {
 
     private Long id;
 
-    private Date workoutDate;
+    private LocalDate workoutDate;
 
     private Double workoutLength;
 
@@ -30,7 +30,7 @@ public class WorkoutBuilder {
         return this;
     }
 
-    public WorkoutBuilder workoutDate(Date workoutDate){
+    public WorkoutBuilder workoutDate(LocalDate workoutDate){
         this.workoutDate = workoutDate;
         return this;
     }
