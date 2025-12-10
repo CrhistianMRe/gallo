@@ -1,7 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.entity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -20,7 +20,7 @@ public class Workout {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date workoutDate;
+    private LocalDate workoutDate;
 
     private Double workoutLength;
 
@@ -39,7 +39,7 @@ public class Workout {
         this.sets = new ArrayList<>();
     }
 
-    public Workout(Date workoutDate, Double workoutLength, Exercise exercise, Account account) {
+    public Workout(LocalDate workoutDate, Double workoutLength, Exercise exercise, Account account) {
         this();
         this.workoutDate = workoutDate;
         this.workoutLength = workoutLength;
@@ -55,11 +55,11 @@ public class Workout {
         this.id = id;
     }
 
-    public Date getWorkoutDate() {
+    public LocalDate getWorkoutDate() {
         return workoutDate;
     }
 
-    public void setWorkoutDate(Date workoutDate) {
+    public void setWorkoutDate(LocalDate workoutDate) {
         this.workoutDate = workoutDate;
     }
 
