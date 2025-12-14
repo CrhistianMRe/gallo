@@ -10,15 +10,22 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.BodyPartBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.RoleBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.WorkoutBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.WorkoutSetBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.BodyPart;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.Exercise;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.Workout;
+import com.crhistianm.springboot.gallo.springboot_gallo.entity.WorkoutSet;
 import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
@@ -161,6 +168,92 @@ public class Data {
                     .errorMessage("test error message 2")
                     .build());
     }
+
+    public static List<BodyPart> givenBodyPartList() {
+        List<BodyPart> entityBodyParts = new ArrayList<>();
+        entityBodyParts.add(new BodyPartBuilder().name("part1").id(1L).build());
+        entityBodyParts.add(new BodyPartBuilder().name("part2").id(2L).build());
+        entityBodyParts.add(new BodyPartBuilder().name("part3").id(3L).build());
+        return entityBodyParts;
+    }
+
+    public static Optional<Exercise> givenLegExercise() {
+        Exercise exercise = new Exercise();
+        exercise.setId(1L);
+        exercise.setName("Leg press");
+        exercise.setDescription("Leg press");
+        exercise.setImageUrl("imageUrl.com");
+        exercise.setWeightRequired(true);
+        exercise.setBodyParts(givenBodyPartList());
+        return Optional.of(exercise);
+    }
+
+    public static Optional<WorkoutSet> givenWorkoutSet() {
+        return Optional.of(new WorkoutSetBuilder()
+            .weightAmount(80.0)
+            .toFailure(false)
+            .build());
+    }
+
+    public static Optional<Workout> givenWorkout() {
+        return Optional.of(new WorkoutBuilder()
+            .workoutLength(120.0)
+            .workoutDate(LocalDate.of(2000, 01, 01))
+            .account(givenAccountEntityAdmin().orElseThrow())
+            .exercise(givenLegExercise().orElseThrow())
+            .build());
+    }
+
+    public static List<Workout> givenWorkoutList() {
+
+        /*4 sets per workout*/
+        WorkoutSet firstSet = givenWorkoutSet().orElseThrow();
+        firstSet.setId(1L);
+        firstSet.setRepAmount(12);
+
+        WorkoutSet secondSet = givenWorkoutSet().orElseThrow();
+        secondSet.setId(2L);
+        secondSet.setRepAmount(10);
+
+        WorkoutSet thirdSet = givenWorkoutSet().orElseThrow();
+        thirdSet.setId(3L);
+        thirdSet.setRepAmount(8);
+
+        WorkoutSet fourthSet = givenWorkoutSet().orElseThrow();
+        fourthSet.setId(4L);
+        fourthSet.setToFailure(true);
+        fourthSet.setRepAmount(6);
+
+        List<WorkoutSet> setList = new ArrayList<>(List.of(firstSet, secondSet, thirdSet, fourthSet));
+
+        Workout firstWorkout = givenWorkout().orElseThrow();
+        firstWorkout.setId(1L);
+
+        Workout secondWorkout = givenWorkout().orElseThrow();
+        secondWorkout.setId(2L);
+
+        Workout thirdWorkout = givenWorkout().orElseThrow();
+        thirdWorkout.setId(3L);
+       
+        Workout fourthWorkout = givenWorkout().orElseThrow();
+        fourthWorkout.setId(4L);
+
+        /*assign bidirectional relationship per workout*/
+        setList.forEach(i-> i.setWorkout(firstWorkout));
+        firstWorkout.setSets(setList);
+
+        setList.forEach(i-> i.setWorkout(secondWorkout));
+        secondWorkout.setSets(setList);
+
+        setList.forEach(i-> i.setWorkout(thirdWorkout));
+        thirdWorkout.setSets(setList);
+
+        setList.forEach(i-> i.setWorkout(fourthWorkout));
+        fourthWorkout.setSets(setList);
+
+        return new ArrayList<>(List.of(firstWorkout, secondWorkout, thirdWorkout, fourthWorkout));
+    }
+
 
     public static class SampleClass extends DummyBaseClass {
 
