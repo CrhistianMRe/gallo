@@ -223,6 +223,18 @@ public class SpringEndpointSecurityTest {
 
         }
 
+        @Nested
+        class Workout {
+
+            @Test
+            void shouldReturnNotFoundStatusWhenViewPageGetRequestIsSent() throws Exception {
+                mockMvc.perform(get("/api/workouts/1?page=0&size=4")
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isNotFound());
+            }
+
+        }
+
     }
 
     @Nested
@@ -334,6 +346,18 @@ public class SpringEndpointSecurityTest {
                 mockMvc.perform(get("/api/body-parts")
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isOk());
+            }
+
+        }
+
+        @Nested
+        class Workout {
+
+            @Test
+            void shouldReturnNotFoundStatusWhenViewPageGetRequestIsSent() throws Exception {
+                mockMvc.perform(get("/api/workouts/1?page=0&size=4")
+                        .header("Authorization", prefixWithToken))
+                    .andExpect(status().isNotFound());
             }
 
         }
