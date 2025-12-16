@@ -71,6 +71,14 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<FieldInfoError> validateAllowanceByAccountId(Long accountId) {
+        Long personId = accountRepository.findById(accountId).orElseThrow(() -> new NotFoundException(Account.class))
+            .getPerson().getId();
+        return this.validateUserAllowance(personId);
+    }
+
+    @Override
     public Optional<FieldInfoError> validateAdminRequired(AbstractAccountRequestDto accountDto, String fieldName){
         FieldInfoError infoError = null;
         if(!isAdminAuthority()){

@@ -13,6 +13,8 @@ public interface IdentityVerificationService {
 
     public Optional<FieldInfoError> validateUserAllowance(Long pathPersonId);
 
+    public Optional<FieldInfoError> validateAllowanceByAccountId(Long accountId);
+
     public Optional<FieldInfoError> validateAdminRequired(AbstractAccountRequestDto requestDto, String fieldName);
 
 }
