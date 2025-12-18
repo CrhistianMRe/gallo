@@ -1,6 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.annotations.NotFound;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
+
+import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
@@ -245,4 +250,72 @@ public class IdentityVerificationServiceImplUnitTest {
 
 
     }
+
+    @Nested
+    class ValidateAllowanceByAccountIdMethod {
+
+        Long accountId;
+
+        @BeforeEach
+        void setUp() {
+
+            accountId = null;
+
+            doAnswer(invo -> {
+                Account account = null;
+                Long argId = invo.getArgument(0, Long.class);
+                if(argId.equals(1L)) {
+                    account = givenAccountEntityAdmin().orElseThrow();
+                    account.getPerson().setId(1L);
+                }
+                if(argId.equals(2L)) {
+                    account = givenAccountEntityAdmin().orElseThrow();
+                    account.getPerson().setId(2L);
+                }
+                return Optional.ofNullable(account);
+            }).when(accountRepository).findById(anyLong());
+
+            lenient().doAnswer(invo -> {
+                FieldInfoError fieldError = null;
+                if(invo.getArgument(0, Long.class).equals(2L))  fieldError = new FieldInfoErrorBuilder().name("error").build();
+                return Optional.ofNullable(fieldError);
+            }).when(spyServiceIdentity).validateUserAllowance(anyLong());
+        }
+
+        @Test
+        void shouldReturnErrorOptionalWhenUserIsNotAllowed() {
+            accountId = 2L;
+            FieldInfoError fieldError = spyServiceIdentity.validateAllowanceByAccountId(accountId).orElseThrow();
+
+            assertThat(fieldError).extracting(FieldInfoError::getName).isEqualTo("error");
+            verify(accountRepository, times(1)).findById(accountId);
+            verify(spyServiceIdentity).validateUserAllowance(eq(2L));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenAccountIsNotFound() {
+            accountId = 3L;
+
+            String error = assertThatExceptionOfType(NotFoundException.class)
+                .isThrownBy(() -> spyServiceIdentity.validateAllowanceByAccountId(accountId))
+                .actual().getMessage();
+
+            assertThat(error).isEqualTo("Account not found");
+            verify(accountRepository).findById(accountId);
+            verify(spyServiceIdentity, times(0)).validateUserAllowance(anyLong());
+        }
+
+        @Test
+        void shouldReturnEmptyOptionalWhenUserIsAllowed() {
+            accountId = 1L;
+            Optional<FieldInfoError> optionalError = spyServiceIdentity.validateAllowanceByAccountId(accountId);
+
+            assertThat(optionalError).isEmpty();
+
+            verify(accountRepository).findById(accountId);
+            verify(spyServiceIdentity).validateUserAllowance(eq(1L));
+        }
+
+    }
+
 }
