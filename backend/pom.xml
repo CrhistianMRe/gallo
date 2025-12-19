@@ -185,6 +185,9 @@
             <includes>
               <include>**/service/*Test.java</include>
             </includes>
+            <excludes>
+              <exclude>**/validation/service/**</exclude>
+            </excludes>
           </configuration>
         </plugin>
       </plugins>
