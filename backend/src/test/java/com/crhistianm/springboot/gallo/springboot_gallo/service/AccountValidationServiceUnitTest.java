@@ -59,11 +59,11 @@ public class AccountValidationServiceUnitTest {
     Environment env;
 
     @InjectMocks
-    AccountValidationServiceImpl accountValidationService;
+    AccountValidationService accountValidationService;
 
     @Spy
     @InjectMocks
-    AccountValidationServiceImpl spyAccountValidationService;
+    AccountValidationService spyAccountValidationService;
 
     @Nested
     class ValidatePersonAssignedMethodTest {

@@ -30,7 +30,7 @@ public class BodyPartServiceUnitTest {
     BodyPartRepository bodyPartRepository;
 
     @InjectMocks
-    BodyPartServiceImpl bodyPartService;
+    BodyPartService bodyPartService;
 
     @BeforeEach
     void setUp() {

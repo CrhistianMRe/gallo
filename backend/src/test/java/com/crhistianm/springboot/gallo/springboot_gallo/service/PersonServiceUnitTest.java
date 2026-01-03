@@ -34,7 +34,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonReposit
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.PersonValidator;
 
 @ExtendWith(MockitoExtension.class)
-public class PersonServiceImplUnitTest {
+public class PersonServiceUnitTest {
 
     @Mock
     PersonValidator personValidator;
@@ -49,7 +49,7 @@ public class PersonServiceImplUnitTest {
     IdentityVerificationService identityVerificationService;
 
     @InjectMocks
-    PersonServiceImpl personServiceImpl;
+    PersonService personService;
 
     @Nested
     class RegisterModuleTest{
@@ -73,7 +73,7 @@ public class PersonServiceImplUnitTest {
         @Test
         void testSave(){
             //Return an instance for the mapper
-            personServiceImpl.save(givenPersonRequestDtoOne().orElseThrow());
+            personService.save(givenPersonRequestDtoOne().orElseThrow());
 
             verify(personRepository, times(1)).save(any(Person.class));
             verify(personValidator, times(1)).validateRequest(isNull(), any(PersonRequestDto.class));
@@ -85,7 +85,7 @@ public class PersonServiceImplUnitTest {
             requestDto.setPhoneNumber("666");
 
             assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> personServiceImpl.save(requestDto));
+                .isThrownBy(() -> personService.save(requestDto));
 
             verify(personValidator, times(1)).validateRequest(eq(null), any(PersonRequestDto.class));
             verifyNoInteractions(personRepository);
@@ -116,7 +116,7 @@ public class PersonServiceImplUnitTest {
             when(personRepository.findAll()).thenReturn(List.of(givenPersonEntityOne().orElseThrow(), givenPersonEntityTwo().orElseThrow()));
 
             List<PersonResponseDto> expectedList = List.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()), PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow()));
-            assertEquals(expectedList, personServiceImpl.getAll());
+            assertEquals(expectedList, personService.getAll());
             verify(personRepository, times(1)).findAll();
         }
 
@@ -124,14 +124,14 @@ public class PersonServiceImplUnitTest {
         void testGetById(){
             PersonResponseDto expectedPerson = PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow());
 
-            assertEquals(expectedPerson, personServiceImpl.getById(1L));
+            assertEquals(expectedPerson, personService.getById(1L));
             verify(personRepository, times(1)).findById(anyLong());
         }
 
         @Test
         void testGetByIdEmpty(){
             assertThrows(NotFoundException.class, () -> {
-                personServiceImpl.getById(2L);
+                personService.getById(2L);
             });
             verify(personRepository, times(1)).findById(anyLong());
         }
@@ -141,7 +141,7 @@ public class PersonServiceImplUnitTest {
             FieldInfoError field = null;
 
             field = assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> personServiceImpl.getById(120L)).actual().getFieldErrors().get(0);
+                .isThrownBy(() -> personService.getById(120L)).actual().getFieldErrors().get(0);
 
             assertThat(field).isNotNull();
             assertThat(field).extracting(FieldInfoError::getName).isEqualTo("identity");
@@ -189,7 +189,7 @@ public class PersonServiceImplUnitTest {
                 return personUpdated;
             });
 
-            PersonResponseDto actualResponse = personServiceImpl.update(1L, requestDto);
+            PersonResponseDto actualResponse = personService.update(1L, requestDto);
 
             Person personExpected = PersonMapper.requestToEntity(requestDto);
             personExpected.setId(1L);
@@ -205,7 +205,7 @@ public class PersonServiceImplUnitTest {
         @Test
         void testUpdateEmpty(){
             assertThrows(NotFoundException.class, () ->{
-                personServiceImpl.update(2L, new PersonRequestDto());
+                personService.update(2L, new PersonRequestDto());
             });
             verify(personRepository, times(1)).findById(anyLong());
         }
@@ -216,7 +216,7 @@ public class PersonServiceImplUnitTest {
             requestDto.setFirstName("error");
 
             assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> personServiceImpl.update(1L, requestDto));
+                .isThrownBy(() -> personService.update(1L, requestDto));
             verify(personRepository, times(1)).findById(eq(1L));
             verifyNoMoreInteractions(personRepository);
         }
@@ -244,14 +244,14 @@ public class PersonServiceImplUnitTest {
         @Test
         void testDelete(){
             PersonResponseDto expectedResponse = PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow());
-            assertEquals(expectedResponse, personServiceImpl.delete(1L));
+            assertEquals(expectedResponse, personService.delete(1L));
             verify(personRepository, times(1)).findById(anyLong());
         }
 
         @Test
         void testDeleteEmpty(){
             assertThrows(NotFoundException.class, () ->{
-                personServiceImpl.delete(2L);
+                personService.delete(2L);
             });
             verify(personRepository, times(1)).findById(anyLong());
         }
@@ -261,7 +261,7 @@ public class PersonServiceImplUnitTest {
             FieldInfoError field = null;
 
             field = assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> personServiceImpl.getById(120L)).actual().getFieldErrors().get(0);
+                .isThrownBy(() -> personService.getById(120L)).actual().getFieldErrors().get(0);
 
             assertThat(field).isNotNull();
             assertThat(field).extracting(FieldInfoError::getName).isEqualTo("identity");

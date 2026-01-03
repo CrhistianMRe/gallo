@@ -35,7 +35,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.repository.WorkoutReposi
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.WorkoutValidator;
 
 @ExtendWith(MockitoExtension.class)
-public class WorkoutServiceImplUnitTest {
+public class WorkoutServiceUnitTest {
 
     @Mock
     private WorkoutRepository workoutRepository;
@@ -44,7 +44,7 @@ public class WorkoutServiceImplUnitTest {
     private WorkoutValidator workoutValidator;
 
     @InjectMocks
-    private WorkoutServiceImpl workoutService;
+    private WorkoutService workoutService;
 
     @Nested
     class ViewModuleTest {
