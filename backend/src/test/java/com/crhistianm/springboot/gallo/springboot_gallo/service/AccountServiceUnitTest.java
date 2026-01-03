@@ -55,7 +55,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepositor
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.AccountValidator;
 
 @ExtendWith(MockitoExtension.class)
-class AccountServiceImplUnitTest {
+class AccountServiceUnitTest {
 
     @Mock
     AccountValidator accountValidator;
@@ -76,7 +76,7 @@ class AccountServiceImplUnitTest {
     PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    AccountServiceImpl accountServiceImpl;
+    AccountService accountService;
 
     @Nested
     class ViewModuleTest{
@@ -108,14 +108,14 @@ class AccountServiceImplUnitTest {
             when(accountRepository.findAll()).thenReturn(List.of(givenAccountEntityAdmin().orElseThrow(), givenAccountEntityUser().orElseThrow()));
             List<AccountAdminResponseDto> expectedList = List.of((AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityAdmin().orElseThrow()), 
                     (AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityUser().orElseThrow()));
-            assertEquals(expectedList, accountServiceImpl.getAll());
+            assertEquals(expectedList, accountService.getAll());
             verify(accountRepository, times(1)).findAll();
         }
 
         @Test
         void testGetByIdNotFound(){
             assertThrows(NotFoundException.class, () -> {
-                accountServiceImpl.getById(2L);
+                accountService.getById(2L);
             });
             verify(accountRepository, times(1)).findById(anyLong());
             verifyNoInteractions(accountValidator);
@@ -127,7 +127,7 @@ class AccountServiceImplUnitTest {
             when(accountValidationService.settleResponseType(any(Account.class))).thenAnswer(invo ->
                     AccountMapper.entityToAdminResponse(invo.getArgument(0,Account.class)));
 
-            assertEquals("admin@gmail.com", accountServiceImpl.getById(1L).getEmail());
+            assertEquals("admin@gmail.com", accountService.getById(1L).getEmail());
             verify(accountRepository, times(1)).findById(anyLong());
             verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
         }
@@ -137,7 +137,7 @@ class AccountServiceImplUnitTest {
             FieldInfoError field = null;
 
             field = assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> accountServiceImpl.getById(120L)).actual().getFieldErrors().get(0);
+                .isThrownBy(() -> accountService.getById(120L)).actual().getFieldErrors().get(0);
             assertThat(field).isNotNull();
             assertThat(field).extracting(FieldInfoError::getName).isEqualTo("error");
 
@@ -184,7 +184,7 @@ class AccountServiceImplUnitTest {
             AccountRequestDto accountUserDto = givenUserAccountRequestDto().orElseThrow();
 
             //One role
-            assertTrue(accountServiceImpl.save(accountUserDto) instanceof AccountUserResponseDto);
+            assertTrue(accountService.save(accountUserDto) instanceof AccountUserResponseDto);
             verify(roleRepository, times(1)).findByName(anyString());
         }
 
@@ -195,7 +195,7 @@ class AccountServiceImplUnitTest {
             when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(givenRoleAdmin());
             AccountRequestDto accountAdminDto = givenAdminAccountRequestDto().orElseThrow();
 
-            AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountAdminDto);
+            AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountService.save(accountAdminDto);
 
 
             //Both roles
@@ -210,7 +210,7 @@ class AccountServiceImplUnitTest {
             when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(givenRoleAdmin());
             AccountRequestDto accountCreateDto = givenAdminAccountRequestDto().orElseThrow();
 
-            AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountServiceImpl.save(accountCreateDto);
+            AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountService.save(accountCreateDto);
             PersonResponseDto answer = PersonMapper.entityToResponse(PersonMapper.requestToEntity(givenPersonRequestDtoOne().orElseThrow()));
             answer.setId(1L);
             //Per person test
@@ -225,7 +225,7 @@ class AccountServiceImplUnitTest {
             requestDto.setPersonId(10L);
 
             assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> accountServiceImpl.save(requestDto));
+                .isThrownBy(() -> accountService.save(requestDto));
         }
 
     }
@@ -279,7 +279,7 @@ class AccountServiceImplUnitTest {
             @Test
             void shouldThrowExceptionWhenAccountPathIdIsNotFound() {
                 String message = assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> accountServiceImpl.update(2L, accountDto)).actual().getMessage();
+                    .isThrownBy(() -> accountService.update(2L, accountDto)).actual().getMessage();
 
                 assertThat(message).isEqualTo("Account not found");
 
@@ -293,7 +293,7 @@ class AccountServiceImplUnitTest {
 
             @Test
             void shouldNotThrowExceptionWhenAccountPathIdIsFound() {
-                assertDoesNotThrow(() -> accountServiceImpl.update(1L, accountDto));
+                assertDoesNotThrow(() -> accountService.update(1L, accountDto));
 
                 verify(accountRepository, times(1)).findById(1L);
 
@@ -307,7 +307,7 @@ class AccountServiceImplUnitTest {
             void shouldThrowExceptionWhenAccountPersonIdIsNotFound() {
                 accountDto.setPersonId(2L);
                 String message = assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> accountServiceImpl.update(1L, accountDto)).actual().getMessage();
+                    .isThrownBy(() -> accountService.update(1L, accountDto)).actual().getMessage();
 
                 assertThat(message).isEqualTo("Person not found");
                 verify(personRepository, times(1)).findById(eq(2L));
@@ -321,7 +321,7 @@ class AccountServiceImplUnitTest {
             void shouldNotThrowExceptionWhenAccountPersonIdIsFound() {
                 accountDto.setPersonId(10L);
 
-                assertDoesNotThrow(() -> accountServiceImpl.update(1L, accountDto));
+                assertDoesNotThrow(() -> accountService.update(1L, accountDto));
 
                 verify(accountValidator).validateUpdateRequest(eq(1L), eq(accountDto), eq(1L));
                 verify(personRepository, times(1)).findById(eq(10L));
@@ -339,7 +339,7 @@ class AccountServiceImplUnitTest {
                 accountDto.setEmail("exception");
 
                 String message = assertThatExceptionOfType(ValidationServiceException.class)
-                    .isThrownBy(() -> accountServiceImpl.update(1L, accountDto)).actual().getMessage();
+                    .isThrownBy(() -> accountService.update(1L, accountDto)).actual().getMessage();
 
                 assertThat(message).isEqualTo("exception");
 
@@ -354,7 +354,7 @@ class AccountServiceImplUnitTest {
             void shouldNotThrowExceptionWhenIsValid() {
                 accountDto.setEmail("noexception");
 
-                assertDoesNotThrow(() -> accountServiceImpl.update(1L, accountDto));
+                assertDoesNotThrow(() -> accountService.update(1L, accountDto));
 
                 verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto), eq(1L));
                 verify(accountRepository, times(1)).findById(1L);
@@ -389,7 +389,7 @@ class AccountServiceImplUnitTest {
 
             @Test
             void shouldReturnPersistedAccountWhenAllFieldsAreEmpty() {
-                AccountAdminResponseDto expectedResponse = (AccountAdminResponseDto) accountServiceImpl.update(1L, accountDto);
+                AccountAdminResponseDto expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 assertThat(expectedResponse.getId()).isEqualTo(1L);
                 assertThat(expectedResponse.getPerson().getId()).isEqualTo(1L);
@@ -409,7 +409,7 @@ class AccountServiceImplUnitTest {
                 accountDto.setPassword("12345");
                 accountDto.setRoles(List.of(new RoleRequestDto(1L, "role1"), new RoleRequestDto(2L, "role2")));
 
-                expectedResponse = (AccountAdminResponseDto) accountServiceImpl.update(1L, accountDto);
+                expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 verify(passwordEncoder, times(1)).encode(eq("12345"));
 
@@ -432,7 +432,7 @@ class AccountServiceImplUnitTest {
             void shouldAssignPersonToAccountWhenPersonIdIsNotNull() {
                 accountDto.setPersonId(10L);
 
-                expectedResponse = (AccountAdminResponseDto) accountServiceImpl.update(1L, accountDto);
+                expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 assertThat(expectedResponse.getPerson().getId()).isEqualTo(10L);
                 assertThat(expectedResponse.getPerson().getFirstName()).isEqualTo("10person");
@@ -447,7 +447,7 @@ class AccountServiceImplUnitTest {
             void shouldAssignEmailWhenEmailIsNotNull() {
                 accountDto.setEmail("example@gmail.com");
 
-                expectedResponse = (AccountAdminResponseDto) accountServiceImpl.update(1L, accountDto);
+                expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 assertThat(expectedResponse.getEmail()).isNotNull();
                 assertThat(expectedResponse.getEmail()).isEqualTo("example@gmail.com");
@@ -461,7 +461,7 @@ class AccountServiceImplUnitTest {
             void shouldAssignEnabledWhenEnabledIsNotNull() {
                 accountDto.setEnabled(true);
 
-                expectedResponse = (AccountAdminResponseDto) accountServiceImpl.update(1L, accountDto);
+                expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 assertThat(expectedResponse.getAudit().isEnabled()).isNotNull();
                 assertThat(expectedResponse.getAudit().isEnabled()).isEqualTo(true);
@@ -475,7 +475,7 @@ class AccountServiceImplUnitTest {
             void shouldAssignPasswordWhenPasswordIsNotNull() {
                 accountDto.setPassword("12345");
 
-                expectedResponse = (AccountAdminResponseDto) accountServiceImpl.update(1L, accountDto);
+                expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 verify(passwordEncoder, times(1)).encode(eq("12345"));
 
@@ -486,7 +486,7 @@ class AccountServiceImplUnitTest {
             void shouldAssignRolesWhenRolesAreNotEmpty() {
                 accountDto.setRoles(List.of(new RoleRequestDto(1L, "role1"), new RoleRequestDto(2L, "role2")));
 
-                expectedResponse = (AccountAdminResponseDto) accountServiceImpl.update(1L, accountDto);
+                expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 assertThat(expectedResponse.getRoles()).extracting(RoleResponseDto::getId, RoleResponseDto::getName)
                     .containsExactly(tuple(1L, "role1"),
@@ -542,7 +542,7 @@ class AccountServiceImplUnitTest {
 
         @Test
         void shouldReturnAdminResponseDtoWhenDeleteIsSuccessfull() {
-            AccountAdminResponseDto adminResponse = (AccountAdminResponseDto) accountServiceImpl.delete(10L);
+            AccountAdminResponseDto adminResponse = (AccountAdminResponseDto) accountService.delete(10L);
 
             assertThat(adminResponse).extracting(AccountAdminResponseDto::getAudit)
                 .extracting(Audit::getUpdatedAt, Audit::getCreatedAt, Audit::isEnabled)
@@ -580,7 +580,7 @@ class AccountServiceImplUnitTest {
         @Test
         void shouldReturnUserResponseDtoWhenDeleteIsSuccessfull() {
 
-            AccountUserResponseDto userResponse = (AccountUserResponseDto) accountServiceImpl.delete(1L);
+            AccountUserResponseDto userResponse = (AccountUserResponseDto) accountService.delete(1L);
 
             assertThat(userResponse).extracting(AccountUserResponseDto::getEmail).isEqualTo("user@gmail.com");
 
@@ -592,7 +592,7 @@ class AccountServiceImplUnitTest {
 
         @Test
         void shouldThrowExceptionWhenRequestIsInvalid() {
-            assertThatExceptionOfType(ValidationServiceException.class).isThrownBy(()-> accountServiceImpl.delete(2L));
+            assertThatExceptionOfType(ValidationServiceException.class).isThrownBy(()-> accountService.delete(2L));
             verify(accountRepository, times(1)).findById(eq(2L));
             verify(accountValidator, times(1)).validateByIdRequest(eq(2L));
             verifyNoMoreInteractions(accountRepository);
@@ -602,7 +602,7 @@ class AccountServiceImplUnitTest {
         @Test
         void shouldThrowExceptionWhenAccountPathIdIsNotFound() {
             String errorMessage = assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> accountServiceImpl.delete(100L)).actual().getMessage();
+                .isThrownBy(() -> accountService.delete(100L)).actual().getMessage();
 
             assertThat(errorMessage).isEqualTo("Account not found");
 

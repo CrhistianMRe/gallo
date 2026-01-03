@@ -42,11 +42,11 @@ public class PersonValidationServiceUnitTest {
     IdentityVerificationService identityService;
 
     @InjectMocks
-    PersonValidationServiceImpl personValidationService;
+    PersonValidationService personValidationService;
 
     @Spy
     @InjectMocks
-    PersonValidationServiceImpl spyPersonValidationService;
+    PersonValidationService spyPersonValidationService;
 
     @Mock
     Environment env;

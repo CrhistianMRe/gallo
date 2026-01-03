@@ -24,8 +24,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountServiceImpl;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonServiceImpl;
+import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
+import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -39,10 +39,10 @@ public class AccountRequestDtoAnnotationTest{
     private AccountRequestDto account;
 
     @MockitoBean
-    private PersonServiceImpl personService;
+    private PersonService personService;
 
     @MockitoBean
-    private AccountServiceImpl accountService;
+    private AccountService accountService;
 
     Set<ConstraintViolation<AccountRequestDto>> violations;
 

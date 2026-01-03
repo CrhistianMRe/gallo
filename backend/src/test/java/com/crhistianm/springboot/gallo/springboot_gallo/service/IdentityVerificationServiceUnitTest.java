@@ -53,7 +53,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAc
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.dto.AccountRequestDtoAnnotationTest;
 
 @ExtendWith(MockitoExtension.class)
-public class IdentityVerificationServiceImplUnitTest {
+public class IdentityVerificationServiceUnitTest {
 
     @Mock
     private AccountRepository accountRepository;
@@ -62,11 +62,11 @@ public class IdentityVerificationServiceImplUnitTest {
     private Environment environment;
 
     @InjectMocks
-    private IdentityVerificationServiceImpl serviceIdentity;
+    private IdentityVerificationService serviceIdentity;
 
     @Spy
     @InjectMocks
-    private IdentityVerificationServiceImpl spyServiceIdentity;
+    private IdentityVerificationService spyServiceIdentity;
     
     private void setSampleAuth(Collection<? extends GrantedAuthority> authorities){
         CustomAccountUserDetails userDetails = 

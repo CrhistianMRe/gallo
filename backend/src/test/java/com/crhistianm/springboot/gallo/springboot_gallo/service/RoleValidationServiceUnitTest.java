@@ -27,7 +27,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class RoleValidationServiceImplUnitTest {
+public class RoleValidationServiceUnitTest {
 
     @Mock
     RoleRepository repository;
@@ -36,7 +36,7 @@ public class RoleValidationServiceImplUnitTest {
     Environment env;
 
     @InjectMocks
-    RoleValidationServiceImpl roleService;
+    RoleValidationService roleService;
 
     @Nested
     class ValidateRoleExistsMethodTest{

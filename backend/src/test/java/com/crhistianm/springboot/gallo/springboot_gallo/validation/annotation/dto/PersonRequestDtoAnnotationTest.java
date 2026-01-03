@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonServiceImpl;
+import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -29,7 +29,7 @@ public class PersonRequestDtoAnnotationTest {
     Set<ConstraintViolation<PersonRequestDto>> violations;
 
     @MockitoBean
-    private PersonServiceImpl personService;
+    private PersonService personService;
 
     @BeforeEach
     void setUp(){
