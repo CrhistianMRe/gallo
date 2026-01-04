@@ -106,7 +106,7 @@ public class AccountControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.email").value("email@gmail.com"))
-                .andExpect(jsonPath("$.person.id").value(1L));
+                .andExpect(jsonPath("$.personId").value(1L));
         }
 
         @Test
@@ -183,7 +183,6 @@ public class AccountControllerTest {
 
                 AccountAdminResponseDto accountDto = new AccountAdminResponseDto();
                 accountDto.setEmail("testemail");
-                accountDto.setPerson(personDto);
                 accountDto.setRoles(new ArrayList<>(List.of(new RoleResponseDto(1L, "roleone"), new RoleResponseDto(2L, "roletwo"))));
                 accountDto.setId(20L);
                 return accountDto;
@@ -202,8 +201,7 @@ public class AccountControllerTest {
                     .andExpect(jsonPath("$.roles[0].id").value(1L))
                     .andExpect(jsonPath("$.roles[1].id").value(2L))
                     .andExpect(jsonPath("$.roles[0].name").value("roleone"))
-                    .andExpect(jsonPath("$.roles[1].name").value("roletwo"))
-                    .andExpect(jsonPath("$.person.id").value(1L));
+                    .andExpect(jsonPath("$.roles[1].name").value("roletwo"));
             }
 
             @Test
@@ -282,7 +280,7 @@ public class AccountControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.email").value("email@gmail.com"))
                 .andExpect(jsonPath("$.audit.enabled").value(true))
-                .andExpect(jsonPath("$.person.id").value(1L))
+                .andExpect(jsonPath("$.personId").value(1L))
                 .andExpect(jsonPath("$.roles[0].id").value(1L))
                 .andExpect(jsonPath("$.roles[0].name").value("role"))
                 .andExpect(status().isOk());
