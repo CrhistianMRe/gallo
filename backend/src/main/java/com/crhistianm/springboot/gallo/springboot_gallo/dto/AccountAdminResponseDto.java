@@ -19,10 +19,7 @@ public class AccountAdminResponseDto implements AccountResponseDto{
     @JsonIgnoreProperties({"accounts", "handler", "hibernateLazyInitializer"})
     private List<RoleResponseDto> roles;
 
-    //Ignore account as is already shown in this dto class(otherwise it will generate a infinite loop)
-    @JsonIgnoreProperties({"account", "handler", "hibernateLazyInitializer"})
-    //Here i add the person to return it as it will be used on administration
-    private PersonResponseDto person;
+    private Long personId;
 
     //As response will show when it was updated/created
     private Audit audit;
@@ -31,11 +28,11 @@ public class AccountAdminResponseDto implements AccountResponseDto{
         this.roles = new ArrayList<>();
     }
 
-    public AccountAdminResponseDto(Long id, String email, PersonResponseDto person, Audit audit) {
+    public AccountAdminResponseDto(Long id, String email, Long personId, Audit audit) {
         this();
         this.id = id;
         this.email = email;
-        this.person = person;
+        this.personId = personId;
         this.audit = audit;
     }
 
@@ -57,7 +54,6 @@ public class AccountAdminResponseDto implements AccountResponseDto{
         this.email = email;
     }
 
-
     public Audit getAudit() {
         return audit;
     }
@@ -74,12 +70,12 @@ public class AccountAdminResponseDto implements AccountResponseDto{
         this.roles = roles;
     }
 
-    public PersonResponseDto getPerson() {
-        return person;
+    public void setPersonId(Long personId) {
+        this.personId = personId;
     }
 
-    public void setPerson(PersonResponseDto person) {
-        this.person = person;
+    public Long getPersonId() {
+        return personId;
     }
 
     @Override
@@ -88,7 +84,8 @@ public class AccountAdminResponseDto implements AccountResponseDto{
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((email == null) ? 0 : email.hashCode());
-        result = prime * result + ((person == null) ? 0 : person.hashCode());
+        result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+        result = prime * result + ((personId == null) ? 0 : personId.hashCode());
         return result;
     }
 
@@ -111,17 +108,22 @@ public class AccountAdminResponseDto implements AccountResponseDto{
                 return false;
         } else if (!email.equals(other.email))
             return false;
-        if (person == null) {
-            if (other.person != null)
+        if (roles == null) {
+            if (other.roles != null)
                 return false;
-        } else if (!person.equals(other.person))
+        } else if (!roles.equals(other.roles))
+            return false;
+        if (personId == null) {
+            if (other.personId != null)
+                return false;
+        } else if (!personId.equals(other.personId))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "AccountResponseDto [id=" + id + ", email=" + email + ", person=" + person
+        return "AccountResponseDto [id=" + id + ", email=" + email + "personId=" + personId 
                 + ", audit=" + audit + "]";
     }
 
