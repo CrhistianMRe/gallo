@@ -211,12 +211,10 @@ class AccountServiceUnitTest {
             AccountRequestDto accountCreateDto = givenAdminAccountRequestDto().orElseThrow();
 
             AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountService.save(accountCreateDto);
-            PersonResponseDto answer = PersonMapper.entityToResponse(PersonMapper.requestToEntity(givenPersonRequestDtoOne().orElseThrow()));
-            answer.setId(1L);
             //Per person test
-            assertNotNull(accountAdminResponseDto.getPerson());
+            assertNotNull(accountAdminResponseDto.getPersonId());
             verify(personRepository, times(1)).findById(anyLong());
-            assertEquals(answer, (accountAdminResponseDto.getPerson()));
+            assertThat(accountAdminResponseDto).extracting(AccountAdminResponseDto::getPersonId).isEqualTo(1L);
         }
 
         @Test
@@ -392,7 +390,7 @@ class AccountServiceUnitTest {
                 AccountAdminResponseDto expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 assertThat(expectedResponse.getId()).isEqualTo(1L);
-                assertThat(expectedResponse.getPerson().getId()).isEqualTo(1L);
+                assertThat(expectedResponse.getPersonId()).isEqualTo(1L);
                 assertThat(expectedResponse.getEmail()).isNull();
                 assertThat(expectedResponse.getAudit().isEnabled()).isEqualTo(false);
                 assertThat(expectedResponse.getRoles()).isEmpty();
@@ -413,8 +411,7 @@ class AccountServiceUnitTest {
 
                 verify(passwordEncoder, times(1)).encode(eq("12345"));
 
-                assertThat(expectedResponse.getPerson().getId()).isEqualTo(10L);
-                assertThat(expectedResponse.getPerson().getFirstName()).isEqualTo("10person");
+                assertThat(expectedResponse.getPersonId()).isEqualTo(10L);
                 assertThat(expectedResponse.getEmail()).isEqualTo("example@gmail.com");
                 assertThat(expectedResponse.getAudit().isEnabled()).isEqualTo(true);
                 assertThat(expectedResponse.getRoles()).hasSize(2);
@@ -434,9 +431,7 @@ class AccountServiceUnitTest {
 
                 expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
-                assertThat(expectedResponse.getPerson().getId()).isEqualTo(10L);
-                assertThat(expectedResponse.getPerson().getFirstName()).isEqualTo("10person");
-
+                assertThat(expectedResponse.getPersonId()).isEqualTo(10L);
 
                 verify(personRepository, times(1)).findById(eq(10L));
 
@@ -556,20 +551,7 @@ class AccountServiceUnitTest {
             assertThat(adminResponse.getRoles()).extracting(RoleResponseDto::getName)
                 .containsExactly("ROLE_ADMIN", "ROLE_USER");
 
-            assertThat(adminResponse).extracting(AccountAdminResponseDto::getPerson)
-                .extracting(
-                        PersonResponseDto::getFirstName,
-                        PersonResponseDto::getLastName, 
-                        PersonResponseDto::getBirthDate, 
-                        PersonResponseDto::getGender, 
-                        PersonResponseDto::getPhoneNumber)
-                .containsExactly(
-                            "one",
-                            "1one",
-                            LocalDate.of(2004, 01, 01),
-                            "M",
-                            "123123123"
-                        );
+            assertThat(adminResponse).extracting(AccountAdminResponseDto::getPersonId).isEqualTo(1L);
 
             verify(accountRepository, times(1)).findById(eq(10L));
             verify(accountValidator, times(1)).validateByIdRequest(eq(1L));

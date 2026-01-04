@@ -70,9 +70,6 @@ public class AccountMapperUnitTest {
 
             AccountAdminResponseDto expectedResponse = (AccountAdminResponseDto) AccountMapper.entityToAdminResponse(accountEntity);
 
-            //To avoid infinite loop on bidirectional relationship and mappers
-            assertThat(expectedResponse.getPerson().getAccount()).isNull();
-
             //Check role response dto embedded attribute
             List<RoleResponseDto> expectedRoles = expectedResponse.getRoles();
 
@@ -93,7 +90,7 @@ public class AccountMapperUnitTest {
             assertThat(expectedRoleAdmin.getAccounts()).extracting("email").contains("user@gmail.com");
 
             //Person
-            assertThat(expectedResponse.getPerson()).isEqualTo(PersonMapper.entityToResponse(accountEntity.getPerson()));
+            assertThat(expectedResponse.getPersonId()).isEqualTo(accountEntity.getPerson().getId());
 
             //Not embedded fields tests
             assertThat(expectedResponse.getId()).isEqualTo(accountEntity.getId());
