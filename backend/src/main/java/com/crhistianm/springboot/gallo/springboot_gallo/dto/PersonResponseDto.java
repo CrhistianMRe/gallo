@@ -2,8 +2,6 @@ package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 public class PersonResponseDto {
 
     private Long id;
@@ -22,14 +20,11 @@ public class PersonResponseDto {
 
     private Double weight;
 
-    @JsonIgnoreProperties({"person", "accounts", "handler", "hibernateLazyInitializer"}) 
-    private AccountAdminResponseDto account;
-
     public PersonResponseDto() {
     }
 
     public PersonResponseDto(Long id, String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
-            Double height, Double weight, AccountAdminResponseDto account) {
+            Double height, Double weight) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -38,7 +33,6 @@ public class PersonResponseDto {
         this.gender = gender;
         this.height = height;
         this.weight = weight;
-        this.account = account;
     }
 
     public Long getId() {
@@ -105,14 +99,6 @@ public class PersonResponseDto {
         this.weight = weight;
     }
 
-    public AccountAdminResponseDto getAccount() {
-        return account;
-    }
-
-    public void setAccount(AccountAdminResponseDto account) {
-        this.account = account;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -121,6 +107,8 @@ public class PersonResponseDto {
         result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
         result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
         result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());
+        result = prime * result + ((birthDate == null) ? 0 : birthDate.hashCode());
+        result = prime * result + ((gender == null) ? 0 : gender.hashCode());
         return result;
     }
 
@@ -153,6 +141,16 @@ public class PersonResponseDto {
                 return false;
         } else if (!phoneNumber.equals(other.phoneNumber))
             return false;
+        if (birthDate == null) {
+            if (other.birthDate != null)
+                return false;
+        } else if (!birthDate.equals(other.birthDate))
+            return false;
+        if (gender == null) {
+            if (other.gender != null)
+                return false;
+        } else if (!gender.equals(other.gender))
+            return false;
         return true;
     }
 
@@ -160,7 +158,7 @@ public class PersonResponseDto {
     public String toString() {
         return "PersonResponseDto [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber="
                 + phoneNumber + ", birthDate=" + birthDate + ", gender=" + gender + ", height=" + height + ", weight="
-                + weight + ", account=" + account + "]";
+                + weight;
     }
-    
+
 }
