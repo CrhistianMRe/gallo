@@ -14,7 +14,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
 //No id as it is auto incremental on db
-public class PersonRequestDto {
+public class PersonRequestDto implements RequestDto{
 
     @NotBlank
     @Size(max = 45)

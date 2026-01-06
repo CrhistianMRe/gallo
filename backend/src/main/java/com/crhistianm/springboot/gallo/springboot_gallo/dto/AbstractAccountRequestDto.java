@@ -1,6 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
-public abstract class AbstractAccountRequestDto {
+public abstract class AbstractAccountRequestDto implements RequestDto{
 
     private String email;
 
