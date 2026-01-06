@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.dto.RequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
@@ -74,10 +75,10 @@ public class IdentityVerificationService {
         return this.validateUserAllowance(personId);
     }
 
-    public Optional<FieldInfoError> validateAdminRequired(AbstractAccountRequestDto accountDto, String fieldName){
+    public Optional<FieldInfoError> validateAdminRequired(RequestDto targetDto, String fieldName){
         FieldInfoError infoError = null;
         if(!isAdminAuthority()){
-            infoError = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, fieldName, env.getProperty("identity.validation.AdminRequired"));
+            infoError = FieldInfoErrorMapper.classTargetToFieldInfo(targetDto, fieldName, env.getProperty("identity.validation.AdminRequired"));
         } 
         return Optional.ofNullable(infoError);
     }

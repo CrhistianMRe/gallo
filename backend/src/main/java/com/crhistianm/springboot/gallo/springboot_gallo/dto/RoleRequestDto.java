@@ -1,7 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.dto;
 
 
-public class RoleRequestDto {
+public class RoleRequestDto implements RequestDto{
 
     private Long id;
 
