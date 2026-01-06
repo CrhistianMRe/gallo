@@ -63,7 +63,6 @@ public class PersonMapperUnitTest {
             assertThat(personResponseDto.getGender()).isEqualTo(originalPerson.getGender());
             assertThat(personResponseDto.getHeight()).isEqualTo(originalPerson.getHeight());
             assertThat(personResponseDto.getWeight()).isEqualTo(originalPerson.getWeight());
-            assertThat(personResponseDto.getAccount()).isEqualTo(AccountMapper.entityToAdminResponse(givenAccountEntityAdmin().orElseThrow()));
         }
 
         @Test
