@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -54,6 +55,8 @@ import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonReposit
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.AccountValidator;
 
+import jakarta.persistence.EntityManager;
+
 @ExtendWith(MockitoExtension.class)
 class AccountServiceUnitTest {
 
@@ -70,7 +73,7 @@ class AccountServiceUnitTest {
     RoleRepository roleRepository;
 
     @Mock
-    PersonRepository personRepository;
+    EntityManager entityManager;
 
     @Mock
     PasswordEncoder passwordEncoder;
@@ -159,14 +162,14 @@ class AccountServiceUnitTest {
                 }
                 return null;
             }).when(accountValidator).validateRequest(any(AccountRequestDto.class));
-            lenient().when(personRepository.findById(anyLong())).thenReturn(Optional.of(new PersonBuilder()
+            lenient().when(entityManager.getReference(Mockito.<Class<Person>>any(), anyLong())).thenReturn(new PersonBuilder()
                         .firstName("one")
                         .lastName("1one")
                         .phoneNumber(givenPersonRequestDtoTwo().orElseThrow().getPhoneNumber())
                         .birthDate(givenPersonRequestDtoTwo().orElseThrow().getBirthDate())
                         .gender(givenPersonRequestDtoTwo().orElseThrow().getGender())
                         .id(1L)
-                        .build()));
+                        .build());
             lenient().when(accountRepository.save(any())).thenAnswer(arg -> arg.getArgument(0));
             lenient().when(accountValidationService.settleResponseType(any(Account.class))).thenAnswer(invo ->{
                 Account account = invo.getArgument(0, Account.class);
@@ -213,7 +216,7 @@ class AccountServiceUnitTest {
             AccountAdminResponseDto accountAdminResponseDto = (AccountAdminResponseDto) accountService.save(accountCreateDto);
             //Per person test
             assertNotNull(accountAdminResponseDto.getPersonId());
-            verify(personRepository, times(1)).findById(anyLong());
+            verify(entityManager, times(1)).getReference(any(), anyLong());
             assertThat(accountAdminResponseDto).extracting(AccountAdminResponseDto::getPersonId).isEqualTo(1L);
         }
 
@@ -252,10 +255,8 @@ class AccountServiceUnitTest {
             }).when(accountValidator).validateUpdateRequest(anyLong(), any(AccountUpdateRequestDto.class), anyLong());
 
             lenient().doAnswer(invo -> {
-                Person person = null;
-                if(invo.getArgument(0, Long.class).equals(10L)) person = new PersonBuilder().id(10L).firstName("10person").build();
-                return Optional.ofNullable(person);
-            }).when(personRepository).findById(anyLong());
+                return new PersonBuilder().id(10L).firstName("10person").build();
+            }).when(entityManager).getReference(Mockito.<Class<Person>>any(), anyLong());
 
             lenient().doAnswer(invo ->{
                 return invo.getArgument(0, Account.class);
@@ -284,7 +285,7 @@ class AccountServiceUnitTest {
                 verify(accountRepository, times(1)).findById(2L);
 
                 verifyNoInteractions(accountValidator);
-                verifyNoInteractions(personRepository);
+                verifyNoInteractions(entityManager);
                 verifyNoInteractions(accountValidationService);
                 verify(accountRepository, times(0)).save(any(Account.class));
             }
@@ -295,36 +296,10 @@ class AccountServiceUnitTest {
 
                 verify(accountRepository, times(1)).findById(1L);
 
-                verifyNoInteractions(personRepository);
+                verifyNoInteractions(entityManager);
                 verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto), eq(1L));
                 verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
                 verify(accountRepository, times(1)).save(any(Account.class));
-            }
-
-            @Test
-            void shouldThrowExceptionWhenAccountPersonIdIsNotFound() {
-                accountDto.setPersonId(2L);
-                String message = assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> accountService.update(1L, accountDto)).actual().getMessage();
-
-                assertThat(message).isEqualTo("Person not found");
-                verify(personRepository, times(1)).findById(eq(2L));
-
-                verify(accountRepository, times(1)).findById(eq(1L));
-                verifyNoInteractions(accountValidationService);
-                verify(accountRepository, times(0)).save(any(Account.class));
-            }
-
-            @Test
-            void shouldNotThrowExceptionWhenAccountPersonIdIsFound() {
-                accountDto.setPersonId(10L);
-
-                assertDoesNotThrow(() -> accountService.update(1L, accountDto));
-
-                verify(accountValidator).validateUpdateRequest(eq(1L), eq(accountDto), eq(1L));
-                verify(personRepository, times(1)).findById(eq(10L));
-                verify(accountValidationService).settleResponseType(any(Account.class));
-                verify(accountRepository).save(any(Account.class));
             }
 
         }
@@ -345,7 +320,7 @@ class AccountServiceUnitTest {
                 verify(accountRepository, times(1)).findById(1L);
 
                 verifyNoInteractions(accountValidationService);
-                verifyNoInteractions(personRepository);
+                verifyNoInteractions(entityManager);
             }
 
             @Test
@@ -360,7 +335,7 @@ class AccountServiceUnitTest {
                 verify(accountValidationService).settleResponseType(any(Account.class));
                 verify(accountRepository).save(any(Account.class));
 
-                verifyNoInteractions(personRepository);
+                verifyNoInteractions(entityManager);
             }
 
 
@@ -395,7 +370,7 @@ class AccountServiceUnitTest {
                 assertThat(expectedResponse.getAudit().isEnabled()).isEqualTo(false);
                 assertThat(expectedResponse.getRoles()).isEmpty();
 
-                verifyNoInteractions(personRepository);
+                verifyNoInteractions(entityManager);
                 verifyNoInteractions(passwordEncoder);
             }
 
@@ -422,7 +397,7 @@ class AccountServiceUnitTest {
                 assertThat(roleOne).isNotEmpty();
                 assertThat(roleTwo).isNotEmpty();
 
-                verify(personRepository, times(1)).findById(eq(10L));
+                verify(entityManager, times(1)).getReference(eq(Person.class), eq(10L));
             }
 
             @Test
@@ -433,7 +408,7 @@ class AccountServiceUnitTest {
 
                 assertThat(expectedResponse.getPersonId()).isEqualTo(10L);
 
-                verify(personRepository, times(1)).findById(eq(10L));
+                verify(entityManager, times(1)).getReference(eq(Person.class), eq(10L));
 
                 verifyNoInteractions(passwordEncoder);
             }
@@ -449,7 +424,7 @@ class AccountServiceUnitTest {
                 
 
                 verifyNoInteractions(passwordEncoder);
-                verifyNoInteractions(personRepository);
+                verifyNoInteractions(entityManager);
             }
 
             @Test
@@ -463,7 +438,7 @@ class AccountServiceUnitTest {
                 //assertThat(expectedResponse.getAudit().isEnabled()).isTrue();
 
                 verifyNoInteractions(passwordEncoder);
-                verifyNoInteractions(personRepository);
+                verifyNoInteractions(entityManager);
             }
 
             @Test
@@ -474,7 +449,7 @@ class AccountServiceUnitTest {
 
                 verify(passwordEncoder, times(1)).encode(eq("12345"));
 
-                verifyNoInteractions(personRepository);
+                verifyNoInteractions(entityManager);
             }
 
             @Test
@@ -488,7 +463,7 @@ class AccountServiceUnitTest {
                                     (tuple(2L, "role2")));
 
                 verifyNoInteractions(passwordEncoder);
-                verifyNoInteractions(personRepository);
+                verifyNoInteractions(entityManager);
             }
 
 
