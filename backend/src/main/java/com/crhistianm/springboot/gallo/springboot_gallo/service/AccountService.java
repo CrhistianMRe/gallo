@@ -27,12 +27,12 @@ import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonReposit
 import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
 import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.AccountValidator;
 
+import jakarta.persistence.EntityManager;
+
 @Service
 public class AccountService {
 
     private final AccountRepository accountRepository;
-
-    private final PersonRepository personRepository;
 
     private final RoleRepository roleRepository;
 
@@ -40,16 +40,26 @@ public class AccountService {
 
     private final AccountValidator accountValidator;
 
-    private final AccountValidationService validationService;
+    private final AccountValidationService accountValidationService;
 
-    public AccountService(AccountRepository accountRepository, PersonRepository personRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AccountValidator accountValidator, AccountValidationService validationService){
-        this.accountRepository = accountRepository;
-        this.personRepository = personRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.accountValidator = accountValidator;
-        this.validationService = validationService;
-    }
+    private final EntityManager entityManager;
+
+    public AccountService
+        (
+         AccountRepository accountRepository,
+         RoleRepository roleRepository,
+         PasswordEncoder passwordEncoder,
+         AccountValidator accountValidator,
+         AccountValidationService accountValidationService,
+         EntityManager entityManager
+        ){
+            this.accountRepository = accountRepository;
+            this.roleRepository = roleRepository;
+            this.passwordEncoder = passwordEncoder;
+            this.accountValidator = accountValidator;
+            this.accountValidationService = accountValidationService;
+            this.entityManager = entityManager;
+        }
 
     @Transactional
     public AccountResponseDto save(AccountRequestDto accountDto) {
@@ -57,11 +67,10 @@ public class AccountService {
 
         Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
 
-        Optional<Person> optionalPerson = personRepository.findById(accountDto.getPersonId());
 
         Account account = AccountMapper.requestToEntity(accountDto);
 
-        optionalPerson.ifPresent(account::setPerson);
+        account.setPerson(entityManager.getReference(Person.class, accountDto.getPersonId()));
         optionalRoleUser.ifPresent(account::addRole);
 
         account.setPassword(passwordEncoder.encode(account.getPassword()));
@@ -71,7 +80,7 @@ public class AccountService {
             optionalRoleAdmin.ifPresent(account::addRole);
         }
 
-        return validationService.settleResponseType(accountRepository.save(account));
+        return accountValidationService.settleResponseType(accountRepository.save(account));
     }
 
     @Transactional
@@ -79,13 +88,13 @@ public class AccountService {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
         accountValidator.validateUpdateRequest(id, accountDto, account.getPerson().getId());
 
-        if(accountDto.getPersonId() != null) account.setPerson(personRepository.findById(accountDto.getPersonId()).orElseThrow(() -> new NotFoundException(Person.class)));
+        if(accountDto.getPersonId() != null) account.setPerson(entityManager.getReference(Person.class, accountDto.getPersonId()));
         if(accountDto.getEmail() != null) account.setEmail(accountDto.getEmail());
         if(accountDto.isEnabled() != null) account.getAudit().setEnabled(accountDto.isEnabled());
         if(accountDto.getPassword() != null) account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         if(!accountDto.getRoles().isEmpty()) account.setRoles(accountDto.getRoles().stream().map(role -> RoleMapper.requestToEntity(role)).collect(Collectors.toList()));
 
-        return validationService.settleResponseType(accountRepository.save(account));
+        return accountValidationService.settleResponseType(accountRepository.save(account));
     }
 
     @Transactional
@@ -93,14 +102,14 @@ public class AccountService {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
         accountValidator.validateByIdRequest(account.getPerson().getId());
         accountRepository.delete(account);
-        return validationService.settleResponseType(account);
+        return accountValidationService.settleResponseType(account);
     }
 
     @Transactional(readOnly = true)
     public AccountResponseDto getById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
         accountValidator.validateByIdRequest(account.getPerson().getId());
-        return validationService.settleResponseType(account);
+        return accountValidationService.settleResponseType(account);
     }
 
     @Transactional(readOnly = true)
