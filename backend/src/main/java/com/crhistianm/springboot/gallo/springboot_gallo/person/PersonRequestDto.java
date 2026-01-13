@@ -1,31 +1,56 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import java.time.LocalDate;
 
-public class PersonResponseDto {
 
-    private Long id;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
+
+//No id as it is auto incremental on db
+public class PersonRequestDto implements RequestDto {
+
+    @NotBlank
+    @Size(max = 45)
     private String firstName;
 
+    @NotBlank
+    @Size(max = 45)
     private String lastName;
 
+    @NotBlank
+    @Size(max = 16)
     private String phoneNumber;
 
+    @NotNull
+    @PastOrPresent
     private LocalDate birthDate;
 
+    @NotBlank
+    @CorrectGender
     private String gender;
 
+    @DecimalMin("0.50")
+    @DecimalMax("3.00")
+    @Digits(integer = 1, fraction = 2, message = "{dto.validation.annotation.digits.height}")
     private Double height;
 
+    @Digits(integer = 3, fraction = 1, message = "{dto.validation.annotation.digits.weight}")
+    @DecimalMin("20.0")
+    @DecimalMax("200.0")
     private Double weight;
 
-    public PersonResponseDto() {
+    PersonRequestDto() {
     }
 
-    public PersonResponseDto(Long id, String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
+    PersonRequestDto(String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
             Double height, Double weight) {
-        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -35,67 +60,59 @@ public class PersonResponseDto {
         this.weight = weight;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
+    String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
+    String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getPhoneNumber() {
+    String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public LocalDate getBirthDate() {
+    LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+    void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
-    public String getGender() {
+    String getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    void setGender(String gender) {
         this.gender = gender;
     }
 
-    public Double getHeight() {
+    Double getHeight() {
         return height;
     }
 
-    public void setHeight(Double height) {
+    void setHeight(Double height) {
         this.height = height;
     }
 
-    public Double getWeight() {
+    Double getWeight() {
         return weight;
     }
 
-    public void setWeight(Double weight) {
+    void setWeight(Double weight) {
         this.weight = weight;
     }
 
@@ -103,12 +120,9 @@ public class PersonResponseDto {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
         result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
         result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());
-        result = prime * result + ((birthDate == null) ? 0 : birthDate.hashCode());
-        result = prime * result + ((gender == null) ? 0 : gender.hashCode());
         return result;
     }
 
@@ -120,12 +134,7 @@ public class PersonResponseDto {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        PersonResponseDto other = (PersonResponseDto) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
+        PersonRequestDto other = (PersonRequestDto) obj;
         if (firstName == null) {
             if (other.firstName != null)
                 return false;
@@ -141,24 +150,14 @@ public class PersonResponseDto {
                 return false;
         } else if (!phoneNumber.equals(other.phoneNumber))
             return false;
-        if (birthDate == null) {
-            if (other.birthDate != null)
-                return false;
-        } else if (!birthDate.equals(other.birthDate))
-            return false;
-        if (gender == null) {
-            if (other.gender != null)
-                return false;
-        } else if (!gender.equals(other.gender))
-            return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "PersonResponseDto [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber="
-                + phoneNumber + ", birthDate=" + birthDate + ", gender=" + gender + ", height=" + height + ", weight="
-                + weight;
+        return "PersonRequestDto [firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
+                + ", birthDate=" + birthDate + ", gender=" + gender + ", height=" + height + ", weight=" + weight + "]";
     }
 
+    
 }

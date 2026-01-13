@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,7 +11,7 @@ import jakarta.validation.Payload;
 @Constraint(validatedBy = CorrectGenderValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CorrectGender{
+@interface CorrectGender{
 
     String message() default "{dto.validation.CorrectGender}";
 

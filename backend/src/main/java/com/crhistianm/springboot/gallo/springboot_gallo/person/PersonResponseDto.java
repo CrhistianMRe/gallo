@@ -1,29 +1,15 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.entity;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+class PersonResponseDto {
 
-@Entity
-@Table(name = "person")
-public class Person {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;
 
     private String lastName;
 
-    @Column(unique = true)
     private String phoneNumber;
 
     private LocalDate birthDate;
@@ -34,13 +20,12 @@ public class Person {
 
     private Double weight;
 
-    @OneToOne(mappedBy = "person", cascade = CascadeType.REMOVE)
-    private Account account;
-
-    public Person(){
+    PersonResponseDto() {
     }
-    
-	public Person(String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender, Double height, Double weight, Account account) {
+
+    PersonResponseDto(Long id, String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
+            Double height, Double weight) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -48,80 +33,70 @@ public class Person {
         this.gender = gender;
         this.height = height;
         this.weight = weight;
-        this.account = account;
     }
 
-
-    public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
-	public LocalDate getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
-	public Double getHeight() {
-		return height;
-	}
-
-	public void setHeight(Double height) {
-		this.height = height;
-	}
-
-	public Double getWeight() {
-		return weight;
-	}
-
-	public void setWeight(Double weight) {
-		this.weight = weight;
-	}
-
-    public Account getAccount() {
-        return account;
+    Long getId() {
+        return id;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    void setId(Long id) {
+        this.id = id;
+    }
+
+    String getFirstName() {
+        return firstName;
+    }
+
+    void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    String getLastName() {
+        return lastName;
+    }
+
+    void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    String getGender() {
+        return gender;
+    }
+
+    void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    Double getHeight() {
+        return height;
+    }
+
+    void setHeight(Double height) {
+        this.height = height;
+    }
+
+    Double getWeight() {
+        return weight;
+    }
+
+    void setWeight(Double weight) {
+        this.weight = weight;
     }
 
     @Override
@@ -132,6 +107,8 @@ public class Person {
         result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
         result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
         result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());
+        result = prime * result + ((birthDate == null) ? 0 : birthDate.hashCode());
+        result = prime * result + ((gender == null) ? 0 : gender.hashCode());
         return result;
     }
 
@@ -143,7 +120,7 @@ public class Person {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Person other = (Person) obj;
+        PersonResponseDto other = (PersonResponseDto) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -164,14 +141,24 @@ public class Person {
                 return false;
         } else if (!phoneNumber.equals(other.phoneNumber))
             return false;
+        if (birthDate == null) {
+            if (other.birthDate != null)
+                return false;
+        } else if (!birthDate.equals(other.birthDate))
+            return false;
+        if (gender == null) {
+            if (other.gender != null)
+                return false;
+        } else if (!gender.equals(other.gender))
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Person {id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber="
+        return "PersonResponseDto [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber="
                 + phoneNumber + ", birthDate=" + birthDate + ", gender=" + gender + ", height=" + height + ", weight="
-                + weight + "}";
+                + weight;
     }
 
 }

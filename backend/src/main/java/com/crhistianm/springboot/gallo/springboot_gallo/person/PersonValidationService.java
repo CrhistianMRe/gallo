@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import java.util.Optional;
 
@@ -6,13 +6,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.FieldInfoErrorMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
+import com.crhistianm.springboot.gallo.springboot_gallo.account.AbstractAccountRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorMapper;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 
 @Service
 public class PersonValidationService {
@@ -21,12 +17,12 @@ public class PersonValidationService {
 
     private final Environment env;
 
-    public PersonValidationService(PersonRepository personRepository, Environment env) {
+    PersonValidationService(PersonRepository personRepository, Environment env) {
         this.personRepository = personRepository;
         this.env = env;
     }
 
-    public Optional<FieldInfoError> validateUniquePhoneNumber(Long pathPersonId, PersonRequestDto personDto){
+    Optional<FieldInfoError> validateUniquePhoneNumber(Long pathPersonId, PersonRequestDto personDto){
         FieldInfoError field = null;
         if(!isPhoneNumberAvailable(pathPersonId, personDto.getPhoneNumber())){
             field = FieldInfoErrorMapper.classTargetToFieldInfo(personDto, "phoneNumber", env.getProperty("person.validation.UniquePhoneNumber"));
@@ -43,13 +39,13 @@ public class PersonValidationService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isPhoneNumberAvailable(Long pathPersonId, String phoneNumber) {
+    boolean isPhoneNumberAvailable(Long pathPersonId, String phoneNumber) {
         if(pathPersonId != null && personRepository.findById(pathPersonId).orElseThrow().getPhoneNumber().equals(phoneNumber)) return true;
         return !personRepository.existsByPhoneNumber(phoneNumber);
     }
 
     @Transactional(readOnly = true)
-    public boolean isPersonRegistered(Long personId) {
+    boolean isPersonRegistered(Long personId) {
         Optional<Person> optionalPerson = personRepository.findById(personId);
         return optionalPerson.isPresent();
     }

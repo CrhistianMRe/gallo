@@ -1,24 +1,18 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.account.IdentityVerificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.PersonValidator;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
 
 @Service
-public class PersonService {
+class PersonService {
 
     private final PersonRepository personRepository;
 
@@ -26,21 +20,21 @@ public class PersonService {
 
     private final IdentityVerificationService identityService;
 
-    public PersonService(PersonRepository personRepository, PersonValidator personValidator, IdentityVerificationService identityService){
+    PersonService(PersonRepository personRepository, PersonValidator personValidator, IdentityVerificationService identityService){
         this.personRepository = personRepository;
         this.personValidator = personValidator;
         this.identityService = identityService;
     }
 
     @Transactional
-    public PersonResponseDto save(PersonRequestDto personDto) {
+    PersonResponseDto save(PersonRequestDto personDto) {
         personValidator.validateRequest(null, personDto);
         Person person = PersonMapper.requestToEntity(personDto);
         return PersonMapper.entityToResponse(personRepository.save(person));
     }
 
     @Transactional
-    public PersonResponseDto update(Long id, PersonRequestDto personDto) {
+    PersonResponseDto update(Long id, PersonRequestDto personDto) {
         personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
         personValidator.validateRequest(id, personDto);
         Person person = PersonMapper.requestToEntity(personDto);
@@ -49,7 +43,7 @@ public class PersonService {
     }
 
     @Transactional
-    public PersonResponseDto delete(Long id) {
+    PersonResponseDto delete(Long id) {
         Person person = personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
         identityService.validateUserAllowance(id).ifPresent(f -> {
             throw new ValidationServiceException(new ArrayList<>(List.of(f)));
@@ -59,7 +53,7 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public PersonResponseDto getById(Long id) {
+    PersonResponseDto getById(Long id) {
         Person person = personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
         identityService.validateUserAllowance(id).ifPresent(f -> {
             throw new ValidationServiceException(new ArrayList<>(List.of(f)));
@@ -68,7 +62,7 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public List<PersonResponseDto> getAll() {
+    List<PersonResponseDto> getAll() {
         List<PersonResponseDto> personList = personRepository.findAll().stream().map(p -> PersonMapper.entityToResponse(p)).collect(Collectors.toList());
         return personList;
     }
