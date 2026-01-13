@@ -1,6 +1,6 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonRequestDtoOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.givenPersonRequestDtoOne;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,30 +11,28 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
+import com.crhistianm.springboot.gallo.springboot_gallo.config.ValidatorConfig;
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
-public class PersonRequestDtoAnnotationTest {
+@ExtendWith(SpringExtension.class)
+//@ContextConfiguration(classes = { LocalValidatorFactoryBean.class }) it does the same as below
+@Import(ValidatorConfig.class)
+class PersonRequestDtoAnnotationTest {
 
+    @Autowired
     private Validator validator;
 
     private PersonRequestDto person;
 
     Set<ConstraintViolation<PersonRequestDto>> violations;
-
-    @MockitoBean
-    private PersonService personService;
-
-    @BeforeEach
-    void setUp(){
-        validator = Validation.buildDefaultValidatorFactory().getValidator();
-    }
 
     @Nested
     class FirstNameFieldTest{

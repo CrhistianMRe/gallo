@@ -1,8 +1,8 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonEntityOne;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonRequestDtoOne;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonRequestDtoTwo;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.givenPersonEntityOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.givenPersonRequestDtoOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.givenPersonRequestDtoTwo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -14,6 +14,9 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.account.IdentityVerificationService;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.SampleAccountRequestDto;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,16 +27,11 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
+import com.crhistianm.springboot.gallo.springboot_gallo.account.AbstractAccountRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 
 @ExtendWith(MockitoExtension.class)
-public class PersonValidationServiceUnitTest {
+class PersonValidationServiceUnitTest {
 
     @Mock
     PersonRepository personRepository;
@@ -102,11 +100,11 @@ public class PersonValidationServiceUnitTest {
 
         FieldInfoError field;
 
-        AccountRequestDto accountRequestDto;
+        SampleAccountRequestDto accountRequestDto;
 
         @BeforeEach
         void setUp(){
-            accountRequestDto = new AccountRequestDto();
+            accountRequestDto = new SampleAccountRequestDto();
             doAnswer(invo ->{
                 return invo.getArgument(0, Long.class).equals(1L);
             }).when(spyPersonValidationService).isPersonRegistered(anyLong());

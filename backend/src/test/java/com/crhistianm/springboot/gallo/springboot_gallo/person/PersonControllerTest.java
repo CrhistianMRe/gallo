@@ -1,9 +1,7 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.controller;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import static org.mockito.Mockito.*;
 
-import org.aspectj.runtime.internal.PerObjectMap;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,41 +13,31 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.web.headers.ContentTypeOptionsDsl;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.*;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.config.ControllerValidatorConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
+import com.crhistianm.springboot.gallo.springboot_gallo.config.ValidatorConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 //Select controller class
 @WebMvcTest(PersonController.class)
 //Import security filterChain to expose endpoints and JacksonMapper config
-@Import({SpringSecurityConfig.class, JacksonConfig.class})
+@Import({JacksonConfig.class})
 //remove security filters as is not needed in these tests
 @AutoConfigureMockMvc(addFilters = false)
-public class PersonControllerTest {
+class PersonControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,7 +52,7 @@ public class PersonControllerTest {
     AccountUserDetailsService service;
 
     @Nested
-    @Import(ControllerValidatorConfig.class)
+    @Import(ValidatorConfig.class)
     class RegisterModuleTest {
 
         PersonRequestDto personRequest;
@@ -168,7 +156,7 @@ public class PersonControllerTest {
     }
 
     @Nested
-    @Import(ControllerValidatorConfig.class)
+    @Import(ValidatorConfig.class)
     class UpdateModuleTest{
 
         PersonRequestDto personRequest;
