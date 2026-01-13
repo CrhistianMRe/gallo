@@ -1,10 +1,8 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.builder;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.time.LocalDateTime;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
-
-public class AuditBuilder {
+class AuditBuilder {
 
     private LocalDateTime createdAt;
 
@@ -12,24 +10,24 @@ public class AuditBuilder {
     
     private boolean enabled;
 
-    public AuditBuilder(){}
+    AuditBuilder(){}
 
-    public AuditBuilder createdAt(LocalDateTime createdAt){
+    AuditBuilder createdAt(LocalDateTime createdAt){
         this.createdAt = createdAt;
         return this;
     }
     
-    public AuditBuilder updatedAt(LocalDateTime updatedAt){
+    AuditBuilder updatedAt(LocalDateTime updatedAt){
         this.updatedAt = updatedAt;
         return this;
     }
 
-    public AuditBuilder enabled(boolean enabled){
+    AuditBuilder enabled(boolean enabled){
         this.enabled = enabled;
         return this;
     }
 
-    public Audit build(){
+    Audit build(){
         Audit audit = new Audit();
         audit.setCreatedAt(this.createdAt);
         audit.setUpdatedAt(this.updatedAt);

@@ -1,32 +1,34 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 
-public class RoleRequestDto implements RequestDto{
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
+
+class RoleRequestDto implements RequestDto {
 
     private Long id;
 
     private String name;
 
-    public RoleRequestDto() {
+    RoleRequestDto() {
     }
 
-    public RoleRequestDto(Long id, String name) {
+    RoleRequestDto(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public void setId(Long id) {
+    void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() {
+    Long getId() {
         return id;
     }
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 

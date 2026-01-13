@@ -1,24 +1,16 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
+class AccountMapper {
 
-public class AccountMapper {
-
-    public static Account requestToEntity(AccountRequestDto accountDto){
+    static Account requestToEntity(AccountRequestDto accountDto){
         return new AccountBuilder().email(accountDto.getEmail()).password(accountDto.getPassword()).build();
     }
 
-    public static AccountResponseDto entityToAdminResponse(Account account){
+    static AccountResponseDto entityToAdminResponse(Account account){
         AccountAdminResponseDto accountDto = new AccountAdminResponseDto();
         //List<RoleResponseDto> rolesResponseDto = account.getRoles().stream().map(r -> new RoleResponseDto(r.getId(), r.getName())).collect(Collectors.toList());
         List<RoleResponseDto> rolesResponseDto = account.getRoles().stream().map(role -> {
@@ -46,7 +38,7 @@ public class AccountMapper {
         return accountDto;
     }
     
-    public static AccountResponseDto entityToResponse(Account account){
+    static AccountResponseDto entityToResponse(Account account){
         AccountUserResponseDto accountDto = new AccountUserResponseDto();
         accountDto.setEmail(account.getEmail());
         return accountDto;

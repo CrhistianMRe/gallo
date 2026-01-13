@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.entity;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.time.LocalDateTime;
 
@@ -7,7 +7,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
 @Embeddable
-public class Audit {
+class Audit {
 
     private LocalDateTime createdAt;
 
@@ -16,37 +16,37 @@ public class Audit {
     private boolean enabled;
 
     @PrePersist
-    public void PrePersist(){
+    private void PrePersist(){
         this.createdAt = LocalDateTime.now();
         this.enabled = true;
     }
 
     @PreUpdate
-    public void PreUpdate(){
+    private void PreUpdate(){
         this.updatedAt = LocalDateTime.now();
     }
 
-    public LocalDateTime getCreatedAt() {
+    LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isEnabled() {
+    boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
      

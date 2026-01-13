@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.repository;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-
-public interface AccountRepository extends CrudRepository <Account, Long>{
+interface AccountRepository extends CrudRepository <Account, Long>{
 
     Optional<Account> findByEmail(String email);
 

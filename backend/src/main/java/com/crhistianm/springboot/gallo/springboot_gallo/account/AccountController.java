@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.controller;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.List;
 
@@ -15,44 +15,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.group.GroupsOrder;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.GroupsOrder;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/accounts")
-public class AccountController {
+class AccountController {
 
     @Autowired
     private AccountService accountService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> create(@Valid @RequestBody AccountRequestDto accountDto){
+    ResponseEntity<?> create(@Valid @RequestBody AccountRequestDto accountDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.save(accountDto));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<AccountResponseDto> update(@PathVariable Long id, @Validated(GroupsOrder.class) @RequestBody AccountUpdateRequestDto requestDto){
+    ResponseEntity<AccountResponseDto> update(@PathVariable Long id, @Validated(GroupsOrder.class) @RequestBody AccountUpdateRequestDto requestDto){
         return ResponseEntity.ok(accountService.update(id, requestDto)); 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<AccountResponseDto> delete(@PathVariable Long id) {
+    ResponseEntity<AccountResponseDto> delete(@PathVariable Long id) {
         return ResponseEntity.ok(accountService.delete(id));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AccountResponseDto> viewById(@PathVariable Long id){
+    ResponseEntity<AccountResponseDto> viewById(@PathVariable Long id){
         return ResponseEntity.ok(accountService.getById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountAdminResponseDto>> viewAll(){
+    ResponseEntity<List<AccountAdminResponseDto>> viewAll(){
         return ResponseEntity.ok(accountService.getAll());
     }
 

@@ -1,13 +1,13 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-public class AccountUserResponseDto implements AccountResponseDto{
+class AccountUserResponseDto implements AccountResponseDto{
 
     private String email;
 
-    public AccountUserResponseDto() {
+    AccountUserResponseDto() {
     }
 
-    public AccountUserResponseDto(String email) {
+    AccountUserResponseDto(String email) {
         this.email = email;
     }
 

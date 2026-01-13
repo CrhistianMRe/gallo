@@ -1,9 +1,10 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.entity;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.workout.Workout;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
@@ -54,12 +55,12 @@ public class Account {
     private List<Workout> workouts;
 
 
-    public Account() {
+    Account() {
         this.workouts = new ArrayList<>();
         this.roles = new ArrayList<>();
     }
 
-    public Account(String email, String password, Person person) {
+    Account(String email, String password, Person person) {
         this();
         this.email = email;
         this.password = password;

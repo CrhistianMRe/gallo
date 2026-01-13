@@ -1,36 +1,20 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.RoleMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.AccountValidator;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
 
 import jakarta.persistence.EntityManager;
 
 @Service
-public class AccountService {
+class AccountService {
 
     private final AccountRepository accountRepository;
 
@@ -44,7 +28,7 @@ public class AccountService {
 
     private final EntityManager entityManager;
 
-    public AccountService
+    AccountService
         (
          AccountRepository accountRepository,
          RoleRepository roleRepository,
@@ -62,7 +46,7 @@ public class AccountService {
         }
 
     @Transactional
-    public AccountResponseDto save(AccountRequestDto accountDto) {
+    AccountResponseDto save(AccountRequestDto accountDto) {
         accountValidator.validateRequest(accountDto);
 
         Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
@@ -84,7 +68,7 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountResponseDto update(Long id, AccountUpdateRequestDto accountDto) {
+    AccountResponseDto update(Long id, AccountUpdateRequestDto accountDto) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
         accountValidator.validateUpdateRequest(id, accountDto, account.getPerson().getId());
 
@@ -98,7 +82,7 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountResponseDto delete(Long id) {
+    AccountResponseDto delete(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
         accountValidator.validateByIdRequest(account.getPerson().getId());
         accountRepository.delete(account);
@@ -106,14 +90,14 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public AccountResponseDto getById(Long id) {
+    AccountResponseDto getById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
         accountValidator.validateByIdRequest(account.getPerson().getId());
         return accountValidationService.settleResponseType(account);
     }
 
     @Transactional(readOnly = true)
-    public List<AccountAdminResponseDto> getAll() {
+    List<AccountAdminResponseDto> getAll() {
         List<AccountAdminResponseDto> accountList = accountRepository.findAll().stream().map(a -> (AccountAdminResponseDto) AccountMapper.entityToAdminResponse(a)).collect(Collectors.toList());
         return accountList;
     }

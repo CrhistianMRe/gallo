@@ -1,15 +1,14 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 //Without password as password is just for writing
 //This will be the response of JWT admin authenticated users
-public class AccountAdminResponseDto implements AccountResponseDto{
+class AccountAdminResponseDto implements AccountResponseDto{
 
     private Long id;
 
@@ -24,11 +23,11 @@ public class AccountAdminResponseDto implements AccountResponseDto{
     //As response will show when it was updated/created
     private Audit audit;
 
-    public AccountAdminResponseDto() {
+    AccountAdminResponseDto() {
         this.roles = new ArrayList<>();
     }
 
-    public AccountAdminResponseDto(Long id, String email, Long personId, Audit audit) {
+    AccountAdminResponseDto(Long id, String email, Long personId, Audit audit) {
         this();
         this.id = id;
         this.email = email;
@@ -36,11 +35,11 @@ public class AccountAdminResponseDto implements AccountResponseDto{
         this.audit = audit;
     }
 
-    public Long getId() {
+    Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    void setId(Long id) {
         this.id = id;
     }
 
@@ -54,27 +53,27 @@ public class AccountAdminResponseDto implements AccountResponseDto{
         this.email = email;
     }
 
-    public Audit getAudit() {
+    Audit getAudit() {
         return audit;
     }
 
-    public void setAudit(Audit audit) {
+    void setAudit(Audit audit) {
         this.audit = audit;
     }
 
-    public List<RoleResponseDto> getRoles() {
+    List<RoleResponseDto> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<RoleResponseDto> roles) {
+    void setRoles(List<RoleResponseDto> roles) {
         this.roles = roles;
     }
 
-    public void setPersonId(Long personId) {
+    void setPersonId(Long personId) {
         this.personId = personId;
     }
 
-    public Long getPersonId() {
+    Long getPersonId() {
         return personId;
     }
 

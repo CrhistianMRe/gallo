@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAccountUserDetails;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.security.CustomAccountUserDetails;
 
 @Service
 public class AccountUserDetailsService implements UserDetailsService{

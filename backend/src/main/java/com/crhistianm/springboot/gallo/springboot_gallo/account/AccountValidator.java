@@ -1,23 +1,16 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountValidationService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.IdentityVerificationService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonValidationService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.RoleValidationService;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.PersonValidationService;
 
 @Component
-public class AccountValidator {
+class AccountValidator {
 
     private final AccountValidationService accountService;
 
@@ -27,14 +20,14 @@ public class AccountValidator {
 
     private final RoleValidationService roleService;
 
-    public AccountValidator(AccountValidationService accountService, PersonValidationService personService, IdentityVerificationService identityService, RoleValidationService roleService) {
+    AccountValidator(AccountValidationService accountService, PersonValidationService personService, IdentityVerificationService identityService, RoleValidationService roleService) {
         this.accountService = accountService;
         this.personService = personService;
         this.identityService = identityService;
         this.roleService = roleService;
     }
 
-    public void validateRequest(AccountRequestDto accountDto) {
+    void validateRequest(AccountRequestDto accountDto) {
         List<FieldInfoError> fields = new ArrayList<>();
         personService.validatePersonRegistered(accountDto).ifPresent(fields::add);
         //Null id as is account creation
@@ -49,7 +42,7 @@ public class AccountValidator {
         if(!fields.isEmpty()) throw new ValidationServiceException(fields);
     }
 
-    public void validateUpdateRequest(Long accountPathId, AccountUpdateRequestDto accountDto, Long personId) {
+    void validateUpdateRequest(Long accountPathId, AccountUpdateRequestDto accountDto, Long personId) {
         List<FieldInfoError> fields = new ArrayList<>();
 
         identityService.validateUserAllowance(personId).ifPresent(fields::add);
@@ -69,7 +62,7 @@ public class AccountValidator {
         if(!fields.isEmpty()) throw new ValidationServiceException(fields);
     }
 
-    public void validateByIdRequest(Long personId) {
+    void validateByIdRequest(Long personId) {
         identityService.validateUserAllowance(personId).ifPresent(f -> {
             throw new ValidationServiceException(new ArrayList<>(List.of(f)));
         });
