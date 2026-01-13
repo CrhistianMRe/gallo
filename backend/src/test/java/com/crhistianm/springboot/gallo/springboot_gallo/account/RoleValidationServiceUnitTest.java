@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,12 +23,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 
 @ExtendWith(MockitoExtension.class)
-public class RoleValidationServiceUnitTest {
+class RoleValidationServiceUnitTest {
 
     @Mock
     RoleRepository repository;

@@ -1,7 +1,8 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.repository;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenRoleAdmin;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenRoleUser;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.getPersonInstance;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenRoleAdmin;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenRoleUser;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
@@ -16,13 +17,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
+
 
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class AccountRepositoryTest {
+class AccountRepositoryTest {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -30,7 +30,10 @@ public class AccountRepositoryTest {
     @Test
     @Sql("/personinserts.sql")
     void testSave(){
-        Account account = new AccountBuilder().email("example@gmail.com").person(new PersonBuilder().firstName("two").id(1L).build()).build();
+        Person person = getPersonInstance();
+        person.setFirstName("two");
+        person.setId(1L);
+        Account account = new AccountBuilder().email("example@gmail.com").person(person).build();
         accountRepository.save(account);
 
         assertTrue(accountRepository.findByEmail("example@gmail.com").isPresent());
@@ -55,11 +58,18 @@ public class AccountRepositoryTest {
     @Test
     @Sql({"/personinserts.sql", "/roleinserts.sql", "/accountinserts.sql", "/accountroleinserts.sql"})
     void testFindByEmailWithRoles(){
+        Person person = getPersonInstance();
+        person.setFirstName("Crhistian");
+        person.setFirstName("Mendez");
+        person.setPhoneNumber("111222333");
+        person.setBirthDate(LocalDate.of(2000, 01, 01));
+        person.setWeight(80.0);
+        person.setHeight(1.74);
+        person.setGender("M");
         Account account = new AccountBuilder()
             .id(1L)
             .email("crhistian@gmail.com")
-            .person(new PersonBuilder()
-                    .firstName("Crhistian").lastName("Mendez").phoneNumber("111222333").birthDate(LocalDate.of(2000, 01, 01)).weight(80.0).gender("M").height(1.74).build())
+            .person(person)
             .roles(List.of(givenRoleAdmin().orElseThrow(), givenRoleUser().orElseThrow()))
             .build();
 

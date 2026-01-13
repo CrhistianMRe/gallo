@@ -1,12 +1,11 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityAdmin;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.getPersonInstance;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenAccountEntityAdmin;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyChar;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -17,10 +16,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.PersonValidationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,21 +29,11 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
-import org.springframework.mock.env.MockEnvironment;
-import org.springframework.mock.env.MockPropertySource;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 
 @ExtendWith(MockitoExtension.class)
-public class AccountValidationServiceUnitTest {
+class AccountValidationServiceUnitTest {
 
     @Mock
     AccountRepository accountRepository;
@@ -273,7 +262,9 @@ public class AccountValidationServiceUnitTest {
 
                 @BeforeEach
                 void setUp(){
-                    doReturn(Optional.of(new AccountBuilder().person(new PersonBuilder().id(3L).build()).build()))
+                    Person person = getPersonInstance();
+                    person.setId(3L);
+                    doReturn(Optional.of(new AccountBuilder().person(person).build()))
                         .when(accountRepository).findById(anyLong());
                 }
 

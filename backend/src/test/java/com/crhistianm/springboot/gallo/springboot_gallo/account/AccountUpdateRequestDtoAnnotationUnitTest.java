@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,14 +7,13 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.group.GroupsOrder;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.GroupsOrder;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
-public class AccountUpdateRequestDtoAnnotationUnitTest{
+class AccountUpdateRequestDtoAnnotationUnitTest{
 
     Validator validator;
 

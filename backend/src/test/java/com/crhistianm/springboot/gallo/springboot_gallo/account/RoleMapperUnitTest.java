@@ -1,13 +1,10 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
-
-public class RoleMapperUnitTest {
+class RoleMapperUnitTest {
 
     @Test
     void returnsRoleEntityFromRoleRequestDto(){

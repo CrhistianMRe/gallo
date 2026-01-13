@@ -1,25 +1,17 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityAdmin;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityUser;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenRoleUser;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenUserAccountRequestDto;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenAccountEntityAdmin;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenAccountEntityUser;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenUserAccountRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
-
-public class AccountMapperUnitTest {
+class AccountMapperUnitTest {
 
     @Nested
     class RequestToEntityTest {

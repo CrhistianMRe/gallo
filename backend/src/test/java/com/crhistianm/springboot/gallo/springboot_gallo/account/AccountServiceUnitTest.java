@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.mapping.Array;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,34 +25,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.AccountBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.RoleBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.*;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.getPersonInstance;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.PersonRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.AccountValidator;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 
 import jakarta.persistence.EntityManager;
 
@@ -156,20 +136,21 @@ class AccountServiceUnitTest {
 
         @BeforeEach
         void setUp(){
+            Person person = getPersonInstance();
+            person.setId(1L);
+            person.setFirstName("one");
+            person.setLastName("1one");
+            person.setPhoneNumber("123123123");
+            person.setBirthDate(LocalDate.of(2004, 01, 01));
+            person.setGender("M");
+
             doAnswer(invo -> {
                 if(invo.getArgument(0, AccountRequestDto.class).getPersonId().equals(10L)) {
                     throw new ValidationServiceException();
                 }
                 return null;
             }).when(accountValidator).validateRequest(any(AccountRequestDto.class));
-            lenient().when(entityManager.getReference(Mockito.<Class<Person>>any(), anyLong())).thenReturn(new PersonBuilder()
-                        .firstName("one")
-                        .lastName("1one")
-                        .phoneNumber(givenPersonRequestDtoTwo().orElseThrow().getPhoneNumber())
-                        .birthDate(givenPersonRequestDtoTwo().orElseThrow().getBirthDate())
-                        .gender(givenPersonRequestDtoTwo().orElseThrow().getGender())
-                        .id(1L)
-                        .build());
+            lenient().when(entityManager.getReference(Mockito.<Class<Person>>any(), anyLong())).thenReturn(person);
             lenient().when(accountRepository.save(any())).thenAnswer(arg -> arg.getArgument(0));
             lenient().when(accountValidationService.settleResponseType(any(Account.class))).thenAnswer(invo ->{
                 Account account = invo.getArgument(0, Account.class);
@@ -241,8 +222,10 @@ class AccountServiceUnitTest {
             accountDto = new AccountUpdateRequestDto();
 
             lenient().doAnswer(invo -> {
+                Person person = getPersonInstance();
+                person.setId(1L);
                 Account account = null;
-                if(invo.getArgument(0, Long.class).equals(1L)) account = new AccountBuilder().id(1L).person(new PersonBuilder().id(1L).build()).build();
+                if(invo.getArgument(0, Long.class).equals(1L)) account = new AccountBuilder().id(1L).person(person).build();
                 return Optional.ofNullable(account); 
             }).when(accountRepository).findById(anyLong());
 
@@ -255,7 +238,10 @@ class AccountServiceUnitTest {
             }).when(accountValidator).validateUpdateRequest(anyLong(), any(AccountUpdateRequestDto.class), anyLong());
 
             lenient().doAnswer(invo -> {
-                return new PersonBuilder().id(10L).firstName("10person").build();
+                Person person = getPersonInstance();
+                person.setId(10L);
+                person.setFirstName("10person");
+                return person;
             }).when(entityManager).getReference(Mockito.<Class<Person>>any(), anyLong());
 
             lenient().doAnswer(invo ->{

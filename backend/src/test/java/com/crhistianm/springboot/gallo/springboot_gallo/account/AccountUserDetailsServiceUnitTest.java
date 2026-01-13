@@ -1,7 +1,7 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityAdmin;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityUser;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenAccountEntityAdmin;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenAccountEntityUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,12 +22,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAccountUserDetails;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.security.CustomAccountUserDetails;
 
 @ExtendWith(MockitoExtension.class)
-public class AccountUserDetailsServiceUnitTest {
+class AccountUserDetailsServiceUnitTest {
 
 
     @Mock
