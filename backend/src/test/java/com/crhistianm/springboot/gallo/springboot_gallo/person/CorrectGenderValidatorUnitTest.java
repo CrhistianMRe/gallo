@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CorrectGenderValidatorUnitTest {
+class CorrectGenderValidatorUnitTest {
 
     private CorrectGenderValidator validator;
 

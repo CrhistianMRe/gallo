@@ -1,9 +1,7 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityAdmin;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonEntityOne;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenPersonRequestDtoOne;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenRoleResponseDtoAdmin;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.givenPersonEntityOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.givenPersonRequestDtoOne;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -12,12 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-
 @ExtendWith(MockitoExtension.class)
-public class PersonMapperUnitTest {
+class PersonMapperUnitTest {
 
     @Nested
     class RequestToEntityTest {

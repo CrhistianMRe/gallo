@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.repository;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,13 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-
 
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class PersonRepositoryTest {
+class PersonRepositoryTest {
 
     @Autowired
     private PersonRepository personRepository;
