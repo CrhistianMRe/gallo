@@ -1,31 +1,32 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.bodypart;
 
-public class BodyPartResponseDto {
+
+class BodyPartResponseDto {
 
     private String name;
 
     private Long id;
 
-    public BodyPartResponseDto(String name, Long id) {
+    BodyPartResponseDto(String name, Long id) {
         this.name = name;
         this.id = id;
     }
 
-    public BodyPartResponseDto(){}
+    BodyPartResponseDto(){}
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
-    public Long getId() {
+    Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    void setId(Long id) {
         this.id = id;
     }
 

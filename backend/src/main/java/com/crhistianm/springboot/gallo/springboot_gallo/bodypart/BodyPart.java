@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.entity;
+package com.crhistianm.springboot.gallo.springboot_gallo.bodypart;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,10 +18,10 @@ public class BodyPart {
     @Column(unique = true)
     private String name;
 
-    public BodyPart() {
+    BodyPart() {
     }
 
-    public BodyPart(String name) {
+    BodyPart(String name) {
         this.name = name;
     }
 
