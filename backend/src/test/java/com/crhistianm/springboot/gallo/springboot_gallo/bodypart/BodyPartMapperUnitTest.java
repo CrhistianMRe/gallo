@@ -1,14 +1,10 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
+package com.crhistianm.springboot.gallo.springboot_gallo.bodypart;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.BodyPartBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.BodyPartResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.BodyPart;
-
-public class BodyPartMapperUnitTest {
+class BodyPartMapperUnitTest {
 
     @Test
     void shouldReturnReponseDtoFromEntity() {

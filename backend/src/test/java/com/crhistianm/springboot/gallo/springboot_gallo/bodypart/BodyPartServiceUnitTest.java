@@ -1,11 +1,9 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.bodypart;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.BodyPartBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.BodyPartResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.BodyPart;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.BodyPartRepository;
-
 
 @ExtendWith(MockitoExtension.class)
-public class BodyPartServiceUnitTest {
+class BodyPartServiceUnitTest {
 
     @Mock
     BodyPartRepository bodyPartRepository;
