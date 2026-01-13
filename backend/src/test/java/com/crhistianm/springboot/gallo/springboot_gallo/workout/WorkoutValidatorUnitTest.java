@@ -1,17 +1,12 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityAdmin;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAccountEntityUser;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Optional;
 
@@ -23,15 +18,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.IdentityVerificationService;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.account.IdentityVerificationService;
 
 @ExtendWith(MockitoExtension.class)
-public class WorkoutValidatorUnitTest {
+class WorkoutValidatorUnitTest {
 
     @Mock
     private IdentityVerificationService identityVerificationService;

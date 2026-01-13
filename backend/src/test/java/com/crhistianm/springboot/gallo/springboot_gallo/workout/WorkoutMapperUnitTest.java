@@ -1,14 +1,11 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenWorkout;
+import static com.crhistianm.springboot.gallo.springboot_gallo.workout.WorkoutData.givenWorkout;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.WorkoutResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Workout;
-
-public class WorkoutMapperUnitTest {
+class WorkoutMapperUnitTest {
 
     @Test
     void shouldReturnResponseDtoFromEntity() {
