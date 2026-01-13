@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.controller;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -8,21 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.WorkoutResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.WorkoutService;
-
 @RestController
 @RequestMapping("api/workouts")
-public class WorkoutController {
+class WorkoutController {
 
     private final WorkoutService workoutService;
 
-    public WorkoutController(WorkoutService workoutService) {
+    WorkoutController(WorkoutService workoutService) {
         this.workoutService = workoutService;
     }
 
     @GetMapping("/{accountId}")
-    public ResponseEntity<PagedModel<WorkoutResponseDto>> viewByAccountId (
+    ResponseEntity<PagedModel<WorkoutResponseDto>> viewByAccountId (
             @PathVariable Long accountId,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size

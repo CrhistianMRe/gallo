@@ -1,9 +1,11 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.entity;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
+import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,11 +37,11 @@ public class Workout {
     @OneToMany(mappedBy = "workout")
     private List<WorkoutSet> sets;
 
-    public Workout() {
+    Workout() {
         this.sets = new ArrayList<>();
     }
 
-    public Workout(LocalDate workoutDate, Double workoutLength, Exercise exercise, Account account) {
+    Workout(LocalDate workoutDate, Double workoutLength, Exercise exercise, Account account) {
         this();
         this.workoutDate = workoutDate;
         this.workoutLength = workoutLength;

@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.entity;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,10 +25,10 @@ public class WorkoutSet {
     @ManyToOne
     private Workout workout;
 
-    public WorkoutSet(){
+    WorkoutSet(){
     }
 
-    public WorkoutSet(Integer repAmount, Double weightAmount, Boolean toFailure, Workout workout) {
+    WorkoutSet(Integer repAmount, Double weightAmount, Boolean toFailure, Workout workout) {
         this.repAmount = repAmount;
         this.weightAmount = weightAmount;
         this.toFailure = toFailure;

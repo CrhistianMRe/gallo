@@ -1,11 +1,8 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.WorkoutResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Workout;
+class WorkoutMapper {
 
-public class WorkoutMapper {
-
-    public static WorkoutResponseDto entityToResponse(Workout workout) {
+    static WorkoutResponseDto entityToResponse(Workout workout) {
         WorkoutResponseDto responseDto = new WorkoutResponseDto();
         responseDto.setId(workout.getId());
         responseDto.setWorkoutDate(workout.getWorkoutDate());
