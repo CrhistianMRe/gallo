@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.controller;
+package com.crhistianm.springboot.gallo.springboot_gallo.bodypart;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -22,18 +22,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.BodyPartBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.BodyPartResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.BodyPartMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.BodyPartService;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
 
 @WebMvcTest(controllers = BodyPartController.class)
-@Import(value = {SpringSecurityConfig.class, JacksonConfig.class})
+@Import(value = {JacksonConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
-public class BodyPartControllerTest {
+class BodyPartControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
