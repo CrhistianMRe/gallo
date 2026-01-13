@@ -1,14 +1,9 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenAdminAccountRequestDto;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenUserAccountRequestDto;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenUserAccountRequestDto;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,30 +11,20 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonService;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
 @SpringBootTest
-public class AccountRequestDtoAnnotationTest{
+class AccountRequestDtoAnnotationTest{
 
     @Autowired
     private Validator validator;
 
     private AccountRequestDto account;
-
-    @MockitoBean
-    private PersonService personService;
 
     @MockitoBean
     private AccountService accountService;

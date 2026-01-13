@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -18,7 +18,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.jboss.jandex.FieldInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -29,16 +28,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountValidationService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.IdentityVerificationService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.PersonValidationService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.RoleValidationService;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.PersonValidationService;
 
 
 @ExtendWith(MockitoExtension.class)

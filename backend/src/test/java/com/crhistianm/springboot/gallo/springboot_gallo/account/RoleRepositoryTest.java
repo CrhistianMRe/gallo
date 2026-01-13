@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.repository;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -11,7 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 @DataJpaTest
 @Sql("/roleinserts.sql")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class RoleRepositoryTest {
+class RoleRepositoryTest {
 
     @Autowired
     private RoleRepository roleRepository;

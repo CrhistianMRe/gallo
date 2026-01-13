@@ -1,23 +1,18 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.controller;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -27,42 +22,19 @@ import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.*;
+import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.getPersonInstance;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.config.ControllerValidatorConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountAdminResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUserResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceExceptionUnitTest;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.AccountMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.PersonMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.RoleMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
-import com.crhistianm.springboot.gallo.springboot_gallo.type.RequestType;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.swagger.v3.core.util.Json;
-import jakarta.validation.Validator;
-
 @WebMvcTest(controllers = AccountController.class)
-@Import({SpringSecurityConfig.class, JacksonConfig.class})
+@Import({JacksonConfig.class})
 //remove security filters as is not needed in these tests
 @AutoConfigureMockMvc(addFilters = false)
-public class AccountControllerTest {
+class AccountControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -90,7 +62,7 @@ public class AccountControllerTest {
             requestDto.setPersonId(1L);
             doAnswer(invo ->{
                 Account account = AccountMapper.requestToEntity(invo.getArgument(0, AccountRequestDto.class));
-                Person person = new Person();
+                Person person = getPersonInstance();
                 person.setId(1L);
                 account.setPerson(person);
                 return AccountMapper.entityToAdminResponse(account);
@@ -178,8 +150,6 @@ public class AccountControllerTest {
                 Long id = invo.getArgument(0, Long.class);
                 if(id.equals(99L)) throw new NotFoundException(Account.class);
                 if(id.equals(1L)) return new AccountUserResponseDto("testemail");
-                PersonResponseDto personDto = new PersonResponseDto();
-                personDto.setId(1L);
 
                 AccountAdminResponseDto accountDto = new AccountAdminResponseDto();
                 accountDto.setEmail("testemail");
@@ -259,7 +229,7 @@ public class AccountControllerTest {
                     tempAcc.setEmail(argRequest.getEmail());
                     tempAcc.getAudit().setEnabled(argRequest.isEnabled());
                     tempAcc.setPassword(argRequest.getPassword());
-                    tempAcc.setPerson(new Person());
+                    tempAcc.setPerson(getPersonInstance());
                     tempAcc.getPerson().setId(argRequest.getPersonId());
                     tempAcc.setRoles(new ArrayList<>((argRequest.getRoles().stream().map(RoleMapper::requestToEntity).collect(Collectors.toList()))));
 
