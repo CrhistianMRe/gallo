@@ -1,15 +1,12 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.builder;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Audit;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Workout;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.workout.Workout;
 
-public class AccountBuilder {
+class AccountBuilder {
 
     private Long id;
 
@@ -25,47 +22,47 @@ public class AccountBuilder {
 
     private List<Workout> workouts;
 
-    public AccountBuilder(){
+    AccountBuilder(){
         this.roles = new ArrayList<>();
         this.workouts = new ArrayList<>();
     }
 
-    public AccountBuilder id(Long id){
+    AccountBuilder id(Long id){
         this.id = id;
         return this;
     }
 
-    public AccountBuilder email(String email){
+    AccountBuilder email(String email){
         this.email = email;
         return this;
     }
 
-    public AccountBuilder password(String password){
+    AccountBuilder password(String password){
         this.password = password;
         return this;
     }
 
-    public AccountBuilder audit(Audit audit){
+    AccountBuilder audit(Audit audit){
         this.audit = audit;
         return this;
     }
 
-    public AccountBuilder person(Person person){
+    AccountBuilder person(Person person){
         this.person = person;
         return this;
     }
     
-    public AccountBuilder roles(List<Role> roles){
+    AccountBuilder roles(List<Role> roles){
         this.roles = roles;
         return this;
     }
 
-    public AccountBuilder workouts(List<Workout> workouts){
+    AccountBuilder workouts(List<Workout> workouts){
         this.workouts = workouts;
         return this;
     }
 
-    public Account build(){
+    Account build(){
         Account account = new Account();
         account.setId(this.id);
         account.setEmail(this.email);

@@ -1,19 +1,19 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 //Id not in dto as it is auto incremental on db
-public class AccountRequestDto extends AbstractAccountRequestDto{
+class AccountRequestDto extends AbstractAccountRequestDto {
 
     private boolean admin;
 
-    public AccountRequestDto() {
+    AccountRequestDto() {
         super(null, null, null);
     }
 
-    public AccountRequestDto(String email, String password, Long personId, boolean admin) {
+    AccountRequestDto(String email, String password, Long personId, boolean admin) {
         super(email, password, personId);
         this.admin = admin;
     }
@@ -37,11 +37,11 @@ public class AccountRequestDto extends AbstractAccountRequestDto{
         return super.getPassword();
     }
 
-    public boolean isAdmin() {
+    boolean isAdmin() {
         return admin;
     }
 
-    public void setAdmin(boolean admin) {
+    void setAdmin(boolean admin) {
         this.admin = admin;
     }
 

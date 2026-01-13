@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,25 +7,23 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RoleRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.FieldInfoErrorMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.RoleRepository;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorMapper;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 
 @Service
-public class RoleValidationService {
+class RoleValidationService {
 
     private final RoleRepository roleRepository;
 
     private final Environment env;
 
-    public RoleValidationService(RoleRepository roleRepository, Environment env) {
+    RoleValidationService(RoleRepository roleRepository, Environment env) {
         this.roleRepository = roleRepository;
         this.env = env;
     }
 
     @Transactional(readOnly = true)
-    public List<FieldInfoError> validateRoleExists(RoleRequestDto roleDto) {
+    List<FieldInfoError> validateRoleExists(RoleRequestDto roleDto) {
         List<FieldInfoError> fields = new ArrayList<>();
 
         if(!roleRepository.existsById(roleDto.getId())) {

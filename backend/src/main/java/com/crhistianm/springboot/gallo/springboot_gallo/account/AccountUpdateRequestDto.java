@@ -1,29 +1,29 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.NotEmptyRequest;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.group.FirstCheck;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation.group.SecondCheck;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.NotEmptyRequest;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.FirstCheck;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.SecondCheck;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
 
 @NotEmptyRequest(groups = FirstCheck.class, hasSuper = true)
-public class AccountUpdateRequestDto extends AbstractAccountRequestDto{
+class AccountUpdateRequestDto extends AbstractAccountRequestDto {
 
     private Boolean enabled;
 
     private List<RoleRequestDto> roles;
 
-    public AccountUpdateRequestDto() {
+    AccountUpdateRequestDto() {
         super(null, null, null);
         this.roles = new ArrayList<>();
     }
 
-    public AccountUpdateRequestDto(String email, String password, Boolean enabled, List<RoleRequestDto> roles, Long personId) {
+    AccountUpdateRequestDto(String email, String password, Boolean enabled, List<RoleRequestDto> roles, Long personId) {
         super(email, password, personId);
         this.roles = new ArrayList<>();
         this.enabled = enabled;
@@ -42,19 +42,19 @@ public class AccountUpdateRequestDto extends AbstractAccountRequestDto{
         return super.getPassword();
     }
 
-    public void setEnabled(Boolean enabled) {
+    void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
-    public Boolean isEnabled() {
+    Boolean isEnabled() {
         return enabled;
     }
 
-    public List<RoleRequestDto> getRoles() {
+    List<RoleRequestDto> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<RoleRequestDto> roles) {
+    void setRoles(List<RoleRequestDto> roles) {
         this.roles = roles;
     }
 

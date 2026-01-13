@@ -1,11 +1,8 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.builder;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.util.List;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Role;
-
-public class RoleBuilder {
+class RoleBuilder {
 
     private Long id;
 
@@ -13,22 +10,22 @@ public class RoleBuilder {
 
     private List<Account> accounts;
 
-    public RoleBuilder id(Long id){
+    RoleBuilder id(Long id){
         this.id = id;
         return this;
     }
 
-    public RoleBuilder name(String name){
+    RoleBuilder name(String name){
         this.name = name;
         return this;
     }
 
-    public RoleBuilder accounts(List<Account> accounts){
+    RoleBuilder accounts(List<Account> accounts){
         this.accounts = accounts;
         return this;
     }
 
-    public Role build(){
+    Role build(){
         Role role = new Role();
         role.setId(this.id);
         role.setName(this.name);

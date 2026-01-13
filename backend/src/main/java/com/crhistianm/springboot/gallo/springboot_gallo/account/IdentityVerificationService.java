@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 
 import java.util.Optional;
@@ -8,17 +8,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AbstractAccountRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.RequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.FieldInfoErrorMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.AccountRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAccountUserDetails;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.PersonRequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorMapper;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.security.CustomAccountUserDetails;
 
 
 @Service
@@ -33,7 +30,7 @@ public class IdentityVerificationService {
         this.env = env;
     }
 
-    public boolean isAdminAuthority(){
+    boolean isAdminAuthority(){
         if(SecurityContextHolder.getContext().getAuthentication() != null) {
             return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
         }
@@ -41,7 +38,7 @@ public class IdentityVerificationService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isUserPersonEntityAllowed(Long id) {
+    boolean isUserPersonEntityAllowed(Long id) {
         boolean result = false;
         Optional<Account> accountOptional = accountRepository.findAccountByPersonId(id);
         if(accountOptional.isEmpty()){
@@ -75,7 +72,7 @@ public class IdentityVerificationService {
         return this.validateUserAllowance(personId);
     }
 
-    public Optional<FieldInfoError> validateAdminRequired(RequestDto targetDto, String fieldName){
+    Optional<FieldInfoError> validateAdminRequired(RequestDto targetDto, String fieldName){
         FieldInfoError infoError = null;
         if(!isAdminAuthority()){
             infoError = FieldInfoErrorMapper.classTargetToFieldInfo(targetDto, fieldName, env.getProperty("identity.validation.AdminRequired"));
