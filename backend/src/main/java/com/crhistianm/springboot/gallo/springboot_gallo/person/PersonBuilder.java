@@ -1,11 +1,10 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.builder;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import java.time.LocalDate;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
 
-public class PersonBuilder {
+class PersonBuilder {
 
     private Long id;
 
@@ -25,54 +24,54 @@ public class PersonBuilder {
 
     private Account account;
 
-    public PersonBuilder(){}
+    PersonBuilder(){}
 
-    public PersonBuilder id(Long id){
+    PersonBuilder id(Long id){
         this.id = id;
         return this;
     }
 
-    public PersonBuilder firstName(String firstName){
+    PersonBuilder firstName(String firstName){
         this.firstName = firstName;
         return this;
     }
 
-    public PersonBuilder lastName(String lastName){
+    PersonBuilder lastName(String lastName){
         this.lastName = lastName;
         return this;
     }
 
-    public PersonBuilder phoneNumber(String phoneNumber){
+    PersonBuilder phoneNumber(String phoneNumber){
         this.phoneNumber = phoneNumber;
         return this;
     }
 
-    public PersonBuilder birthDate(LocalDate birthDate){
+    PersonBuilder birthDate(LocalDate birthDate){
         this.birthDate = birthDate;
         return this;
     }
 
-    public PersonBuilder gender(String gender){
+    PersonBuilder gender(String gender){
         this.gender = gender;
         return this;
     }
 
-    public PersonBuilder height(Double height){
+    PersonBuilder height(Double height){
         this.height = height;
         return this;
     }
 
-    public PersonBuilder weight(Double weight){
+    PersonBuilder weight(Double weight){
         this.weight = weight;
         return this;
     }
 
-    public PersonBuilder account(Account account){
+    PersonBuilder account(Account account){
         this.account = account;
         return this;
     }
 
-    public Person build(){
+    Person build(){
         Person person = new Person();
         person.setId(this.id);
         person.setFirstName(this.firstName);

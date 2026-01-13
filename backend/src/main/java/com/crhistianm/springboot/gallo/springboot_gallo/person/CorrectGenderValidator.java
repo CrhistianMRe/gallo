@@ -1,11 +1,9 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation;
-
-import org.springframework.stereotype.Component;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class CorrectGenderValidator implements ConstraintValidator<CorrectGender, String>{
+class CorrectGenderValidator implements ConstraintValidator<CorrectGender, String>{
 
     @Override
     public boolean isValid(String gender, ConstraintValidatorContext arg1) {

@@ -1,13 +1,8 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.mapper;
+package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.PersonBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Person;
+class PersonMapper {
 
-public class PersonMapper {
-
-    public static Person requestToEntity(PersonRequestDto dto){
+    static Person requestToEntity(PersonRequestDto dto){
         return new PersonBuilder().firstName(dto.getFirstName())
             .lastName(dto.getLastName())
             .phoneNumber(dto.getPhoneNumber())
@@ -19,7 +14,7 @@ public class PersonMapper {
     }
 
 
-    public static PersonResponseDto entityToResponse(Person person){
+    static PersonResponseDto entityToResponse(Person person){
         PersonResponseDto dto = new PersonResponseDto();
         dto.setId(person.getId());
         dto.setFirstName(person.getFirstName());
