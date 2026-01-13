@@ -1,8 +1,8 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.dto;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
 import java.time.LocalDate;
 
-public class WorkoutResponseDto {
+class WorkoutResponseDto {
 
     private Long id;
 
@@ -14,9 +14,9 @@ public class WorkoutResponseDto {
 
     private String imageUrl;
 
-    public WorkoutResponseDto(){}
+    WorkoutResponseDto(){}
 
-    public WorkoutResponseDto(Long id, LocalDate workoutDate, Double workoutLength, String exerciseName, String imageUrl) {
+    WorkoutResponseDto(Long id, LocalDate workoutDate, Double workoutLength, String exerciseName, String imageUrl) {
         this.id = id;
         this.workoutDate = workoutDate;
         this.workoutLength = workoutLength;
@@ -24,43 +24,43 @@ public class WorkoutResponseDto {
         this.imageUrl = imageUrl;
     }
 
-    public Long getId() {
+    Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    void setId(Long id) {
         this.id = id;
     }
 
-    public LocalDate getWorkoutDate() {
+    LocalDate getWorkoutDate() {
         return workoutDate;
     }
 
-    public void setWorkoutDate(LocalDate workoutDate) {
+    void setWorkoutDate(LocalDate workoutDate) {
         this.workoutDate = workoutDate;
     }
 
-    public Double getWorkoutLength() {
+    Double getWorkoutLength() {
         return workoutLength;
     }
 
-    public void setWorkoutLength(Double workoutLength) {
+    void setWorkoutLength(Double workoutLength) {
         this.workoutLength = workoutLength;
     }
 
-    public String getExerciseName() {
+    String getExerciseName() {
         return exerciseName;
     }
 
-    public void setExerciseName(String exerciseName) {
+    void setExerciseName(String exerciseName) {
         this.exerciseName = exerciseName;
     }
 
-    public String getImageUrl() {
+    String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
+    void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 

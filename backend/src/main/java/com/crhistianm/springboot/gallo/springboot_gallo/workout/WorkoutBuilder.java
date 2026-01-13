@@ -1,14 +1,12 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.builder;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Account;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Exercise;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Workout;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.WorkoutSet;
+import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
+import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
 
-public class WorkoutBuilder {
+class WorkoutBuilder {
 
     private Long id;
 
@@ -22,40 +20,40 @@ public class WorkoutBuilder {
 
     private List<WorkoutSet> sets;
 
-    public WorkoutBuilder() {
+    WorkoutBuilder() {
     }
 
-    public WorkoutBuilder id(Long id){
+    WorkoutBuilder id(Long id){
         this.id = id;
         return this;
     }
 
-    public WorkoutBuilder workoutDate(LocalDate workoutDate){
+    WorkoutBuilder workoutDate(LocalDate workoutDate){
         this.workoutDate = workoutDate;
         return this;
     }
 
-    public WorkoutBuilder workoutLength(Double workoutLength){
+    WorkoutBuilder workoutLength(Double workoutLength){
         this.workoutLength = workoutLength;
         return this;
     }
 
-    public WorkoutBuilder exercise(Exercise exercise){
+    WorkoutBuilder exercise(Exercise exercise){
         this.exercise = exercise;
         return this;
     }
 
-    public WorkoutBuilder account(Account account){
+    WorkoutBuilder account(Account account){
         this.account = account;
         return this;
     }
 
-    public WorkoutBuilder sets(List<WorkoutSet> sets){
+    WorkoutBuilder sets(List<WorkoutSet> sets){
         this.sets = sets;
         return this;
     }
 
-    public Workout build(){
+    Workout build(){
         Workout workout = new Workout();
         workout.setId(this.id);
         workout.setWorkoutDate(this.workoutDate);

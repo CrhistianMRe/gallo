@@ -1,9 +1,6 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.builder;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Workout;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.WorkoutSet;
-
-public class WorkoutSetBuilder {
+class WorkoutSetBuilder {
 
     private Long id;
 
@@ -15,34 +12,34 @@ public class WorkoutSetBuilder {
 
     private Workout workout;
 
-    public WorkoutSetBuilder(){}
+    WorkoutSetBuilder(){}
 
-    public WorkoutSetBuilder id(Long id){
+    WorkoutSetBuilder id(Long id){
         this.id = id;
         return this;
     }
 
-    public WorkoutSetBuilder repAmount(Integer repAmount){
+    WorkoutSetBuilder repAmount(Integer repAmount){
         this.repAmount = repAmount;
         return this;
     }
 
-    public WorkoutSetBuilder weightAmount(Double weightAmount){
+    WorkoutSetBuilder weightAmount(Double weightAmount){
         this.weightAmount = weightAmount;
         return this;
     }
 
-    public WorkoutSetBuilder toFailure(Boolean toFailure){
+    WorkoutSetBuilder toFailure(Boolean toFailure){
         this.toFailure = toFailure;
         return this;
     }
 
-    public WorkoutSetBuilder workout(Workout workout){
+    WorkoutSetBuilder workout(Workout workout){
         this.workout = workout;
         return this;
     }
 
-    public WorkoutSet build(){
+    WorkoutSet build(){
         WorkoutSet workoutSet = new WorkoutSet();
         workoutSet.setId(this.id);
         workoutSet.setRepAmount(this.repAmount);
