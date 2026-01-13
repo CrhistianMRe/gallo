@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.service;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,14 +27,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.data.web.PagedModel.PageMetadata;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.*;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.WorkoutResponseDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.entity.Workout;
-import com.crhistianm.springboot.gallo.springboot_gallo.repository.WorkoutRepository;
-import com.crhistianm.springboot.gallo.springboot_gallo.validation.service.WorkoutValidator;
+import static com.crhistianm.springboot.gallo.springboot_gallo.workout.WorkoutData.*;
 
 @ExtendWith(MockitoExtension.class)
-public class WorkoutServiceUnitTest {
+class WorkoutServiceUnitTest {
 
     @Mock
     private WorkoutRepository workoutRepository;

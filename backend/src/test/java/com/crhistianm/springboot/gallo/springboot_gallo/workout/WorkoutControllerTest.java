@@ -1,6 +1,6 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.controller;
+package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenWorkoutList;
+import static com.crhistianm.springboot.gallo.springboot_gallo.workout.WorkoutData.givenWorkoutList;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hamcrest.Matchers;
@@ -25,20 +26,15 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.WorkoutMapper;
-import com.crhistianm.springboot.gallo.springboot_gallo.mapper.WorkoutMapperUnitTest;
-import com.crhistianm.springboot.gallo.springboot_gallo.security.SpringSecurityConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.WorkoutService;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
 
 
 @WebMvcTest(controllers = {WorkoutController.class})
-@Import(value = SpringSecurityConfig.class)
+@Import(value = {JacksonConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
-public class WorkoutControllerTest {
+class WorkoutControllerTest {
 
     @MockitoBean
     private WorkoutService workoutService;
@@ -69,27 +65,27 @@ public class WorkoutControllerTest {
             mockMvc.perform(request(HttpMethod.GET, uri))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(Matchers.equalTo(1)))
-                .andExpect(jsonPath("$.content[0].workoutDate").value(Matchers.equalTo("2000-01-01")))
+                .andExpect(jsonPath("$.content[0].workoutDate").value(Matchers.contains(2000, 01, 01)))
                 .andExpect(jsonPath("$.content[0].workoutLength").value(Matchers.equalTo(120.0)))
                 .andExpect(jsonPath("$.content[0].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[0].imageUrl").value(Matchers.equalTo("imageUrl.com")))
 
 
                 .andExpect(jsonPath("$.content[1].id").value(Matchers.equalTo(2)))
-                .andExpect(jsonPath("$.content[1].workoutDate").value(Matchers.equalTo("2000-01-01")))
+                .andExpect(jsonPath("$.content[1].workoutDate").value(Matchers.contains(2000, 01, 01)))
                 .andExpect(jsonPath("$.content[1].workoutLength").value(Matchers.equalTo(120.0)))
                 .andExpect(jsonPath("$.content[1].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[1].imageUrl").value(Matchers.equalTo("imageUrl.com")))
 
                 .andExpect(jsonPath("$.content[2].id").value(Matchers.equalTo(3)))
-                .andExpect(jsonPath("$.content[2].workoutDate").value(Matchers.equalTo("2000-01-01")))
+                .andExpect(jsonPath("$.content[2].workoutDate").value(Matchers.contains(2000, 01, 01)))
                 .andExpect(jsonPath("$.content[2].workoutLength").value(Matchers.equalTo(120.0)))
                 .andExpect(jsonPath("$.content[2].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[2].imageUrl").value(Matchers.equalTo("imageUrl.com")))
 
 
                 .andExpect(jsonPath("$.content[3].id").value(Matchers.equalTo(4)))
-                .andExpect(jsonPath("$.content[3].workoutDate").value(Matchers.equalTo("2000-01-01")))
+                .andExpect(jsonPath("$.content[3].workoutDate").value(Matchers.contains(2000, 01, 01)))
                 .andExpect(jsonPath("$.content[3].workoutLength").value(Matchers.equalTo(120.0)))
                 .andExpect(jsonPath("$.content[3].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[3].imageUrl").value(Matchers.equalTo("imageUrl.com")));
