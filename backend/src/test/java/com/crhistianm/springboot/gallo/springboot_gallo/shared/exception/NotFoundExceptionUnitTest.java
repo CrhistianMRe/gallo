@@ -1,9 +1,10 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.exception;
+package com.crhistianm.springboot.gallo.springboot_gallo.shared.exception;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 
-public class NotFoundExceptionUnitTest {
+class NotFoundExceptionUnitTest {
 
     NotFoundException exception;
 

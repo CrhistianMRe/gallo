@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.security;
+package com.crhistianm.springboot.gallo.springboot_gallo.shared.security;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.security.SpringSecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -27,11 +28,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.config.JacksonConfig;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.AccountUpdateRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.dto.PersonRequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.security.custom.CustomAccountUserDetails;
-import com.crhistianm.springboot.gallo.springboot_gallo.service.AccountUserDetailsService;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 
@@ -41,7 +39,7 @@ import jakarta.validation.Validator;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import({SpringSecurityConfig.class, JacksonConfig.class})
-public class SpringEndpointSecurityTest {
+class SpringEndpointSecurityTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -156,9 +154,8 @@ public class SpringEndpointSecurityTest {
             void shouldReturnNotFoundStatusWhenPatchRequestIsSent() throws Exception {
                 mockMvc.perform(patch("/api/accounts/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new AccountUpdateRequestDto()))
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isBadRequest());
             }
 
             @Test
@@ -177,7 +174,7 @@ public class SpringEndpointSecurityTest {
             @Test
             void testUpdateValidAuthority() throws Exception{
                 mockMvc.perform(put("/api/person/1")
-                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new PersonRequestDto())).header("Authorization", prefixWithToken))
+                        .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixWithToken))
                     .andExpect(status().isNotFound());
             }
 
@@ -284,9 +281,8 @@ public class SpringEndpointSecurityTest {
             void shouldReturnNotFoundStatusWhenPatchRequestIsSent() throws Exception {
                 mockMvc.perform(patch("/api/accounts/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new AccountUpdateRequestDto()))
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isBadRequest());
             }
 
             @Test

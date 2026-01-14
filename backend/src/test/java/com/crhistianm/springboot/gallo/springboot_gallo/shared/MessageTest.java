@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.message;
+package com.crhistianm.springboot.gallo.springboot_gallo.shared;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.config.MessageConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.MessageConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.config.MessageTestConfig;
 
 import jakarta.validation.ConstraintViolation;
@@ -18,7 +18,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotNull;
 
 @ExtendWith(SpringExtension.class)
-public class MessageTest {
+class MessageTest {
 
     @Nested
     @Import(MessageTestConfig.class)

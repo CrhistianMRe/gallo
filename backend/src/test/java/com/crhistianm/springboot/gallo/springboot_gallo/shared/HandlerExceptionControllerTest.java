@@ -1,10 +1,8 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.controller;
+package com.crhistianm.springboot.gallo.springboot_gallo.shared;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenFieldInfoErrorOne;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenFieldInfoErrorTwo;
-import static org.mockito.ArgumentMatchers.anyList;
+import static com.crhistianm.springboot.gallo.springboot_gallo.shared.Data.givenFieldInfoErrorOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.shared.Data.givenFieldInfoErrorTwo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrlTemplate;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,15 +11,13 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.HandlerExceptionController;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.annotation.Testable;
-import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -34,14 +30,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.builder.FieldInfoErrorBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.NotFoundException;
-import com.crhistianm.springboot.gallo.springboot_gallo.exception.ValidationServiceException;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
 
 
 @WebMvcTest(HandlerExceptionControllerTest.TestExceptionController.class)
-public class HandlerExceptionControllerTest {
+class HandlerExceptionControllerTest {
 
     private MockMvc mockmvc;
 

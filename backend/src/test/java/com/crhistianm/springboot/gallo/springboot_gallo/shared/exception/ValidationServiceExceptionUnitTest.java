@@ -1,18 +1,19 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.exception;
+package com.crhistianm.springboot.gallo.springboot_gallo.shared.exception;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenFieldInfoErrorOne;
-import static com.crhistianm.springboot.gallo.springboot_gallo.data.Data.givenFieldInfoErrorTwo;
+import static com.crhistianm.springboot.gallo.springboot_gallo.shared.Data.givenFieldInfoErrorOne;
+import static com.crhistianm.springboot.gallo.springboot_gallo.shared.Data.givenFieldInfoErrorTwo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import com.crhistianm.springboot.gallo.springboot_gallo.model.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
 import org.junit.jupiter.api.Test;
 
 
-public class ValidationServiceExceptionUnitTest {
+class ValidationServiceExceptionUnitTest {
 
     ValidationServiceException validationException;
 

@@ -1,4 +1,4 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.validation.annotation;
+package com.crhistianm.springboot.gallo.springboot_gallo.shared;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,14 +8,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.NotEmptyRequest;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.NotEmptyRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.data.Data.ChildClass;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.Data.ChildClass;
 
 import jakarta.validation.Payload;
 
-public class NotEmptyRequestValidatorUnitTest {
+class NotEmptyRequestValidatorUnitTest {
 
     private NotEmptyRequestValidator validator;
 
