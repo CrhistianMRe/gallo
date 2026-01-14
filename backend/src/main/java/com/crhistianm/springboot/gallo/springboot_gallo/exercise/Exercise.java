@@ -1,9 +1,10 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.entity;
+package com.crhistianm.springboot.gallo.springboot_gallo.exercise;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.bodypart.BodyPart;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
