@@ -111,21 +111,6 @@
 		</plugins>
     </build>
     <profiles>
-  <profile>
-    <id>controller-tests</id>
-    <build>
-      <plugins>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <includes>
-              <include>**/controller/*Test.java</include>
-            </includes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </build>
-  </profile>
 
   <profile>
     <id>exception-tests</id>
@@ -144,14 +129,14 @@
   </profile>
 
   <profile>
-    <id>repository-tests</id>
+    <id>account-tests</id>
     <build>
       <plugins>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <includes>
-              <include>**/repository/*Test.java</include>
+              <include>**/account/*Test.java</include>
             </includes>
           </configuration>
         </plugin>
@@ -160,14 +145,14 @@
   </profile>
 
   <profile>
-    <id>security-tests</id>
+    <id>person-tests</id>
     <build>
       <plugins>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <includes>
-              <include>**/security/*Test.java</include>
+              <include>**/person/*Test.java</include>
             </includes>
           </configuration>
         </plugin>
@@ -176,33 +161,14 @@
   </profile>
 
   <profile>
-    <id>service-tests</id>
+    <id>workout-tests</id>
     <build>
       <plugins>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <includes>
-              <include>**/service/*Test.java</include>
-            </includes>
-            <excludes>
-              <exclude>**/validation/service/**</exclude>
-            </excludes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </build>
-  </profile>
-
-  <profile>
-    <id>entity-tests</id>
-    <build>
-      <plugins>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <includes>
-              <include>**/entity/*Test.java</include>
+              <include>**/workout/*Test.java</include>
             </includes>
           </configuration>
         </plugin>
@@ -211,18 +177,14 @@
   </profile>
 
   <profile>
-    <id>validation-tests</id>
+    <id>bodypart-tests</id>
     <build>
       <plugins>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <includes>
-              <include>**/validation/*Test.java</include>
-              <include>**/validation/dto/*Test.java</include>
-              <include>**/validation/annotation/dto/*Test.java</include>
-              <include>**/validation/annotation/*Test.java</include>
-              <include>**/validation/service/*Test.java</include>
+              <include>**/bodypart/*Test.java</include>
             </includes>
           </configuration>
         </plugin>
@@ -231,14 +193,30 @@
   </profile>
 
   <profile>
-    <id>mapper-tests</id>
+    <id>shared-exception-tests</id>
     <build>
       <plugins>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <includes>
-              <include>**/mapper/*Test.java</include>
+            <include>**/shared/exception/*Test.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+
+  <profile>
+    <id>shared-security-tests</id>
+    <build>
+      <plugins>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <includes>
+            <include>**/shared/security/*Test.java</include>
             </includes>
           </configuration>
         </plugin>
@@ -247,14 +225,14 @@
    </profile>
 
   <profile>
-    <id>message-tests</id>
+    <id>general-shared-tests</id>
     <build>
       <plugins>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <includes>
-              <include>**/message/*Test.java</include>
+              <include>**/shared/*Test.java</include>
             </includes>
           </configuration>
         </plugin>
