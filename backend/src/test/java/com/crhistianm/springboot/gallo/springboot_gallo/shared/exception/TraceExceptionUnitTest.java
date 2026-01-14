@@ -1,11 +1,12 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.exception;
+package com.crhistianm.springboot.gallo.springboot_gallo.shared.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.TraceException;
 import org.junit.jupiter.api.Test;
 
-public class TraceExceptionUnitTest {
+class TraceExceptionUnitTest {
 
     TraceException thrownTraceException;
 
