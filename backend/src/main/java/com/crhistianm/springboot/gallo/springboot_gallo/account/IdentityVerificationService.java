@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
-import com.crhistianm.springboot.gallo.springboot_gallo.person.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
@@ -58,7 +57,6 @@ public class IdentityVerificationService {
                     .name("path id")
                     .value(pathPersonId)
                     .type(pathPersonId.getClass())
-                    .ownerClass(PersonRequestDto.class)
                     .errorMessage(env.getProperty("identity.validation.UserAllowance"))
                     .build();
         }
