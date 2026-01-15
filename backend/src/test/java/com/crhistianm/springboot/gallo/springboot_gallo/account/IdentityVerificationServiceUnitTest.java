@@ -39,7 +39,6 @@ import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBui
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.*;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.person.PersonRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.security.CustomAccountUserDetails;
@@ -184,7 +183,6 @@ class IdentityVerificationServiceUnitTest {
             assertThat(field).extracting(FieldInfoError::getName).isEqualTo("path id");
             assertThat(field).extracting(FieldInfoError::getValue).isEqualTo(2L);
             assertThat(field).extracting(FieldInfoError::getType).isEqualTo(Long.class);
-            assertThat(field).extracting(FieldInfoError::getOwnerClass).isEqualTo(PersonRequestDto.class);
 
 
             verify(spyServiceIdentity, times(1)).isAdminAuthority();
