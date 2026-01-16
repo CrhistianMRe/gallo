@@ -3,7 +3,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.account;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
 
 //This class is temporarily public as the migration is ongoing
-public abstract class AbstractAccountRequestDto implements RequestDto {
+abstract class AbstractAccountRequestDto implements RequestDto {
 
     private String email;
 
@@ -11,33 +11,33 @@ public abstract class AbstractAccountRequestDto implements RequestDto {
 
     private Long personId;
 
-    public AbstractAccountRequestDto(String email, String password, Long personId) {
+    AbstractAccountRequestDto(String email, String password, Long personId) {
         this.email = email;
         this.password = password;
         this.personId = personId;
     }
 
-    public String getEmail() {
+    String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword() {
+    String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    void setPassword(String password) {
         this.password = password;
     }
 
-    public Long getPersonId() {
+    Long getPersonId() {
         return personId;
     }
 
-    public void setPersonId(Long personId) {
+    void setPersonId(Long personId) {
         this.personId = personId;
     }
 
