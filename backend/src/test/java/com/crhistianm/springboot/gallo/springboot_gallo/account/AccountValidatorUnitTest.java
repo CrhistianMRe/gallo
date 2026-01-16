@@ -66,11 +66,11 @@ public class AccountValidatorUnitTest {
 
             lenient().doAnswer(invo ->{
                 FieldInfoError field = null;
-                if(!invo.getArgument(0, AccountRequestDto.class).getPersonId().equals(1L)){
+                if(!invo.getArgument(0, Long.class).equals(1L)){
                     field = new FieldInfoErrorBuilder().name("registered").build();
                 }
                 return Optional.ofNullable(field);
-            }).when(personService).validatePersonRegistered(any(AccountRequestDto.class));
+            }).when(personService).validatePersonRegistered(anyLong());
 
             lenient().doAnswer(invo ->{
                 FieldInfoError field = null;
@@ -100,7 +100,7 @@ public class AccountValidatorUnitTest {
 
         @AfterEach
         void verifyMethodValidation(){
-            verify(personService, times(1)).validatePersonRegistered(any(AccountRequestDto.class));
+            verify(personService, times(1)).validatePersonRegistered(anyLong());
             verify(accountService, times(1)).validatePersonAssigned(isNull(), any(AccountRequestDto.class));
             verify(accountService, times(1)).validateUniqueEmail(isNull(), any(AccountRequestDto.class));
         }
@@ -146,7 +146,7 @@ public class AccountValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWithOnlyPersonNotRegisteredError() {
-            doReturn(Optional.of(new FieldInfoErrorBuilder().name("registered").build())).when(personService).validatePersonRegistered(any(AccountRequestDto.class));
+            doReturn(Optional.of(new FieldInfoErrorBuilder().name("registered").build())).when(personService).validatePersonRegistered(anyLong());
 
             accountRequestDto.setEmail("example@gmail.com");
             accountRequestDto.setPersonId(1L);
@@ -259,12 +259,11 @@ public class AccountValidatorUnitTest {
             //For dto arguements email field will be used
             lenient().doAnswer(invo -> {
                 Optional<FieldInfoError> field = Optional.empty();
-                Optional<String> argumentString = Optional.ofNullable(invo.getArgument(0, AccountUpdateRequestDto.class).getPassword());
-                if(argumentString.isPresent() && argumentString.orElseThrow().contains("registered")){
+                if(invo.getArgument(0, Long.class).equals(20L)){
                     field = createField("registered");
                 }
                 return field;
-            }).when(personService).validatePersonRegistered(any(AccountUpdateRequestDto.class));
+            }).when(personService).validatePersonRegistered(anyLong());
 
             lenient().doAnswer(invo -> {
                 Optional<FieldInfoError> field = Optional.empty();
@@ -333,7 +332,7 @@ public class AccountValidatorUnitTest {
                 accountRequestDto.setPersonId(2L);
                 accountValidator.validateUpdateRequest(10L, accountRequestDto, 1L);
 
-                verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto));
+                verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
                 verify(accountService, times(1)).validatePersonAssigned(eq(10L), eq(accountRequestDto));
                 verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
 
@@ -374,7 +373,7 @@ public class AccountValidatorUnitTest {
         @Test
         void shouldThrowExceptionWithMaximumPossibleErrorsWith1Role() {
             errorsString = "assigned, adminPersonId, uniqueEmail, adminEnabled, adminRole";
-            accountRequestDto.setPersonId(4L);
+            accountRequestDto.setPersonId(30L);
             accountRequestDto.setRoles(List.of(new RoleRequestDto(2L, "adderror")));
             accountRequestDto.setPassword(errorsString);
             accountRequestDto.setEmail("email");
@@ -406,7 +405,7 @@ public class AccountValidatorUnitTest {
             assertThat(fieldRoleName).isNotEmpty();
 
             verify(identityService, times(1)).validateUserAllowance(eq(2L));
-            verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto));
+            verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
             verify(accountService, times(1)).validatePersonAssigned(eq(123123123L), eq(accountRequestDto));
             verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
             verify(accountService, times(1)).validateUniqueEmail(eq(123123123L), eq(accountRequestDto));
@@ -419,7 +418,7 @@ public class AccountValidatorUnitTest {
         @Test
         void shouldThrowExceptionWithMaximumPossibleErrorsWithMultipleRole() {
             errorsString = "assigned, adminPersonId, uniqueEmail, adminEnabled, adminRole";
-            accountRequestDto.setPersonId(4L);
+            accountRequestDto.setPersonId(3L);
             List<RoleRequestDto> roleList = new ArrayList<>();
             for(int i = 0; i < 10; i++) roleList.add(new RoleRequestDto((2L), "adderror"));
             accountRequestDto.setPassword(errorsString);
@@ -455,7 +454,7 @@ public class AccountValidatorUnitTest {
             assertThat(fieldRoleName).hasSize(10);
 
             verify(identityService, times(1)).validateUserAllowance(eq(2L));
-            verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto));
+            verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
             verify(accountService, times(1)).validatePersonAssigned(eq(123123123L), eq(accountRequestDto));
             verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
             verify(accountService, times(1)).validateUniqueEmail(eq(123123123L), eq(accountRequestDto));
@@ -473,7 +472,7 @@ public class AccountValidatorUnitTest {
 
             verify(identityService, times(1)).validateUserAllowance(eq(1L));
 
-            verify(personService, times(0)).validatePersonRegistered(eq(accountRequestDto));
+            verify(personService, times(0)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
             verify(identityService, times(0)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
             verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
             verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
@@ -497,7 +496,7 @@ public class AccountValidatorUnitTest {
 
             verify(identityService, times(1)).validateUserAllowance(eq(2L));
 
-            verify(personService, times(0)).validatePersonRegistered(eq(accountRequestDto));
+            verify(personService, times(0)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
             verify(identityService, times(0)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
             verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
             verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
@@ -517,7 +516,7 @@ public class AccountValidatorUnitTest {
                 void shouldThrowExceptionWhenPersonIsNotRegistered() {   
                     errorsString = "registered";
                     accountRequestDto.setPassword(errorsString);
-                    accountRequestDto.setPersonId(2L);
+                    accountRequestDto.setPersonId(20L);
 
                     fields = assertThatExceptionOfType(ValidationServiceException.class)
                         .isThrownBy(() -> {
@@ -531,7 +530,7 @@ public class AccountValidatorUnitTest {
                     assertThat(fieldRegistered.getName()).isEqualTo("registered");
 
                     verify(identityService, times(1)).validateUserAllowance(eq(1L));
-                    verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto));
+                    verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
                     verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
                     verify(accountService, times(1)).validatePersonAssigned(eq(3L), eq(accountRequestDto));
 
@@ -562,7 +561,7 @@ public class AccountValidatorUnitTest {
                     assertThat(fieldAssigned.getName()).isEqualTo("assigned");
 
                     verify(identityService, times(1)).validateUserAllowance(eq(1L));
-                    verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto));
+                    verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
                     verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
                     verify(accountService, times(1)).validatePersonAssigned(eq(3L), eq(accountRequestDto));
 
@@ -591,7 +590,7 @@ public class AccountValidatorUnitTest {
                     assertThat(fieldAdminPersonId.getName()).isEqualTo("adminPersonId");
 
                     verify(identityService, times(1)).validateUserAllowance(eq(1L));
-                    verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto));
+                    verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
                     verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
                     verify(accountService, times(1)).validatePersonAssigned(eq(3L), eq(accountRequestDto));
 
@@ -608,7 +607,7 @@ public class AccountValidatorUnitTest {
                     @AfterEach
                     void verifyMethodValidation() {
                         verify(identityService, times(1)).validateUserAllowance(eq(1L));
-                        verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto));
+                        verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
                         verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
                         verify(accountService, times(1)).validatePersonAssigned(eq(3L), eq(accountRequestDto));
 
@@ -668,7 +667,7 @@ public class AccountValidatorUnitTest {
                     verify(accountService, times(1)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
                     verify(identityService, times(1)).validateUserAllowance(anyLong());
 
-                    verify(personService, times(0)).validatePersonRegistered(any(AccountUpdateRequestDto.class));
+                    verify(personService, times(0)).validatePersonRegistered(anyLong());
                     verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
                     verify(accountService, times(0)).validatePersonAssigned(anyLong(),  any(AccountUpdateRequestDto.class));
                     verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("enabled"));
@@ -712,7 +711,7 @@ public class AccountValidatorUnitTest {
                     verify(identityService, times(1)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("enabled"));
                     verify(identityService, times(1)).validateUserAllowance(anyLong());
 
-                    verify(personService, times(0)).validatePersonRegistered(any(AccountUpdateRequestDto.class));
+                    verify(personService, times(0)).validatePersonRegistered(anyLong());
                     verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
                     verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
                     verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
@@ -775,7 +774,7 @@ public class AccountValidatorUnitTest {
                     verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("roles"));
                     verify(identityService, times(1)).validateUserAllowance(anyLong());
 
-                    verify(personService, times(0)).validatePersonRegistered(any(AccountUpdateRequestDto.class));
+                    verify(personService, times(0)).validatePersonRegistered(anyLong());
                     verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
                     verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
                     verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
@@ -802,7 +801,7 @@ public class AccountValidatorUnitTest {
                     verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("roles"));
                     verify(identityService, times(1)).validateUserAllowance(anyLong());
 
-                    verify(personService, times(0)).validatePersonRegistered(any(AccountUpdateRequestDto.class));
+                    verify(personService, times(0)).validatePersonRegistered(anyLong());
                     verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
                     verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
                     verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
@@ -833,7 +832,7 @@ public class AccountValidatorUnitTest {
                     verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("roles"));
                     verify(identityService, times(1)).validateUserAllowance(anyLong());
 
-                    verify(personService, times(0)).validatePersonRegistered(any(AccountUpdateRequestDto.class));
+                    verify(personService, times(0)).validatePersonRegistered(anyLong());
                     verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
                     verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
                     verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
@@ -854,7 +853,7 @@ public class AccountValidatorUnitTest {
                     verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("roles"));
                     verify(identityService, times(1)).validateUserAllowance(anyLong());
 
-                    verify(personService, times(0)).validatePersonRegistered(any(AccountUpdateRequestDto.class));
+                    verify(personService, times(0)).validatePersonRegistered(anyLong());
                     verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
                     verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
                     verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));

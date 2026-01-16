@@ -15,7 +15,6 @@ import static org.mockito.Mockito.verify;
 import java.util.Optional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.IdentityVerificationService;
-import com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.SampleAccountRequestDto;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -27,7 +26,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.account.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 
 @ExtendWith(MockitoExtension.class)
@@ -100,11 +98,9 @@ class PersonValidationServiceUnitTest {
 
         FieldInfoError field;
 
-        SampleAccountRequestDto accountRequestDto;
 
         @BeforeEach
         void setUp(){
-            accountRequestDto = new SampleAccountRequestDto();
             doAnswer(invo ->{
                 return invo.getArgument(0, Long.class).equals(1L);
             }).when(spyPersonValidationService).isPersonRegistered(anyLong());
@@ -114,8 +110,7 @@ class PersonValidationServiceUnitTest {
         void returnsOptionalFieldInfoError() {
             doReturn("registered env").when(env).getProperty("person.validation.PersonRegistered");
             Optional<FieldInfoError> fieldOptional;
-            accountRequestDto.setPersonId(2L);
-            fieldOptional = spyPersonValidationService.validatePersonRegistered(accountRequestDto);
+            fieldOptional = spyPersonValidationService.validatePersonRegistered(2L);
 
             assertThat(fieldOptional).isNotEmpty();
 
@@ -123,7 +118,6 @@ class PersonValidationServiceUnitTest {
 
             assertThat(field.getName()).isEqualTo("personId");
             assertThat(field.getErrorMessage()).isEqualTo("registered env");
-            assertThat(field.getOwnerClass()).isEqualTo(AbstractAccountRequestDto.class);
             assertThat(field.getType()).isEqualTo(Long.class);
             assertThat(field.getValue()).isEqualTo(2L);
 
@@ -133,8 +127,7 @@ class PersonValidationServiceUnitTest {
         @Test
         void returnsEmptyOptionalFieldInfoError() {
             Optional<FieldInfoError> fieldOptional;
-            accountRequestDto.setPersonId(1L);
-            fieldOptional = spyPersonValidationService.validatePersonRegistered(accountRequestDto);
+            fieldOptional = spyPersonValidationService.validatePersonRegistered(1L);
             assertThat(fieldOptional).isEmpty();
         }
     }
