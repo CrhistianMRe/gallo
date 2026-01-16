@@ -6,9 +6,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crhistianm.springboot.gallo.springboot_gallo.account.AbstractAccountRequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
 
 @Service
 public class PersonValidationService {
@@ -30,10 +30,15 @@ public class PersonValidationService {
         return Optional.ofNullable(field);
     }
 
-    public Optional<FieldInfoError> validatePersonRegistered(AbstractAccountRequestDto accountDto){
+    public Optional<FieldInfoError> validatePersonRegistered(Long personId){
         FieldInfoError field = null;
-        if(!isPersonRegistered(accountDto.getPersonId())) {
-            field = FieldInfoErrorMapper.classTargetToFieldInfo(accountDto, "personId", env.getProperty("person.validation.PersonRegistered"));
+        if(!isPersonRegistered(personId)) {
+            field = new FieldInfoErrorBuilder()
+                .name("personId")
+                .value(personId)
+                .type(personId.getClass())
+                .errorMessage(env.getProperty("person.validation.PersonRegistered"))
+                .build();
         }
         return Optional.ofNullable(field);
     }

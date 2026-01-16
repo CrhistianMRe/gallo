@@ -29,7 +29,7 @@ class AccountValidator {
 
     void validateRequest(AccountRequestDto accountDto) {
         List<FieldInfoError> fields = new ArrayList<>();
-        personService.validatePersonRegistered(accountDto).ifPresent(fields::add);
+        personService.validatePersonRegistered(accountDto.getPersonId()).ifPresent(fields::add);
         //Null id as is account creation
         accountService.validatePersonAssigned(null, accountDto).ifPresent(fields::add);
         //Null id as is account creation
@@ -48,7 +48,7 @@ class AccountValidator {
         identityService.validateUserAllowance(personId).ifPresent(fields::add);
 
         if(accountDto.getPersonId() != null){ 
-            personService.validatePersonRegistered(accountDto).ifPresent(fields::add);
+            personService.validatePersonRegistered(accountDto.getPersonId()).ifPresent(fields::add);
             accountService.validatePersonAssigned(accountPathId, accountDto).ifPresent(fields::add);
             identityService.validateAdminRequired(accountDto, "personId").ifPresent(fields::add);
         }
