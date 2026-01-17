@@ -1,10 +1,16 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 
-interface AccountResponseDto {
+abstract class AccountResponseDto {
 
-    String getEmail();
+    protected String email;
 
-    void setEmail(String email);
-    
+    String getEmail(){
+        return this.email;
+    }
+
+    void setEmail(String email) {
+        this.email = email;
+    }
+
 }

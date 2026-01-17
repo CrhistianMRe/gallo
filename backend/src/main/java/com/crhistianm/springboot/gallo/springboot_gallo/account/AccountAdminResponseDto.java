@@ -8,11 +8,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 //Without password as password is just for writing
 //This will be the response of JWT admin authenticated users
-class AccountAdminResponseDto implements AccountResponseDto{
+class AccountAdminResponseDto extends AccountResponseDto{
 
     private Long id;
-
-    private String email;
 
     //Ignore list of accounts per role
     @JsonIgnoreProperties({"accounts", "handler", "hibernateLazyInitializer"})
@@ -30,9 +28,9 @@ class AccountAdminResponseDto implements AccountResponseDto{
     AccountAdminResponseDto(Long id, String email, Long personId, Audit audit) {
         this();
         this.id = id;
-        this.email = email;
         this.personId = personId;
         this.audit = audit;
+        this.email = email;
     }
 
     Long getId() {
@@ -41,16 +39,6 @@ class AccountAdminResponseDto implements AccountResponseDto{
 
     void setId(Long id) {
         this.id = id;
-    }
-
-    @Override
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     Audit getAudit() {

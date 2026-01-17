@@ -1,24 +1,12 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-class AccountUserResponseDto implements AccountResponseDto{
-
-    private String email;
+class AccountUserResponseDto extends AccountResponseDto{
 
     AccountUserResponseDto() {
     }
 
     AccountUserResponseDto(String email) {
         this.email = email;
-    }
-
-    @Override
-    public String getEmail() {
-        return this.email;
-    }
-
-    @Override
-    public void setEmail(String email) {
-       this.email = email;
     }
 
     @Override
