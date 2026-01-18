@@ -2,6 +2,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.getAccountInstance;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ class WorkoutData {
 
     static Optional<Workout> givenWorkout() {
         return Optional.of(new WorkoutBuilder()
-            .workoutLength(120.0)
+            .workoutLength((short)60)
             .workoutDate(LocalDate.of(2000, 01, 01))
             .account(givenAccountEntityAdmin().orElseThrow())
             .exercise(givenLegExercise().orElseThrow())

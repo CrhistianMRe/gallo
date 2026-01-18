@@ -85,7 +85,7 @@ class WorkoutServiceUnitTest {
 
             assertThat(listResponse).extracting(WorkoutResponseDto::getExerciseName).contains("Leg press").hasSize(4);
             assertThat(listResponse).extracting(WorkoutResponseDto::getImageUrl).contains("imageUrl.com").hasSize(4);
-            assertThat(listResponse).extracting(WorkoutResponseDto::getWorkoutLength).contains(120.0).hasSize(4);
+            assertThat(listResponse).extracting(WorkoutResponseDto::getWorkoutLength).contains((short)60).hasSize(4);
             assertThat(listResponse).extracting(WorkoutResponseDto::getWorkoutDate).contains(LocalDate.of(2000, 01, 01)).hasSize(4);
 
             verify(workoutValidator, times(1)).validateByIdRequest(eq(accountId));
