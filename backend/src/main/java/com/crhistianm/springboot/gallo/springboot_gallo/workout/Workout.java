@@ -24,7 +24,7 @@ public class Workout {
 
     private LocalDate workoutDate;
 
-    private Double workoutLength;
+    private short workoutLength;
 
     //This relationship is not bidirectional 
     @ManyToOne
@@ -41,7 +41,7 @@ public class Workout {
         this.sets = new ArrayList<>();
     }
 
-    Workout(LocalDate workoutDate, Double workoutLength, Exercise exercise, Account account) {
+    Workout(LocalDate workoutDate, short workoutLength, Exercise exercise, Account account) {
         this();
         this.workoutDate = workoutDate;
         this.workoutLength = workoutLength;
@@ -65,11 +65,11 @@ public class Workout {
         this.workoutDate = workoutDate;
     }
 
-    public Double getWorkoutLength() {
+    public short getWorkoutLength() {
         return workoutLength;
     }
 
-    public void setWorkoutLength(Double workoutLength) {
+    public void setWorkoutLength(short workoutLength) {
         this.workoutLength = workoutLength;
     }
 

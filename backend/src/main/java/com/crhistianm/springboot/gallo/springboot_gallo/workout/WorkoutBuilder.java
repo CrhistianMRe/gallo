@@ -12,7 +12,7 @@ class WorkoutBuilder {
 
     private LocalDate workoutDate;
 
-    private Double workoutLength;
+    private short workoutLength;
 
     private Exercise exercise;
 
@@ -33,7 +33,7 @@ class WorkoutBuilder {
         return this;
     }
 
-    WorkoutBuilder workoutLength(Double workoutLength){
+    WorkoutBuilder workoutLength(short workoutLength){
         this.workoutLength = workoutLength;
         return this;
     }
