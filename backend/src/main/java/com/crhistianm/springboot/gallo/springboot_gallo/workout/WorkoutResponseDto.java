@@ -8,7 +8,7 @@ class WorkoutResponseDto {
 
     private LocalDate workoutDate;
 
-    private Double workoutLength;
+    private short workoutLength;
     
     private String exerciseName;
 
@@ -16,7 +16,7 @@ class WorkoutResponseDto {
 
     WorkoutResponseDto(){}
 
-    WorkoutResponseDto(Long id, LocalDate workoutDate, Double workoutLength, String exerciseName, String imageUrl) {
+    WorkoutResponseDto(Long id, LocalDate workoutDate, short workoutLength, String exerciseName, String imageUrl) {
         this.id = id;
         this.workoutDate = workoutDate;
         this.workoutLength = workoutLength;
@@ -40,11 +40,11 @@ class WorkoutResponseDto {
         this.workoutDate = workoutDate;
     }
 
-    Double getWorkoutLength() {
+    short getWorkoutLength() {
         return workoutLength;
     }
 
-    void setWorkoutLength(Double workoutLength) {
+    void setWorkoutLength(short workoutLength) {
         this.workoutLength = workoutLength;
     }
 
@@ -70,7 +70,7 @@ class WorkoutResponseDto {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((workoutDate == null) ? 0 : workoutDate.hashCode());
-        result = prime * result + ((workoutLength == null) ? 0 : workoutLength.hashCode());
+        result = prime * result + workoutLength;
         result = prime * result + ((exerciseName == null) ? 0 : exerciseName.hashCode());
         result = prime * result + ((imageUrl == null) ? 0 : imageUrl.hashCode());
         return result;
@@ -95,10 +95,7 @@ class WorkoutResponseDto {
                 return false;
         } else if (!workoutDate.equals(other.workoutDate))
             return false;
-        if (workoutLength == null) {
-            if (other.workoutLength != null)
-                return false;
-        } else if (!workoutLength.equals(other.workoutLength))
+        if (workoutLength != other.workoutLength)
             return false;
         if (exerciseName == null) {
             if (other.exerciseName != null)

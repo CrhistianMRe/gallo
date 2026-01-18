@@ -97,7 +97,7 @@ FOREIGN KEY (body_part_id) REFERENCES body_part(id);
 CREATE TABLE IF NOT EXISTS workout(
     id bigint NOT NULL,
     workout_date date NOT NULL,
-    workout_length decimal(4,2) DEFAULT NULL,
+    workout_length SMALLINT DEFAULT NULL,
     exercise_id bigint NOT NULL,
     account_id bigint NOT NULL
 );
