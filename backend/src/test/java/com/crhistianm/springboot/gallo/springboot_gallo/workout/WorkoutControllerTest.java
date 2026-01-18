@@ -66,27 +66,27 @@ class WorkoutControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(Matchers.equalTo(1)))
                 .andExpect(jsonPath("$.content[0].workoutDate").value(Matchers.contains(2000, 01, 01)))
-                .andExpect(jsonPath("$.content[0].workoutLength").value(Matchers.equalTo(120.0)))
+                .andExpect(jsonPath("$.content[0].workoutLength").value(Matchers.equalTo(60)))
                 .andExpect(jsonPath("$.content[0].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[0].imageUrl").value(Matchers.equalTo("imageUrl.com")))
 
 
                 .andExpect(jsonPath("$.content[1].id").value(Matchers.equalTo(2)))
                 .andExpect(jsonPath("$.content[1].workoutDate").value(Matchers.contains(2000, 01, 01)))
-                .andExpect(jsonPath("$.content[1].workoutLength").value(Matchers.equalTo(120.0)))
+                .andExpect(jsonPath("$.content[1].workoutLength").value(Matchers.equalTo(60)))
                 .andExpect(jsonPath("$.content[1].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[1].imageUrl").value(Matchers.equalTo("imageUrl.com")))
 
                 .andExpect(jsonPath("$.content[2].id").value(Matchers.equalTo(3)))
                 .andExpect(jsonPath("$.content[2].workoutDate").value(Matchers.contains(2000, 01, 01)))
-                .andExpect(jsonPath("$.content[2].workoutLength").value(Matchers.equalTo(120.0)))
+                .andExpect(jsonPath("$.content[2].workoutLength").value(Matchers.equalTo(60)))
                 .andExpect(jsonPath("$.content[2].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[2].imageUrl").value(Matchers.equalTo("imageUrl.com")))
 
 
                 .andExpect(jsonPath("$.content[3].id").value(Matchers.equalTo(4)))
                 .andExpect(jsonPath("$.content[3].workoutDate").value(Matchers.contains(2000, 01, 01)))
-                .andExpect(jsonPath("$.content[3].workoutLength").value(Matchers.equalTo(120.0)))
+                .andExpect(jsonPath("$.content[3].workoutLength").value(Matchers.equalTo(60)))
                 .andExpect(jsonPath("$.content[3].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[3].imageUrl").value(Matchers.equalTo("imageUrl.com")));
 
