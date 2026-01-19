@@ -45,7 +45,7 @@ class AccountValidator {
     void validateUpdateRequest(Long accountPathId, AccountUpdateRequestDto accountDto, Long personId) {
         List<FieldInfoError> fields = new ArrayList<>();
 
-        identityService.validateUserAllowance(personId).ifPresent(fields::add);
+        identityService.validateUserAllowanceByPersonId(personId).ifPresent(fields::add);
 
         if(accountDto.getPersonId() != null){ 
             personService.validatePersonRegistered(accountDto.getPersonId()).ifPresent(fields::add);
@@ -63,7 +63,7 @@ class AccountValidator {
     }
 
     void validateByIdRequest(Long personId) {
-        identityService.validateUserAllowance(personId).ifPresent(f -> {
+        identityService.validateUserAllowanceByPersonId(personId).ifPresent(f -> {
             throw new ValidationServiceException(new ArrayList<>(List.of(f)));
         });
     }

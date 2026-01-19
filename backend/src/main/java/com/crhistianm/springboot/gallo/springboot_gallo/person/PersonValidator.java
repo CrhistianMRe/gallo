@@ -26,7 +26,7 @@ class PersonValidator {
     void validateRequest(Long pathPersonId, PersonRequestDto personDto) {
         List<FieldInfoError> fields = new ArrayList<>();
         //If is null it is basically a create not update request so this validation is not activated
-        identityService.validateUserAllowance(pathPersonId).ifPresent(fields::add);
+        identityService.validateUserAllowanceByPersonId(pathPersonId).ifPresent(fields::add);
         personService.validateUniquePhoneNumber(pathPersonId, personDto).ifPresent(fields::add);
         if(!fields.isEmpty()) throw new ValidationServiceException(fields);
     }

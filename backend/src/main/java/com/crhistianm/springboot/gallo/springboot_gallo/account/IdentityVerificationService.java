@@ -41,13 +41,15 @@ public class IdentityVerificationService {
         return isAdminAuthority() || customAccount.getId().equals(accountId);
     }
 
-    public Optional<FieldInfoError> validateUserAllowance(Long pathPersonId) {
+    @Transactional(readOnly = true)
+    public Optional<FieldInfoError> validateUserAllowanceByPersonId(Long personId) {
         FieldInfoError infoError = null;
-        if(pathPersonId != null && (!isAdminAuthority() && !isUserPersonEntityAllowed(pathPersonId))){
+        Long accountId = accountRepository.findAccountByPersonId(personId).orElseThrow(() -> new NotFoundException(Account.class)).getId();
+        if(!isUserAllowed(accountId)){
             infoError = new FieldInfoErrorBuilder()
                     .name("path id")
-                    .value(pathPersonId)
-                    .type(pathPersonId.getClass())
+                    .value(personId)
+                    .type(personId.getClass())
                     .errorMessage(env.getProperty("identity.validation.UserAllowance"))
                     .build();
         }
@@ -58,7 +60,7 @@ public class IdentityVerificationService {
     public Optional<FieldInfoError> validateAllowanceByAccountId(Long accountId) {
         Long personId = accountRepository.findById(accountId).orElseThrow(() -> new NotFoundException(Account.class))
             .getPerson().getId();
-        return this.validateUserAllowance(personId);
+        return this.validateUserAllowanceByPersonId(personId);
     }
 
     Optional<FieldInfoError> validateAdminRequired(RequestDto targetDto, String fieldName){
