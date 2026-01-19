@@ -39,9 +39,16 @@ public class AccountUserDetailsService implements UserDetailsService{
 
 
         return new CustomAccountUserDetails(
+                account.getId(),
                 account.getPassword(), 
                 account.getEmail(), 
-                account.getEmail(), true, true, true, account.getAudit().isEnabled(), authorities);
+                account.getEmail(),
+                true, 
+                true,
+                true,
+                account.getAudit().isEnabled(),
+                authorities
+                );
     }
 
 }

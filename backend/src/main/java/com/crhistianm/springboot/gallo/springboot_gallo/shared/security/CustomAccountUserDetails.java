@@ -11,6 +11,8 @@ public class CustomAccountUserDetails implements UserDetails{
 
     private String password;
 
+    private Long id;
+
     private String email;
 
     private String username;
@@ -29,9 +31,18 @@ public class CustomAccountUserDetails implements UserDetails{
         this.authorities = new ArrayList<>();
     }
 
-    public CustomAccountUserDetails(String password, String email, String username, boolean accountNonExpired,
-            boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled,
-            List<GrantedAuthority> authorities) {
+    public CustomAccountUserDetails(
+            Long id,
+            String password,
+            String email,
+            String username,
+            boolean accountNonExpired,
+            boolean accountNonLocked,
+            boolean credentialsNonExpired,
+            boolean enabled,
+            List<GrantedAuthority> authorities
+            ) {
+        this.id = id;
         this.password = password;
         this.email = email;
         this.username = username;
@@ -40,10 +51,14 @@ public class CustomAccountUserDetails implements UserDetails{
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
         this.authorities = authorities;
-    }
+            }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getEmail() {
