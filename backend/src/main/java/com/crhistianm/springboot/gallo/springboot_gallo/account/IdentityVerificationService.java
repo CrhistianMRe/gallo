@@ -56,11 +56,17 @@ public class IdentityVerificationService {
         return Optional.ofNullable(infoError);
     }
 
-    @Transactional(readOnly = true)
     public Optional<FieldInfoError> validateAllowanceByAccountId(Long accountId) {
-        Long personId = accountRepository.findById(accountId).orElseThrow(() -> new NotFoundException(Account.class))
-            .getPerson().getId();
-        return this.validateUserAllowanceByPersonId(personId);
+        FieldInfoError infoError = null;
+        if(!isUserAllowed(accountId)){
+            infoError = new FieldInfoErrorBuilder()
+                    .name("path id")
+                    .value(accountId)
+                    .type(accountId.getClass())
+                    .errorMessage(env.getProperty("identity.validation.UserAllowance"))
+                    .build();
+        }
+        return Optional.ofNullable(infoError);
     }
 
     Optional<FieldInfoError> validateAdminRequired(RequestDto targetDto, String fieldName){
