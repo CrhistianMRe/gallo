@@ -36,18 +36,9 @@ public class IdentityVerificationService {
         return false;
     }
 
-    @Transactional(readOnly = true)
-    boolean isUserPersonEntityAllowed(Long id) {
-        boolean result = false;
-        Optional<Account> accountOptional = accountRepository.findAccountByPersonId(id);
-        if(accountOptional.isEmpty()){
-            result = true;
-            throw new NotFoundException(Person.class);
-        }
-        String emailDb = accountOptional.orElseThrow().getEmail();
+    boolean isUserAllowed(Long accountId) {
         CustomAccountUserDetails customAccount = (CustomAccountUserDetails)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        if(emailDb.equals(customAccount.getEmail())) result = true;
-        return result;
+        return isAdminAuthority() || customAccount.getId().equals(accountId);
     }
 
     public Optional<FieldInfoError> validateUserAllowance(Long pathPersonId) {
