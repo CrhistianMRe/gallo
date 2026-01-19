@@ -45,7 +45,7 @@ class PersonService {
     @Transactional
     PersonResponseDto delete(Long id) {
         Person person = personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
-        identityService.validateUserAllowance(id).ifPresent(f -> {
+        identityService.validateUserAllowanceByPersonId(id).ifPresent(f -> {
             throw new ValidationServiceException(new ArrayList<>(List.of(f)));
         });
         personRepository.delete(person);
@@ -55,7 +55,7 @@ class PersonService {
     @Transactional(readOnly = true)
     PersonResponseDto getById(Long id) {
         Person person = personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
-        identityService.validateUserAllowance(id).ifPresent(f -> {
+        identityService.validateUserAllowanceByPersonId(id).ifPresent(f -> {
             throw new ValidationServiceException(new ArrayList<>(List.of(f)));
         });
         return PersonMapper.entityToResponse(person);
