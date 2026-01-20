@@ -95,7 +95,7 @@ class PersonServiceUnitTest {
                 FieldInfoError field = null;
                 if(invo.getArgument(0, Long.class).equals(120L)) field = new FieldInfoErrorBuilder().name("identity").build();
                 return Optional.ofNullable(field);
-            }).when(identityVerificationService).validateUserAllowance(anyLong());
+            }).when(identityVerificationService).validateUserAllowanceByPersonId(anyLong());
             lenient().when(personRepository.findById(anyLong())).thenAnswer(invo -> {
                 Optional<Person> responseOptional = Optional.empty();
                 if(invo.getArgument(0, Long.class) == 1L) responseOptional = givenPersonEntityOne();
@@ -225,7 +225,7 @@ class PersonServiceUnitTest {
                 FieldInfoError field = null;
                 if(invo.getArgument(0, Long.class).equals(120L)) field = new FieldInfoErrorBuilder().name("identity").build();
                 return Optional.ofNullable(field);
-            }).when(identityVerificationService).validateUserAllowance(anyLong());
+            }).when(identityVerificationService).validateUserAllowanceByPersonId(anyLong());
             when(personRepository.findById(anyLong())).thenAnswer(invo ->{
                 Optional<Person> personDb = Optional.empty();
                 if(invo.getArgument(0, Long.class) == 1L) personDb = givenPersonEntityOne();

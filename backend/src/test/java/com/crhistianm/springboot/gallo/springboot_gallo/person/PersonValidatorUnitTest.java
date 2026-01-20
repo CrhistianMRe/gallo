@@ -52,7 +52,7 @@ class PersonValidatorUnitTest {
 
         @BeforeEach
         void setUp() { 
-            lenient().doReturn(Optional.empty()).when(identityService).validateUserAllowance(isNull());
+            lenient().doReturn(Optional.empty()).when(identityService).validateUserAllowanceByPersonId(isNull());
             lenient().doAnswer(invo ->{
                 FieldInfoError field = null;
                 if(!invo.getArgument(1, PersonRequestDto.class).getPhoneNumber().equals("1111")) field = new FieldInfoErrorBuilder().name("phone").build();
@@ -68,7 +68,7 @@ class PersonValidatorUnitTest {
             assertDoesNotThrow(() -> {
                 personValidator.validateRequest(null, personRequestDto);
             });
-            verify(identityService, times(1)).validateUserAllowance(isNull());
+            verify(identityService, times(1)).validateUserAllowanceByPersonId(isNull());
             verify(personService, times(1)).validateUniquePhoneNumber(isNull(), any(PersonRequestDto.class));
         }
 
@@ -80,7 +80,7 @@ class PersonValidatorUnitTest {
                 .isThrownBy(() ->{
                     personValidator.validateRequest(null, personRequestDto);
                 }).actual().getFieldErrors();
-            verify(identityService, times(1)).validateUserAllowance(isNull());
+            verify(identityService, times(1)).validateUserAllowanceByPersonId(isNull());
             verify(personService, times(1)).validateUniquePhoneNumber(isNull(), any(PersonRequestDto.class));
 
             assertThat(fields).hasSize(1);
@@ -97,7 +97,7 @@ class PersonValidatorUnitTest {
                     FieldInfoError field = null;
                     if(!arg.equals(1L) && arg != null) field = new FieldInfoErrorBuilder().name("allowance").build();
                     return Optional.ofNullable(field);
-                }).when(identityService).validateUserAllowance(anyLong());
+                }).when(identityService).validateUserAllowanceByPersonId(anyLong());
 
                 doAnswer(invo ->{
                     FieldInfoError field = null;
@@ -137,7 +137,7 @@ class PersonValidatorUnitTest {
                 fields = assertThatExceptionOfType(ValidationServiceException.class).isThrownBy(() -> {
                     personValidator.validateRequest(2L, personRequestDto);
                 }).actual().getFieldErrors();
-                verify(identityService, times(1)).validateUserAllowance(anyLong());
+                verify(identityService, times(1)).validateUserAllowanceByPersonId(anyLong());
                 verify(personService, times(1)).validateUniquePhoneNumber(anyLong(), any(PersonRequestDto.class));
 
                 Optional<FieldInfoError> fieldPhone = fields.stream().filter(field -> field.getName().equals("phone")).findFirst();
@@ -154,7 +154,7 @@ class PersonValidatorUnitTest {
                 assertDoesNotThrow(() ->{
                     personValidator.validateRequest(1L, personRequestDto);
                 });
-                verify(identityService, times(1)).validateUserAllowance(anyLong());
+                verify(identityService, times(1)).validateUserAllowanceByPersonId(anyLong());
                 verify(personService, times(1)).validateUniquePhoneNumber(anyLong(), any(PersonRequestDto.class));
             }
             
