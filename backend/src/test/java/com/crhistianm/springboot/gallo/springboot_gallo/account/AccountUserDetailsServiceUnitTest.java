@@ -47,6 +47,7 @@ class AccountUserDetailsServiceUnitTest {
     @Test
     void testLoadByUsernameAdmin(){
         CustomAccountUserDetails  customAccount = new CustomAccountUserDetails(
+                1L,
                 "12345", 
                 "admin@gmail.com", 
                 "admin@gmail.com", 
@@ -64,6 +65,7 @@ class AccountUserDetailsServiceUnitTest {
     @Test
     void testLoadByUsernameUser(){
         CustomAccountUserDetails customAccount = new CustomAccountUserDetails(
+                2L,
                 "12345", 
                 "user@gmail.com", 
                 "user@gmail.com", 
