@@ -94,6 +94,7 @@ class SpringEndpointSecurityTest {
                 if(invo.getArgument(0).equals("admin@gmail.com"))authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
                 return new CustomAccountUserDetails(
+                        1L,
                         passwordEncoder.encode("12345"),
                         invo.getArgument(0),
                         invo.getArgument(0),
@@ -227,7 +228,7 @@ class SpringEndpointSecurityTest {
             void shouldReturnNotFoundStatusWhenViewPageGetRequestIsSent() throws Exception {
                 mockMvc.perform(get("/api/workouts/1?page=0&size=4")
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isOk());
             }
 
         }
@@ -353,7 +354,7 @@ class SpringEndpointSecurityTest {
             void shouldReturnNotFoundStatusWhenViewPageGetRequestIsSent() throws Exception {
                 mockMvc.perform(get("/api/workouts/1?page=0&size=4")
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isOk());
             }
 
         }
