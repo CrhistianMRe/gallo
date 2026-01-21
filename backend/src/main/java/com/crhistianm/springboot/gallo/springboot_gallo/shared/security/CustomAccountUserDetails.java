@@ -65,10 +65,6 @@ public class CustomAccountUserDetails implements UserDetails{
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
