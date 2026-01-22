@@ -42,10 +42,10 @@ class AccountValidator {
         if(!fields.isEmpty()) throw new ValidationServiceException(fields);
     }
 
-    void validateUpdateRequest(Long accountPathId, AccountUpdateRequestDto accountDto, Long personId) {
+    void validateUpdateRequest(Long accountPathId, AccountUpdateRequestDto accountDto) {
         List<FieldInfoError> fields = new ArrayList<>();
 
-        identityService.validateUserAllowanceByPersonId(personId).ifPresent(fields::add);
+        identityService.validateAllowanceByAccountId(accountPathId).ifPresent(fields::add);
 
         if(accountDto.getPersonId() != null){ 
             personService.validatePersonRegistered(accountDto.getPersonId()).ifPresent(fields::add);
@@ -62,9 +62,9 @@ class AccountValidator {
         if(!fields.isEmpty()) throw new ValidationServiceException(fields);
     }
 
-    void validateByIdRequest(Long personId) {
-        identityService.validateUserAllowanceByPersonId(personId).ifPresent(f -> {
-            throw new ValidationServiceException(new ArrayList<>(List.of(f)));
+    void validateByIdRequest(Long accountId) {
+        identityService.validateAllowanceByAccountId(accountId).ifPresent(f -> {
+            throw new ValidationServiceException(List.of(f));
         });
     }
 
