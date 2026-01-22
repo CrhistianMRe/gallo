@@ -235,7 +235,7 @@ class AccountServiceUnitTest {
                     throw new ValidationServiceException("exception");
                 };
                 return null;
-            }).when(accountValidator).validateUpdateRequest(anyLong(), any(AccountUpdateRequestDto.class), anyLong());
+            }).when(accountValidator).validateUpdateRequest(anyLong(), any(AccountUpdateRequestDto.class));
 
             lenient().doAnswer(invo -> {
                 Person person = getPersonInstance();
@@ -283,7 +283,7 @@ class AccountServiceUnitTest {
                 verify(accountRepository, times(1)).findById(1L);
 
                 verifyNoInteractions(entityManager);
-                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto), eq(1L));
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
                 verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
                 verify(accountRepository, times(1)).save(any(Account.class));
             }
@@ -302,7 +302,7 @@ class AccountServiceUnitTest {
 
                 assertThat(message).isEqualTo("exception");
 
-                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto), eq(1L));
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
                 verify(accountRepository, times(1)).findById(1L);
 
                 verifyNoInteractions(accountValidationService);
@@ -315,7 +315,7 @@ class AccountServiceUnitTest {
 
                 assertDoesNotThrow(() -> accountService.update(1L, accountDto));
 
-                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto), eq(1L));
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
                 verify(accountRepository, times(1)).findById(1L);
 
                 verify(accountValidationService).settleResponseType(any(Account.class));
@@ -341,7 +341,7 @@ class AccountServiceUnitTest {
             @AfterEach
             void verifyCommonInteractions(){
                 verify(accountRepository, times(1)).findById(1L);
-                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto), eq(1L));
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
                 verify(accountRepository, times(1)).save(any(Account.class));
                 verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
             }
@@ -515,7 +515,7 @@ class AccountServiceUnitTest {
             assertThat(adminResponse).extracting(AccountAdminResponseDto::getPersonId).isEqualTo(1L);
 
             verify(accountRepository, times(1)).findById(eq(10L));
-            verify(accountValidator, times(1)).validateByIdRequest(eq(1L));
+            verify(accountValidator, times(1)).validateByIdRequest(eq(10L));
             verify(accountRepository, times(1)).delete(any(Account.class));
             verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
         }
