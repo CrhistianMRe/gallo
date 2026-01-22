@@ -70,7 +70,7 @@ class AccountService {
     @Transactional
     AccountResponseDto update(Long id, AccountUpdateRequestDto accountDto) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
-        accountValidator.validateUpdateRequest(id, accountDto, account.getPerson().getId());
+        accountValidator.validateUpdateRequest(id, accountDto);
 
         if(accountDto.getPersonId() != null) account.setPerson(entityManager.getReference(Person.class, accountDto.getPersonId()));
         if(accountDto.getEmail() != null) account.setEmail(accountDto.getEmail());
@@ -84,7 +84,7 @@ class AccountService {
     @Transactional
     AccountResponseDto delete(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
-        accountValidator.validateByIdRequest(account.getPerson().getId());
+        accountValidator.validateByIdRequest(id);
         accountRepository.delete(account);
         return accountValidationService.settleResponseType(account);
     }
@@ -92,7 +92,7 @@ class AccountService {
     @Transactional(readOnly = true)
     AccountResponseDto getById(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
-        accountValidator.validateByIdRequest(account.getPerson().getId());
+        accountValidator.validateByIdRequest(id);
         return accountValidationService.settleResponseType(account);
     }
 
