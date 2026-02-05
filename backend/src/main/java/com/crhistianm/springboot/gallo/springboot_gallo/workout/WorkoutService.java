@@ -6,6 +6,11 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
+import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
+
+import jakarta.persistence.EntityManager;
+
 
 @Service
 class WorkoutService {
@@ -14,9 +19,12 @@ class WorkoutService {
 
     private final WorkoutValidator workoutValidator;
 
-    WorkoutService(WorkoutRepository workoutRepository, WorkoutValidator workoutValidator){
+    private final EntityManager entityManager;
+
+    WorkoutService(WorkoutRepository workoutRepository, WorkoutValidator workoutValidator, EntityManager entityManager){
         this.workoutRepository = workoutRepository;
         this.workoutValidator = workoutValidator;
+        this.entityManager = entityManager;
     }
 
     @Transactional(readOnly = true)
@@ -25,6 +33,14 @@ class WorkoutService {
         Page<WorkoutResponseDto> responsePage = workoutRepository.findByAccountId(accountId, PageRequest.of(page, size))
             .map(WorkoutMapper::entityToResponse);
         return new PagedModel<>(responsePage);
+    }
+
+    @Transactional
+    WorkoutResponseDto save(WorkoutRequestDto requestDto) {
+        Workout workout = WorkoutMapper.requestToEntity(requestDto);
+        workout.setAccount(entityManager.getReference(Account.class, requestDto.getAccountId()));
+        workout.setExercise(entityManager.getReference(Exercise.class, requestDto.getExerciseId()));
+        return WorkoutMapper.entityToResponse(workoutRepository.save(workout));
     }
 
 }
