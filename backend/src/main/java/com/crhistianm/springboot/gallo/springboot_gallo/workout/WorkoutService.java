@@ -37,6 +37,7 @@ class WorkoutService {
 
     @Transactional
     WorkoutResponseDto save(WorkoutRequestDto requestDto) {
+        workoutValidator.validateRequest(requestDto);
         Workout workout = WorkoutMapper.requestToEntity(requestDto);
         workout.setAccount(entityManager.getReference(Account.class, requestDto.getAccountId()));
         workout.setExercise(entityManager.getReference(Exercise.class, requestDto.getExerciseId()));

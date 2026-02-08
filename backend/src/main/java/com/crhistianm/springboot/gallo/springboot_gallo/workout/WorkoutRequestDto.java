@@ -3,15 +3,29 @@ package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 import java.time.LocalDate;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.FirstCheck;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.SecondCheck;
+
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 class WorkoutRequestDto implements RequestDto {
 
+    @NotNull(groups = FirstCheck.class)
+    @PresentDay(groups = SecondCheck.class)
     private LocalDate workoutDate;
 
+    @Digits(integer = 5, fraction = 0, groups = FirstCheck.class)
+    @Min(value = 20, groups = SecondCheck.class)
+    @Max(value = Short.MAX_VALUE-1, groups = SecondCheck.class)
     private short workoutLength;
 
+    @NotNull(groups = FirstCheck.class)
     private Long accountId;
 
+    @NotNull(groups = FirstCheck.class)
     private Long exerciseId;
 
     WorkoutRequestDto() {}
