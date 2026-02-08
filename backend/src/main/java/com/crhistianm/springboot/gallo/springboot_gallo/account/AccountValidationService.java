@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
 
 @Service
-class AccountValidationService {
+public class AccountValidationService {
 
     private final AccountRepository accountRepository;
 
@@ -45,6 +46,19 @@ class AccountValidationService {
         return Optional.ofNullable(field);
     }
 
+    public Optional<FieldInfoError> validateAccountRegistered(Long accountId) {
+        FieldInfoError field = null;
+        if(!isAccountRegistered(accountId)) {
+            field = new FieldInfoErrorBuilder()
+                .name("accountId")
+                .value(accountId)
+                .type(accountId.getClass())
+                .errorMessage(env.getProperty("account.validation.AccountRegistered"))
+                .build();
+        }
+        return Optional.ofNullable(field);
+    }
+
     @Transactional(readOnly = true)
     boolean isEmailAvailable(Long accountId, String email) {
         if(accountId != null && accountRepository.findById(accountId).orElseThrow().getEmail().equals(email)) return true;
@@ -56,6 +70,11 @@ class AccountValidationService {
         if(accountId != null && accountRepository.findById(accountId).orElseThrow().getPerson().getId().equals(personId)) return false;
         Optional<Account> accountOptional = accountRepository.findAccountByPersonId(personId);
         return accountOptional.isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    boolean isAccountRegistered(Long accountId) {
+        return accountRepository.existsById(accountId);
     }
 
 }
