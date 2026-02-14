@@ -1,15 +1,21 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
+import static com.crhistianm.springboot.gallo.springboot_gallo.exercise.ExerciseData.getExerciseInstance;
 import static com.crhistianm.springboot.gallo.springboot_gallo.workout.WorkoutData.givenWorkoutList;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,11 +30,17 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.validation.ConstraintValidatorContext;
+
 import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
+import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
 
 
 @WebMvcTest(controllers = {WorkoutController.class})
@@ -41,6 +53,9 @@ class WorkoutControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @MockitoBean
     AccountUserDetailsService service;
@@ -92,6 +107,48 @@ class WorkoutControllerTest {
 
             verify(workoutService, times(1)).getByAccountId(accountId, page, size);
         }
+    }
+
+    @Nested
+    class CreateModuleTest {
+
+        WorkoutRequestDto requestDto;
+
+        @BeforeEach
+        void setUp() {
+            requestDto = new WorkoutRequestDto();
+            requestDto.setAccountId(1L);
+            requestDto.setExerciseId(1L);
+            requestDto.setWorkoutLength((short)60);
+            requestDto.setWorkoutDate(LocalDate.now());
+            doAnswer(invo -> {
+                Workout argEntity = WorkoutMapper.requestToEntity(invo.getArgument(0, WorkoutRequestDto.class));
+                argEntity.setId(10L);
+
+                Exercise sampleExercise = getExerciseInstance();
+
+                sampleExercise.setName("example exercise");
+                sampleExercise.setImageUrl("example url");
+
+                argEntity.setExercise(sampleExercise);
+                return WorkoutMapper.entityToResponse(argEntity);
+            }).when(workoutService).save(any(WorkoutRequestDto.class));
+        }
+
+        @Test
+        void shouldReturnResponseWithCreatedStatus() throws Exception {
+            mockMvc.perform(post("/api/workouts/register")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(Matchers.equalTo(10)))
+                .andExpect(jsonPath("$.workoutLength").value(Matchers.equalTo(60)))
+                .andExpect(jsonPath("$.workoutDate[0]").value(requestDto.getWorkoutDate().getYear()))
+                .andExpect(jsonPath("$.workoutDate[1]").value(requestDto.getWorkoutDate().getMonthValue()))
+                .andExpect(jsonPath("$.workoutDate[2]").value(requestDto.getWorkoutDate().getDayOfMonth()))
+                .andExpect(jsonPath("$.exerciseName").value(Matchers.equalTo("example exercise")))
+                .andExpect(jsonPath("$.imageUrl").value(Matchers.equalTo("example url")));
+        }
+
     }
 
 }
