@@ -10,6 +10,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +28,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.data.web.PagedModel.PageMetadata;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
+import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
+
+import jakarta.persistence.EntityManager;
+
+import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.getAccountInstance;
+import static com.crhistianm.springboot.gallo.springboot_gallo.exercise.ExerciseData.getExerciseInstance;
 import static com.crhistianm.springboot.gallo.springboot_gallo.workout.WorkoutData.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +46,9 @@ class WorkoutServiceUnitTest {
 
     @Mock
     private WorkoutValidator workoutValidator;
+
+    @Mock
+    private EntityManager entityManager;
 
     @InjectMocks
     private WorkoutService workoutService;
@@ -102,5 +114,56 @@ class WorkoutServiceUnitTest {
 
     } 
 
+    @Nested
+    class CreateModuleTest {
+
+        WorkoutRequestDto workoutRequestDto;
+
+        @BeforeEach
+        void setUp() {
+            workoutRequestDto = new WorkoutRequestDto();
+            workoutRequestDto.setWorkoutDate(LocalDate.of(2004, 9, 28));
+            workoutRequestDto.setWorkoutLength((short)60);
+            workoutRequestDto.setExerciseId(10L);
+            workoutRequestDto.setAccountId(20L);
+
+            lenient().doAnswer(invo -> {
+                Account account = getAccountInstance();
+                account.setId(1L);
+                return account;
+            }).when(entityManager).getReference(eq(Account.class), anyLong());
+
+            lenient().doAnswer(invo -> {
+                Exercise exercise = getExerciseInstance();
+                exercise.setImageUrl("imageUrl");
+                exercise.setName("exercise name");
+                return exercise;
+            }).when(entityManager).getReference(eq(Exercise.class), anyLong());
+
+            lenient().doAnswer(invo -> {
+                Workout workout = invo.getArgument(0, Workout.class);
+                workout.getExercise().setName("saved " + workout.getExercise().getName());
+                workout.setId(1L);
+                return workout;
+            }).when(workoutRepository).save(any(Workout.class));
+
+        }
+
+        @Test
+        void shouldReturnResponseDtoWhenRequestIsValid() {
+            WorkoutResponseDto expectedResponse = workoutService.save(workoutRequestDto);
+
+            assertThat(expectedResponse).extracting(WorkoutResponseDto::getId).isEqualTo(1L);
+            assertThat(expectedResponse).extracting(WorkoutResponseDto::getExerciseName).isEqualTo("saved exercise name");
+            assertThat(expectedResponse).extracting(WorkoutResponseDto::getImageUrl).isEqualTo("imageUrl");
+            assertThat(expectedResponse).extracting(WorkoutResponseDto::getWorkoutLength).isEqualTo((short)60);
+
+            verify(workoutValidator, times(1)).validateRequest(eq(workoutRequestDto));
+            verify(entityManager, times(1)).getReference(eq(Exercise.class), eq(10L));
+            verify(entityManager, times(1)).getReference(eq(Account.class), eq(20L));
+            verify(workoutRepository, times(1)).save(any(Workout.class));
+        }
+
+    }
 
 }
