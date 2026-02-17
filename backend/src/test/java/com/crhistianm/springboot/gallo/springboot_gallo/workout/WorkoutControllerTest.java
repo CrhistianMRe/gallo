@@ -149,6 +149,16 @@ class WorkoutControllerTest {
                 .andExpect(jsonPath("$.imageUrl").value(Matchers.equalTo("example url")));
         }
 
+        @Test
+        void shouldReturnDtoException() throws Exception {
+            requestDto.setAccountId(null);
+
+            mockMvc.perform(post("/api/workouts/register")
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.accountId").value("the field accountId must not be null"));
+        }
+
     }
 
 }

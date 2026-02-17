@@ -127,6 +127,13 @@ class WorkoutServiceUnitTest {
             workoutRequestDto.setExerciseId(10L);
             workoutRequestDto.setAccountId(20L);
 
+            doAnswer(invo -> {
+                Long accountId = invo.getArgument(0, WorkoutRequestDto.class).getAccountId();
+                if(accountId.equals(2L)) throw new ValidationServiceException("Error");
+                return null;
+            }).when(workoutValidator).validateRequest(any(WorkoutRequestDto.class));
+
+
             lenient().doAnswer(invo -> {
                 Account account = getAccountInstance();
                 account.setId(1L);
@@ -162,6 +169,22 @@ class WorkoutServiceUnitTest {
             verify(entityManager, times(1)).getReference(eq(Exercise.class), eq(10L));
             verify(entityManager, times(1)).getReference(eq(Account.class), eq(20L));
             verify(workoutRepository, times(1)).save(any(Workout.class));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenRequestIsInvalid() {
+            workoutRequestDto.setAccountId(2L);
+
+            String errorMessage = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutService.save(workoutRequestDto))
+                .actual()
+                .getMessage();
+
+            assertThat(errorMessage).isEqualTo("Error");
+
+            verify(workoutValidator, times(1)).validateRequest(eq(workoutRequestDto));
+            verifyNoInteractions(entityManager);
+            verifyNoInteractions(workoutRepository);
         }
 
     }

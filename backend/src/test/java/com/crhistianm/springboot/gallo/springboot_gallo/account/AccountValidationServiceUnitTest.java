@@ -145,6 +145,57 @@ class AccountValidationServiceUnitTest {
     }
 
     @Nested
+    class ValidateAccountRegisteredMethodTest {
+
+        Optional<FieldInfoError> expectedErrorOptional;
+
+        Long accountId;
+
+        @BeforeEach
+        void setUp() {
+            expectedErrorOptional = Optional.empty();
+            accountId = null;
+
+            doAnswer(invo -> {
+                return invo.getArgument(0, Long.class).equals(1L);
+            }).when(spyAccountValidationService).isAccountRegistered(anyLong());
+
+            lenient().doAnswer(invo -> invo.getArgument(0, String.class)).when(env).getProperty(anyString());
+
+        }
+
+        @Test
+        void shouldReturnErrorOptional() {
+            accountId = 2L;
+
+            expectedErrorOptional = spyAccountValidationService.validateAccountRegistered(accountId);
+
+            assertThat(expectedErrorOptional).isNotEmpty();
+
+            FieldInfoError expectedError = expectedErrorOptional.orElseThrow();
+
+            assertThat(expectedError).extracting(FieldInfoError::getErrorMessage).isEqualTo("account.validation.AccountRegistered");
+            assertThat(expectedError).extracting(FieldInfoError::getValue).isEqualTo(accountId);
+            assertThat(expectedError).extracting(FieldInfoError::getName).isEqualTo("accountId");
+            assertThat(expectedError).extracting(FieldInfoError::getType).isEqualTo(accountId.getClass());
+
+            verify(spyAccountValidationService, times(1)).isAccountRegistered(accountId);
+        }
+
+        @Test
+        void shouldReturnEmptyErrorOptional() {
+            accountId = 1L;
+
+            expectedErrorOptional = spyAccountValidationService.validateAccountRegistered(accountId);
+
+            assertThat(expectedErrorOptional).isEmpty();
+
+            verify(spyAccountValidationService, times(1)).isAccountRegistered(accountId);
+        }
+
+    }
+
+    @Nested
     class SettleResponseTypeTest {
 
         @Test
@@ -225,6 +276,7 @@ class AccountValidationServiceUnitTest {
         }
     }
 
+
         @Nested
         class IsPersonIdAssignedTest {
 
@@ -292,6 +344,44 @@ class AccountValidationServiceUnitTest {
             }
 
         }
+
+    @Nested
+    class IsAccountRegisteredTest {
+
+        boolean result;
+
+        Long accountId;
+
+        @BeforeEach
+        void setUp() {
+            accountId = null;
+            doAnswer(invo -> invo.getArgument(0, Long.class).equals(1L)).when(accountRepository).existsById(anyLong());
+        }
+
+        @Test
+        void shouldReturnTrueWhenAccountIsRegistered() {
+            accountId = 1L;
+
+            result = accountValidationService.isAccountRegistered(accountId);
+
+            assertThat(result).isTrue();
+
+            verify(accountRepository, times(1)).existsById(accountId);
+        }
+
+        @Test
+        void shouldReturnFalseWhenAccountIsNotRegistered() {
+            accountId = 2L;
+
+            result = accountValidationService.isAccountRegistered(accountId);
+
+            assertThat(result).isFalse();
+
+            verify(accountRepository, times(1)).existsById(accountId);
+        }
+
+    }
+
 
     
 }
