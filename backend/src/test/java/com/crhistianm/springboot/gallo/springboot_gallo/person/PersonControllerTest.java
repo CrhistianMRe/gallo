@@ -91,7 +91,7 @@ class PersonControllerTest {
                 .andExpect(jsonPath("$.firstName").value("exampleFirst"))
                 .andExpect(jsonPath("$.lastName").value("exampleLast"))
                 .andExpect(jsonPath("$.phoneNumber").value("12345678"))
-                .andExpect(jsonPath("$.birthDate").value(Matchers.contains(2010, 02, 23)))
+                .andExpect(jsonPath("$.birthDate").value("2010-02-23"))
                 .andExpect(jsonPath("$.gender").value("M"))
                 .andExpect(jsonPath("$.height").value(1.60))
                 .andExpect(jsonPath("$.weight").value(60.00));
@@ -191,7 +191,7 @@ class PersonControllerTest {
                 .andExpect(jsonPath("$.firstName").value("exampleFirst"))
                 .andExpect(jsonPath("$.lastName").value("exampleLast"))
                 .andExpect(jsonPath("$.phoneNumber").value("12345678"))
-                .andExpect(jsonPath("$.birthDate").value(Matchers.contains(2010, 02, 23)))
+                .andExpect(jsonPath("$.birthDate").value("2010-02-23"))
                 .andExpect(jsonPath("$.gender").value("M"))
                 .andExpect(jsonPath("$.height").value(1.60))
                 .andExpect(jsonPath("$.weight").value(60.00));

@@ -80,27 +80,27 @@ class WorkoutControllerTest {
             mockMvc.perform(request(HttpMethod.GET, uri))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(Matchers.equalTo(1)))
-                .andExpect(jsonPath("$.content[0].workoutDate").value(Matchers.contains(2000, 01, 01)))
+                .andExpect(jsonPath("$.content[0].workoutDate").value(Matchers.equalTo("2000-01-01")))
                 .andExpect(jsonPath("$.content[0].workoutLength").value(Matchers.equalTo(60)))
                 .andExpect(jsonPath("$.content[0].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[0].imageUrl").value(Matchers.equalTo("imageUrl.com")))
 
 
                 .andExpect(jsonPath("$.content[1].id").value(Matchers.equalTo(2)))
-                .andExpect(jsonPath("$.content[1].workoutDate").value(Matchers.contains(2000, 01, 01)))
+                .andExpect(jsonPath("$.content[1].workoutDate").value(Matchers.equalTo("2000-01-01")))
                 .andExpect(jsonPath("$.content[1].workoutLength").value(Matchers.equalTo(60)))
                 .andExpect(jsonPath("$.content[1].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[1].imageUrl").value(Matchers.equalTo("imageUrl.com")))
 
                 .andExpect(jsonPath("$.content[2].id").value(Matchers.equalTo(3)))
-                .andExpect(jsonPath("$.content[2].workoutDate").value(Matchers.contains(2000, 01, 01)))
+                .andExpect(jsonPath("$.content[2].workoutDate").value(Matchers.equalTo("2000-01-01")))
                 .andExpect(jsonPath("$.content[2].workoutLength").value(Matchers.equalTo(60)))
                 .andExpect(jsonPath("$.content[2].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[2].imageUrl").value(Matchers.equalTo("imageUrl.com")))
 
 
                 .andExpect(jsonPath("$.content[3].id").value(Matchers.equalTo(4)))
-                .andExpect(jsonPath("$.content[3].workoutDate").value(Matchers.contains(2000, 01, 01)))
+                .andExpect(jsonPath("$.content[3].workoutDate").value(Matchers.equalTo("2000-01-01")))
                 .andExpect(jsonPath("$.content[3].workoutLength").value(Matchers.equalTo(60)))
                 .andExpect(jsonPath("$.content[3].exerciseName").value(Matchers.equalTo("Leg press")))
                 .andExpect(jsonPath("$.content[3].imageUrl").value(Matchers.equalTo("imageUrl.com")));
@@ -142,9 +142,7 @@ class WorkoutControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(Matchers.equalTo(10)))
                 .andExpect(jsonPath("$.workoutLength").value(Matchers.equalTo(60)))
-                .andExpect(jsonPath("$.workoutDate[0]").value(requestDto.getWorkoutDate().getYear()))
-                .andExpect(jsonPath("$.workoutDate[1]").value(requestDto.getWorkoutDate().getMonthValue()))
-                .andExpect(jsonPath("$.workoutDate[2]").value(requestDto.getWorkoutDate().getDayOfMonth()))
+                .andExpect(jsonPath("$.workoutDate").value(Matchers.equalTo(requestDto.getWorkoutDate().toString())))
                 .andExpect(jsonPath("$.exerciseName").value(Matchers.equalTo("example exercise")))
                 .andExpect(jsonPath("$.imageUrl").value(Matchers.equalTo("example url")));
         }
