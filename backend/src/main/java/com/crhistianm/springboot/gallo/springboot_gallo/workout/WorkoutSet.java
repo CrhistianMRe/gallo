@@ -15,7 +15,7 @@ public class WorkoutSet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer repAmount;
+    private Byte repAmount;
 
     private Double weightAmount;
 
@@ -28,7 +28,7 @@ public class WorkoutSet {
     WorkoutSet(){
     }
 
-    WorkoutSet(Integer repAmount, Double weightAmount, Boolean toFailure, Workout workout) {
+    WorkoutSet(Byte repAmount, Double weightAmount, Boolean toFailure, Workout workout) {
         this.repAmount = repAmount;
         this.weightAmount = weightAmount;
         this.toFailure = toFailure;
@@ -43,11 +43,11 @@ public class WorkoutSet {
         this.id = id;
     }
 
-    public Integer getRepAmount() {
+    public Byte getRepAmount() {
         return repAmount;
     }
 
-    public void setRepAmount(Integer repAmount) {
+    public void setRepAmount(Byte repAmount) {
         this.repAmount = repAmount;
     }
 
