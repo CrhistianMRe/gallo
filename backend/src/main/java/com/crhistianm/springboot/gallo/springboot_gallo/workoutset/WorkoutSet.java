@@ -1,4 +1,6 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.workout;
+package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
+
+import com.crhistianm.springboot.gallo.springboot_gallo.workout.Workout;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
