@@ -113,7 +113,7 @@ FOREIGN KEY (account_id) REFERENCES account(id);
 
 CREATE TABLE IF NOT EXISTS workout_set(
     id bigint NOT NULL,
-    rep_amount int (2) NOT NULL,
+    rep_amount tinyint (2) NOT NULL,
     weight_amount decimal(5,2) NOT NULL,
     to_failure boolean NOT NULL DEFAULT 0,
     workout_id bigint NOT NULL
