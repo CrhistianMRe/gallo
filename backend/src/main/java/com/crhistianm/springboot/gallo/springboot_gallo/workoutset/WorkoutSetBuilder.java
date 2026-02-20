@@ -1,10 +1,12 @@
-package com.crhistianm.springboot.gallo.springboot_gallo.workout;
+package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
+
+import com.crhistianm.springboot.gallo.springboot_gallo.workout.Workout;
 
 class WorkoutSetBuilder {
 
     private Long id;
 
-    private Integer repAmount;
+    private Byte repAmount;
 
     private Double weightAmount;
 
@@ -19,7 +21,7 @@ class WorkoutSetBuilder {
         return this;
     }
 
-    WorkoutSetBuilder repAmount(Integer repAmount){
+    WorkoutSetBuilder repAmount(Byte repAmount){
         this.repAmount = repAmount;
         return this;
     }

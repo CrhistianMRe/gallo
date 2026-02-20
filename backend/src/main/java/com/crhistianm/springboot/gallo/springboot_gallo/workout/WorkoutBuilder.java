@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
+import com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSet;
 
 class WorkoutBuilder {
 

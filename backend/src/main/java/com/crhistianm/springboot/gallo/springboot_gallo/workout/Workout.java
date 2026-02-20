@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
+import com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSet;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
