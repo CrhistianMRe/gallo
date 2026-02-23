@@ -47,6 +47,7 @@ class AccountRequestDtoAnnotationTest{
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be null");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("personId");
         }
         
         @Test 
@@ -73,6 +74,7 @@ class AccountRequestDtoAnnotationTest{
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be blank");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("email");
         }
 
         @Test
@@ -89,6 +91,7 @@ class AccountRequestDtoAnnotationTest{
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must be a well-formed email address");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("email");
         }
 
         @Test
@@ -115,6 +118,7 @@ class AccountRequestDtoAnnotationTest{
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be blank");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("password");
         }
 
         @Test

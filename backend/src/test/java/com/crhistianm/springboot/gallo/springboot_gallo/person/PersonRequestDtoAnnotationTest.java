@@ -49,6 +49,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be blank");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("firstName");
         }
 
         @Test
@@ -65,6 +66,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("size must be between 0 and 45");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("firstName");
         }
 
         @Test
@@ -91,6 +93,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be blank");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("lastName");
         }
 
         @Test
@@ -107,6 +110,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("size must be between 0 and 45");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("lastName");
         }
 
         @Test
@@ -133,6 +137,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be blank");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("phoneNumber");
         }
 
         @Test
@@ -149,7 +154,9 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("size must be between 0 and 16");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("phoneNumber");
         }
+        
 
         @Test
         void testValidSize(){
@@ -157,8 +164,9 @@ class PersonRequestDtoAnnotationTest {
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
         }
-
     }
+
+    
 
     @Nested
     class BirthDateFieldTest{
@@ -175,6 +183,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be null");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("birthDate");
         }
 
         @Test
@@ -191,6 +200,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must be a date in the past or in the present");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("birthDate");
         }
 
         @Test
@@ -217,6 +227,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be blank");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("gender");
 
         }
 
@@ -234,6 +245,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("{dto.validation.CorrectGender}");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("gender");
         }
 
         @Test
@@ -260,6 +272,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must be greater than or equal to 0.50");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("height");
         }
 
         @Test
@@ -276,6 +289,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must be less than or equal to 3.00");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("height");
         }
 
         @Test
@@ -318,6 +332,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must be greater than or equal to 20.0");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("weight");
         }
 
         @Test
@@ -334,6 +349,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must be less than or equal to 200.0");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("weight");
         }
 
         @Test
@@ -350,6 +366,7 @@ class PersonRequestDtoAnnotationTest {
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("{dto.validation.annotation.digits.weight}");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("weight");
         }
 
         @Test
