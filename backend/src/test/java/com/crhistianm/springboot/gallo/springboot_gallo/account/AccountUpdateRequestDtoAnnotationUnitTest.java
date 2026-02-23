@@ -58,6 +58,7 @@ class AccountUpdateRequestDtoAnnotationUnitTest{
             violations = validator.validate(accountDto, GroupsOrder.class);
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).contains("must be a well-formed email address");
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("email");
         }
 
         @Test
@@ -77,7 +78,7 @@ class AccountUpdateRequestDtoAnnotationUnitTest{
             accountDto.setPassword("222");
             violations = validator.validate(accountDto, GroupsOrder.class);
             assertThat(violations).hasSize(1);
-
+            assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("password");
         }
         
         @Test
