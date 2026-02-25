@@ -18,13 +18,18 @@ class WorkoutSetService {
 
     private final EntityManager entityManager;
 
-    WorkoutSetService(WorkoutSetRepository workoutSetRepository, EntityManager entityManager) {
+    private final WorkoutSetValidator workoutSetValidator;
+
+    WorkoutSetService(WorkoutSetRepository workoutSetRepository, EntityManager entityManager, WorkoutSetValidator workoutSetValidator) {
         this.workoutSetRepository = workoutSetRepository;
+        this.workoutSetValidator = workoutSetValidator;
         this.entityManager = entityManager;
     }
 
     @Transactional
     List<WorkoutSetResponseDto> saveAll(WorkoutSetRequestDto requestDto) {
+        workoutSetValidator.validateSaveAllRequest(requestDto);
+
         List<WorkoutSet> entityList = requestDto.getSets().stream().map(WorkoutSetMapper::dtoToEntity).collect(Collectors.toList());
 
         Workout workout = entityManager.getReference(Workout.class, requestDto.getWorkoutId());

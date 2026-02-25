@@ -4,11 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.FirstCheck;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 class WorkoutSetRequestDto implements RequestDto {
 
+    @NotNull(groups = FirstCheck.class)
     private Long workoutId;
 
-    List<WorkoutSetDto> sets;
+    @NotEmpty(groups = FirstCheck.class)
+    List<@Valid WorkoutSetDto> sets;
 
     WorkoutSetRequestDto() {
         this.sets = new ArrayList<>();

@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
+
 import static com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorMapper.classTargetToFieldInfo;
 
 @Service
-class WorkoutValidationService {
+public class WorkoutValidationService {
 
     private final WorkoutRepository workoutRepository;
 
@@ -26,6 +28,26 @@ class WorkoutValidationService {
     boolean doesWorkoutCountExceedLimit(Long accountId, LocalDate date, Long exerciseId, int limit) {
         int workoutCount = workoutRepository.countPerDayByAccountAndExercise(accountId, date, exerciseId);
         return workoutCount >= limit;
+    }
+
+    @Transactional(readOnly = true)
+    boolean workoutExists(Long workoutId) {
+        return workoutRepository.existsById(workoutId);
+    }
+
+    public Optional<FieldInfoError> validateWorkoutExistence(Long workoutId) {
+        FieldInfoError field = null;
+
+        if(workoutExists(workoutId)) {
+            field = new FieldInfoErrorBuilder()
+                .name("workoutId")
+                .value(workoutId)
+                .type(workoutId.getClass())
+                .errorMessage(env.getProperty("workout.validation.WorkoutExistence"))
+                .build();
+        }
+
+        return Optional.ofNullable(field);
     }
 
     Optional<FieldInfoError> validatePerDayWorkoutLimit(WorkoutRequestDto requestDto, int limit) {
