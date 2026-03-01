@@ -1,16 +1,19 @@
-# Gallo [![wakatime](https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/d07694b7-06a4-40b5-b960-96c684a72f65.svg)](https://wakatime.com/@CrhistianMRe/projects/oisgwqpmpc?start=2025-09-03&end=2025-09-09)
+<div align="center">
+  <h1>Gallo Backend</h1>
+  <img alt="Wakatime" src="https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/d07694b7-06a4-40b5-b960-96c684a72f65.svg"/>
+</div>
+
+<p align="center">
+  <img alt="Java" src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white"/>
+  <img alt="Spring" src="https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white"/>
+  <img alt="JUnit5" src="https://img.shields.io/badge/JUnit5-f5f5f5?style=for-the-badge&logo=junit5&logoColor=dc524a"/>
+  <img alt="JWT" src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens"/>
+  <img alt="Maven" src="https://img.shields.io/badge/apachemaven-C71A36.svg?style=for-the-badge&logo=apachemaven&logoColor=white"/>
+  <img alt="MariaDB" src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white"/>
+  <img alt="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"/>
+</p>
 
 
-
-
-## Description
-Gallo is a multi-platform system composed of a backend REST API, a JavaFX desktop application, and an Android mobile client. All components communicate through a secure REST interface. The backend is built with Spring Boot and uses MariaDB, while both frontend clients consume the API. The project also includes a comprehensive testing strategy using JUnit and Mockito, with continuous integration workflows managed through GitHub Actions.
-
-## My workflow
-[Workflow(Activity Diagram)](https://drive.google.com/file/d/1L7UbmsDkHxn08zls8QkCsRoNf7n09437/view?usp=sharing)
-
-## Technologies/Features
-### Backend
 #### - Spring Boot
 <details>
 <summary>Details</summary>
@@ -108,22 +111,5 @@ Tests implements JUnit, Mockito, AssertJ and H2 DE, intended to validate data/me
 Swagger implemented to document Gallo backend platform.
 
 </details>
-
-### Desktop Client 
-- JavaFX  
-- Retrofit  
-- JavaFX Weaver Spring Boot (for dependency injection)  
-- Maven
-
-### Android Client
-- Android SDK  
-- Retrofit  
-- (Optional: Jetpack Components)  
-- Gradle
-
-## Template docs
-- [Requirements](https://drive.google.com/file/d/1diq_zjKFh7muv0KoUWesED698ZbEQZOE/view?usp=sharing)
-- [DB rel-diagram](https://drive.google.com/file/d/17Mow6Cy2x-wizXpR6F3c3Lj6hZUB44Gi/view?usp=sharing)
-- [DB ER-diagram](https://drive.google.com/file/d/1G-CbavoAnz9QBjyq8I9cslvOH4q5mqhN/view?usp=sharing)
 
 
