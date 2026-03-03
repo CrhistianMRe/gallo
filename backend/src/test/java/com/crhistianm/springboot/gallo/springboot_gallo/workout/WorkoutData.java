@@ -2,7 +2,6 @@ package com.crhistianm.springboot.gallo.springboot_gallo.workout;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.getAccountInstance;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +9,13 @@ import java.util.Optional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
-import static com.crhistianm.springboot.gallo.springboot_gallo.exercise.ExerciseData.getExerciseInstance;
-class WorkoutData {
+import com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSet;
 
+import static com.crhistianm.springboot.gallo.springboot_gallo.exercise.ExerciseData.getExerciseInstance;
+import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.getWorkoutSetInstance;
+public class WorkoutData {
+
+    public static Workout getWorkoutInstance() { return new Workout(); }
 
     static Optional<Exercise> givenLegExercise() {
         Exercise exercise = getExerciseInstance();
@@ -25,12 +28,11 @@ class WorkoutData {
     }
 
     static Optional<WorkoutSet> givenWorkoutSet() {
-        return Optional.of(new WorkoutSetBuilder()
-            .weightAmount(80.0)
-            .toFailure(false)
-            .build());
+        WorkoutSet workoutSet = getWorkoutSetInstance();
+        workoutSet.setWeightAmount(80.0);
+        workoutSet.setToFailure(false);
+        return Optional.of(workoutSet);
     }
-
 
     static Optional<Account> givenAccountEntityAdmin(){
         Account account = getAccountInstance();
@@ -55,20 +57,20 @@ class WorkoutData {
         /*4 sets per workout*/
         WorkoutSet firstSet = givenWorkoutSet().orElseThrow();
         firstSet.setId(1L);
-        firstSet.setRepAmount(12);
+        firstSet.setRepAmount((byte)12);
 
         WorkoutSet secondSet = givenWorkoutSet().orElseThrow();
         secondSet.setId(2L);
-        secondSet.setRepAmount(10);
+        secondSet.setRepAmount((byte)10);
 
         WorkoutSet thirdSet = givenWorkoutSet().orElseThrow();
         thirdSet.setId(3L);
-        thirdSet.setRepAmount(8);
+        thirdSet.setRepAmount((byte)8);
 
         WorkoutSet fourthSet = givenWorkoutSet().orElseThrow();
         fourthSet.setId(4L);
         fourthSet.setToFailure(true);
-        fourthSet.setRepAmount(6);
+        fourthSet.setRepAmount((byte)6);
 
         List<WorkoutSet> setList = new ArrayList<>(List.of(firstSet, secondSet, thirdSet, fourthSet));
 
