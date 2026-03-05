@@ -53,7 +53,7 @@ class PersonControllerTest {
 
     @Nested
     @Import(ValidatorConfig.class)
-    class RegisterModuleTest {
+    class CreateModuleTest {
 
         PersonRequestDto personRequest;
 

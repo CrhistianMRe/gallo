@@ -132,7 +132,7 @@ class AccountServiceUnitTest {
     }
 
     @Nested
-    class RegisterModuleTest{
+    class CreateModuleTest {
 
         @BeforeEach
         void setUp(){

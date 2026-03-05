@@ -52,7 +52,7 @@ class WorkoutSetServiceUnitTest {
     private WorkoutSetService workoutSetService;
 
     @Nested
-    class RegisterModuleTest {
+    class CreateModuleTest {
 
         WorkoutSetRequestDto requestDto;
 

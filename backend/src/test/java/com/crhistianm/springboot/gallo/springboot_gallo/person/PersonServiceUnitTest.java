@@ -45,7 +45,7 @@ class PersonServiceUnitTest {
     PersonService personService;
 
     @Nested
-    class RegisterModuleTest{
+    class CreateModuleTest {
 
         @BeforeEach
         void setUp() {
