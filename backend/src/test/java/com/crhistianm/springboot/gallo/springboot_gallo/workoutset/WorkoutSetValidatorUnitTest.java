@@ -1,0 +1,131 @@
+package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
+
+import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenWorkoutSetDtoList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyByte;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
+import com.crhistianm.springboot.gallo.springboot_gallo.workout.WorkoutValidationService;
+
+
+@ExtendWith(MockitoExtension.class)
+class WorkoutSetValidatorUnitTest {
+
+    @Mock
+    private WorkoutValidationService workoutValidationService;
+
+    @Mock
+    private WorkoutSetValidationService setValidationService;
+
+    @InjectMocks
+    private WorkoutSetValidator workoutSetValidator;
+
+    @Nested
+    class ValidateSaveAllRequestMethodTest {
+
+        List<FieldInfoError> expectedErrors; 
+
+        WorkoutSetRequestDto requestDto;
+
+        @BeforeEach
+        void setUp() {
+            requestDto = new WorkoutSetRequestDto();
+
+            requestDto.setWorkoutId(1L);
+            requestDto.setSets(givenWorkoutSetDtoList());
+
+            doAnswer(invo ->{
+                FieldInfoError responseError = null;
+                final Long ARG_WORKOUT_ID = invo.getArgument(0, Long.class);
+                if(ARG_WORKOUT_ID.equals(2L)) responseError = new FieldInfoErrorBuilder().name("workoutExistence").build();
+                return Optional.ofNullable(responseError);
+            }).when(workoutValidationService).validateWorkoutExistence(anyLong());
+
+            doAnswer(invo ->{
+                FieldInfoError responseError = null;
+                final WorkoutSetRequestDto ARG_REQUEST_DTO = invo.getArgument(0, WorkoutSetRequestDto.class);
+                if(ARG_REQUEST_DTO.getSets().size() > 4) responseError = new FieldInfoErrorBuilder().name("workoutSetLimit").build();
+                return Optional.ofNullable(responseError);
+            }).when(setValidationService).validateWorkoutSetLimit(any(WorkoutSetRequestDto.class), anyByte());
+        }
+
+        @Test
+        void shouldNotThrowErrorsWhenAllConditionsAreMet() {
+            assertDoesNotThrow(() -> workoutSetValidator.validateSaveAllRequest(requestDto));
+
+            verify(workoutValidationService, times(1)).validateWorkoutExistence(eq(requestDto.getWorkoutId()));
+            verify(setValidationService, times(1)).validateWorkoutSetLimit(eq(requestDto), eq((byte)10));
+        }
+
+        @Test
+        void shouldThrowMaximumErrorAmountWhenAllConditionsAreInvalid() {
+            requestDto.setWorkoutId(2L);
+            requestDto.getSets().add(new WorkoutSetDto());
+
+            expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutSetValidator.validateSaveAllRequest(requestDto)).actual().getFieldErrors();
+
+            assertThat(expectedErrors).hasSize(2);
+
+            assertThat(expectedErrors).extracting(FieldInfoError::getName).containsOnlyOnce("workoutExistence", "workoutSetLimit");
+
+            verify(workoutValidationService, times(1)).validateWorkoutExistence(eq(requestDto.getWorkoutId()));
+            verify(setValidationService, times(1)).validateWorkoutSetLimit(eq(requestDto), eq((byte)10));
+        }
+
+
+        @Test
+        void shouldThrowExceptionWhenOnlyLimitIsInvalid(){
+            requestDto.getSets().add(new WorkoutSetDto());
+
+            expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutSetValidator.validateSaveAllRequest(requestDto)).actual().getFieldErrors();
+
+            assertThat(expectedErrors).hasSize(1);
+
+            assertThat(expectedErrors).extracting(FieldInfoError::getName).containsOnlyOnce("workoutSetLimit");
+
+            verify(workoutValidationService, times(1)).validateWorkoutExistence(eq(requestDto.getWorkoutId()));
+            verify(setValidationService, times(1)).validateWorkoutSetLimit(eq(requestDto), eq((byte)10));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenOnlyWorkoutExistenceIsInvalid(){
+            requestDto.setWorkoutId(2L);
+
+            expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutSetValidator.validateSaveAllRequest(requestDto)).actual().getFieldErrors();
+
+            assertThat(expectedErrors).hasSize(1);
+
+            assertThat(expectedErrors).extracting(FieldInfoError::getName).containsOnlyOnce("workoutExistence");
+
+            verify(workoutValidationService, times(1)).validateWorkoutExistence(eq(requestDto.getWorkoutId()));
+            verify(setValidationService, times(1)).validateWorkoutSetLimit(eq(requestDto), eq((byte)10));
+        }
+
+    }
+    
+}

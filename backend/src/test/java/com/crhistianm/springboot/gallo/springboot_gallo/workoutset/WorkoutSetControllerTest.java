@@ -84,6 +84,15 @@ class WorkoutSetControllerTest {
                 .andExpect(jsonPath("[3].weightAmount").value(80.00))
                 .andExpect(jsonPath("[3].toFailure").value(false));
         }
+
+        @Test
+        void shouldReturnDtoException() throws Exception {
+            requestDto.setWorkoutId(null);
+            mockMvc.perform(post("/api/workout-sets")
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(jsonPath("$.workoutId").value("the field workoutId must not be null"));
+        }
     
     }
 
