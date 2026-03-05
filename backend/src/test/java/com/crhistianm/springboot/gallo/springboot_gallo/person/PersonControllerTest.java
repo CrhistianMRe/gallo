@@ -81,7 +81,7 @@ class PersonControllerTest {
         void testCreate() throws Exception {
 
             //Given
-            mockMvc.perform(post("/api/persons/register")
+            mockMvc.perform(post("/api/persons")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(personRequest)))
 
                 //Then
@@ -101,7 +101,7 @@ class PersonControllerTest {
         void shouldReturnErrorWhenDtoFieldIsInvalid() throws Exception {
             personRequest.setPhoneNumber("");
 
-            mockMvc.perform(request(HttpMethod.POST, "/api/persons/register")
+            mockMvc.perform(request(HttpMethod.POST, "/api/persons")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(personRequest)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
