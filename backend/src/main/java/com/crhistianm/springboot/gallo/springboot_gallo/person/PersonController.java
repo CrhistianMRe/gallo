@@ -22,7 +22,7 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody PersonRequestDto personDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDto));
     }

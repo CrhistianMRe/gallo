@@ -33,7 +33,7 @@ class WorkoutController {
         return ResponseEntity.ok(workoutService.getByAccountId(accountId, page, size));
     }
 
-    @PostMapping(path = "/register")
+    @PostMapping
     ResponseEntity<WorkoutResponseDto> create(@RequestBody @Validated (GroupsOrder.class) WorkoutRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(workoutService.save(requestDto));
     }
