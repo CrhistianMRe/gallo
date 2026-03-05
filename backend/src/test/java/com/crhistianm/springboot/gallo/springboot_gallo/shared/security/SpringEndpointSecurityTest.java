@@ -130,7 +130,7 @@ class SpringEndpointSecurityTest {
 
             @Test
             void testCreateValidAuthority() throws Exception{
-                mockMvc.perform(post("/api/accounts/register")
+                mockMvc.perform(post("/api/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
@@ -202,7 +202,7 @@ class SpringEndpointSecurityTest {
 
             @Test
             void testCreateValidAuthority() throws Exception {
-                mockMvc.perform(post("/api/persons/register")
+                mockMvc.perform(post("/api/persons")
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
             }
@@ -233,7 +233,7 @@ class SpringEndpointSecurityTest {
 
             @Test
             void shouldReturnBadRequestStatusWhenPostWorkoutIsSent() throws Exception {
-                mockMvc.perform(post("/api/workouts/register")
+                mockMvc.perform(post("/api/workouts")
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
             }
@@ -265,7 +265,7 @@ class SpringEndpointSecurityTest {
 
             @Test
             void testCreateValidAuthority() throws Exception{
-                mockMvc.perform(post("/api/accounts/register")
+                mockMvc.perform(post("/api/accounts")
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
             }
@@ -336,7 +336,7 @@ class SpringEndpointSecurityTest {
 
             @Test
             void testCreateValidAuthority() throws Exception{
-                mockMvc.perform(post("/api/persons/register").header("Authorization", prefixWithToken))
+                mockMvc.perform(post("/api/persons").header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
             }
 
@@ -366,7 +366,7 @@ class SpringEndpointSecurityTest {
 
             @Test
             void shouldReturnBadRequestStatusWhenPostWorkoutIsSent() throws Exception {
-                mockMvc.perform(post("/api/workouts/register")
+                mockMvc.perform(post("/api/workouts")
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
             }

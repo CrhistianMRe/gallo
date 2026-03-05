@@ -137,7 +137,7 @@ class WorkoutControllerTest {
 
         @Test
         void shouldReturnResponseWithCreatedStatus() throws Exception {
-            mockMvc.perform(post("/api/workouts/register")
+            mockMvc.perform(post("/api/workouts")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(Matchers.equalTo(10)))
@@ -151,7 +151,7 @@ class WorkoutControllerTest {
         void shouldReturnDtoException() throws Exception {
             requestDto.setAccountId(null);
 
-            mockMvc.perform(post("/api/workouts/register")
+            mockMvc.perform(post("/api/workouts")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.accountId").value("the field accountId must not be null"));

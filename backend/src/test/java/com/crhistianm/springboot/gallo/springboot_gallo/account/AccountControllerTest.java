@@ -72,7 +72,7 @@ class AccountControllerTest {
         @Test
         void testCreate() throws Exception{
             //Given
-            mockMvc.perform(post("/api/accounts/register")
+            mockMvc.perform(post("/api/accounts")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 //Then
                 .andExpect(status().isCreated())
@@ -84,7 +84,7 @@ class AccountControllerTest {
         @Test
         void shouldReturnFieldMessageWhenFieldIsInvalid() throws Exception {
             requestDto.setPassword("");
-            mockMvc.perform(request(HttpMethod.POST, "/api/accounts/register")
+            mockMvc.perform(request(HttpMethod.POST, "/api/accounts")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.password").value("the field password must not be blank"));
