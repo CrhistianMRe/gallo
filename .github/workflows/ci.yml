@@ -108,6 +108,23 @@ jobs:
       - name: Run Workout Tests
         run: ./mvnw test -Pworkout-tests
 
+  workoutset-tests:
+    name: Backend - Workoutset Tests
+    runs-on: ubuntu-latest
+    needs: build
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Run Workouset Tests
+        run: ./mvnw test -Pworkoutset-tests
+
   bodypart-tests:
     name: Backend - Bodypart Tests
     runs-on: ubuntu-latest
