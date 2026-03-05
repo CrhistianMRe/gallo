@@ -50,7 +50,7 @@ class AccountControllerTest {
 
 
     @Nested
-    class RegisterModuleTest {
+    class CreateModuleTest {
 
         AccountRequestDto requestDto;
 

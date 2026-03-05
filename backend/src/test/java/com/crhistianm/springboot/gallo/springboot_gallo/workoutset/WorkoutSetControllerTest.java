@@ -44,7 +44,7 @@ class WorkoutSetControllerTest {
     private WorkoutSetController workoutSetController;
 
     @Nested
-    class RegisterModuleTest {
+    class CreateModuleTest {
 
         WorkoutSetRequestDto requestDto;
 
