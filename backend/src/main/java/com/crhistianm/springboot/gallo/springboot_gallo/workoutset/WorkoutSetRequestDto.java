@@ -16,7 +16,7 @@ class WorkoutSetRequestDto implements RequestDto {
     private Long workoutId;
 
     @NotEmpty(groups = FirstCheck.class)
-    List<@Valid WorkoutSetDto> sets;
+    private List<@Valid WorkoutSetDto> sets;
 
     WorkoutSetRequestDto() {
         this.sets = new ArrayList<>();
