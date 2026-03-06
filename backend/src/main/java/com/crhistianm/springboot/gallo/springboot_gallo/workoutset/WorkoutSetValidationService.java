@@ -28,7 +28,7 @@ class WorkoutSetValidationService {
     Optional<FieldInfoError> validateWorkoutSetLimit(WorkoutSetRequestDto requestDto, byte limit) {
         FieldInfoError error = null;
 
-        if(doesWorkoutSetCountExceedLimit(requestDto.getWorkoutId(), limit, (short) requestDto.sets.size())){
+        if(doesWorkoutSetCountExceedLimit(requestDto.getWorkoutId(), limit, (short) requestDto.getSets().size())){
             error = FieldInfoErrorMapper.classTargetToFieldInfo(requestDto, "sets", environment.getProperty("workoutset.validation.WorkoutSetLimit"));
         }
 
