@@ -204,7 +204,7 @@ class WorkoutValidationServiceUnitTest {
 
         @Test
         void shouldReturnEmptyOptionalWhenWorkoutDoesNotExist() {
-            final Long WORKOUT_ID = 2L;
+            final Long WORKOUT_ID = 1L;
 
             expectedErrorOptional = spyService.validateWorkoutExistence(WORKOUT_ID);
 
@@ -217,7 +217,7 @@ class WorkoutValidationServiceUnitTest {
         @Test
         void shouldReturnErrorOptionalWhenWorkoutExists() {
             doReturn("Environment").when(env).getProperty(anyString());
-            final Long WORKOUT_ID = 1L;
+            final Long WORKOUT_ID = 2L;
 
             expectedErrorOptional = spyService.validateWorkoutExistence(WORKOUT_ID);
 
