@@ -38,7 +38,7 @@ public class WorkoutValidationService {
     public Optional<FieldInfoError> validateWorkoutExistence(Long workoutId) {
         FieldInfoError field = null;
 
-        if(workoutExists(workoutId)) {
+        if(!workoutExists(workoutId)) {
             field = new FieldInfoErrorBuilder()
                 .name("workoutId")
                 .value(workoutId)
