@@ -18,6 +18,9 @@ interface AccountRepository extends CrudRepository <Account, Long>{
     @Query("select a from Account a where a.person.id=?1")
     Optional<Account> findAccountByPersonId(Long personId);
 
+    @Query("select a from Account a inner join a.workouts w where w.id=?1")
+    Optional<Account> findAccountByWorkoutId(Long workoutId);
+
     List<Account> findAll();
 
 }

@@ -15,6 +15,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoun
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.security.CustomAccountUserDetails;
+import com.crhistianm.springboot.gallo.springboot_gallo.workout.Workout;
 
 
 @Service
@@ -69,6 +70,25 @@ public class IdentityVerificationService {
         return Optional.ofNullable(infoError);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<FieldInfoError> validateUserAllowanceByWorkoutId(Long workoutId){
+        FieldInfoError infoError  = null;
+
+        Long accountId = accountRepository.findAccountByWorkoutId(workoutId)
+            .orElseThrow(() -> new NotFoundException(Workout.class)).getId();
+
+        if(!isUserAllowed(accountId)) {
+            infoError =  new FieldInfoErrorBuilder()
+                .name("workoutId")
+                .value(workoutId)
+                .type(workoutId.getClass())
+                .errorMessage(env.getProperty("identity.validation.UserAllowance"))
+                .build();
+        }
+
+        return Optional.ofNullable(infoError);
+    }
+
     Optional<FieldInfoError> validateAdminRequired(RequestDto targetDto, String fieldName){
         FieldInfoError infoError = null;
         if(!isAdminAuthority()){
@@ -77,5 +97,6 @@ public class IdentityVerificationService {
         return Optional.ofNullable(infoError);
     }
 
+    
     
 }
