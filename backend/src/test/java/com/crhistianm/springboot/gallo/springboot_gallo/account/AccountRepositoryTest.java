@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -80,6 +81,33 @@ class AccountRepositoryTest {
 
         assertEquals(account.getEmail(), accountOptional.orElseThrow().getEmail());
         assertEquals(account, accountOptional.orElseThrow());
+    }
+
+
+    @Test
+    @Sql({"/personinserts.sql", "/accountinserts.sql", "/exerciseinserts.sql","/workoutinserts.sql"})
+    //This method is called like this and not a nested class because of a SpringBoot bug
+    //Reference: https://github.com/spring-projects/spring-boot/issues/33317
+    void shoudlReturnEmptyOptionalWhenFindByWorkoutIdIsExecuted() {
+        Optional<Account> expectedOptional = accountRepository.findAccountByWorkoutId(200L);
+
+        assertThat(expectedOptional).isEmpty();
+    }
+
+    @Test
+    @Sql({"/personinserts.sql", "/accountinserts.sql", "/exerciseinserts.sql","/workoutinserts.sql"})
+    //This method is called like this and not a nested class because of a SpringBoot bug
+    //Reference: https://github.com/spring-projects/spring-boot/issues/33317
+    void shouldReturnAccountOptionalWhenFindByWorkoutIdIsExecuted() {
+        Optional<Account> expectedOptional = accountRepository.findAccountByWorkoutId(10L);
+
+        assertThat(expectedOptional).isNotEmpty();
+
+        Account expectedAccount = expectedOptional.orElseThrow();
+
+        assertThat(expectedAccount).extracting(Account::getEmail).isEqualTo("erick@gmail.com");
+        assertThat(expectedAccount).extracting(Account::getId).isEqualTo(2L);
+        assertThat(expectedAccount).extracting(Account::getPerson).extracting(Person::getId).isEqualTo(2L);
     }
 
 }
