@@ -1,6 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -292,6 +293,84 @@ class IdentityVerificationServiceUnitTest {
             verify(spyServiceIdentity, times(1)).isUserAllowed(eq(2L));
             verify(environment, times(1)).getProperty(eq("identity.validation.UserAllowance"));
         }
+    }
+
+    @Nested
+    class ValidateUserAllowanceByWorkoutIdMethod {
+
+        Optional<FieldInfoError> expectedOptional;
+
+        Long workoutId;
+
+        @BeforeEach
+        void setUp() {
+            doAnswer(invo -> {
+                Account returningAccount = null;
+                final Long ARG_WORKOUT_ID = invo.getArgument(0, Long.class);
+                if(ARG_WORKOUT_ID.equals(1L) || ARG_WORKOUT_ID.equals(2L)) {
+                    returningAccount = getAccountInstance();
+                    returningAccount.setId(ARG_WORKOUT_ID);
+                }
+                return Optional.ofNullable(returningAccount);
+            }).when(accountRepository).findAccountByWorkoutId(anyLong());
+
+            lenient().doAnswer(invo -> {
+                final Long ARG_ACCOUNT_ID = invo.getArgument(0, Long.class);
+                return ARG_ACCOUNT_ID.equals(1L);
+            }).when(spyServiceIdentity).isUserAllowed(anyLong());
+        }
+
+        @Test
+        void shouldReturnErrorOptionalWhenUserIsNotAllowed() {
+            doAnswer(invo -> invo.getArgument(0, String.class)).when(environment).getProperty(anyString());
+            workoutId = 2L;
+
+            expectedOptional = spyServiceIdentity.validateUserAllowanceByWorkoutId(workoutId);
+
+            assertThat(expectedOptional).isNotEmpty();
+
+            FieldInfoError expectedError = expectedOptional.orElseThrow();
+
+
+            assertThat(expectedError).extracting(FieldInfoError::getErrorMessage).isEqualTo("identity.validation.UserAllowance");
+            assertThat(expectedError).extracting(FieldInfoError::getName).isEqualTo("workoutId");
+            assertThat(expectedError).extracting(FieldInfoError::getValue).isEqualTo(workoutId);
+            assertThat(expectedError).extracting(FieldInfoError::getType).isEqualTo(Long.class);
+
+            verify(accountRepository, times(1)).findAccountByWorkoutId(eq(workoutId));
+            verify(spyServiceIdentity, times(1)).isUserAllowed(eq(2L));
+            verify(environment, times(1)).getProperty(eq("identity.validation.UserAllowance"));
+        }
+
+        @Test
+        void shouldReturnEmptyOptionalWhenUserIsAllowed() {
+            workoutId = 1L;
+
+            expectedOptional = spyServiceIdentity.validateUserAllowanceByWorkoutId(workoutId);
+            
+            assertThat(expectedOptional).isEmpty();
+
+            verify(accountRepository, times(1)).findAccountByWorkoutId(eq(workoutId));
+            verify(spyServiceIdentity, times(1)).isUserAllowed(eq(1L));
+            verifyNoInteractions(environment);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenWorkoutIdIsNotFound() {
+            workoutId = 3L;
+
+            String expectedMessage = assertThatExceptionOfType(NotFoundException.class)
+                .isThrownBy(() -> spyServiceIdentity.validateUserAllowanceByWorkoutId(workoutId))
+                .actual()
+                .getMessage();
+
+            assertThat(expectedMessage).isEqualTo("Workout not found");
+
+            verify(accountRepository, times(1)).findAccountByWorkoutId(eq(workoutId));
+            verify(spyServiceIdentity, times(0)).isUserAllowed(anyLong());
+            verifyNoInteractions(environment);
+        }
+
     }
 
 }
