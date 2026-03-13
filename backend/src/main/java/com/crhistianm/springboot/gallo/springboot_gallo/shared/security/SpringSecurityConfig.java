@@ -46,17 +46,7 @@ class SpringSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
         return http.authorizeHttpRequests((authz) -> authz 
                 .requestMatchers(HttpMethod.GET, "/api/persons").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/persons/{id}").hasAnyRole("ADMIN", "USER")
-                .requestMatchers(HttpMethod.PUT, "/api/persons/{id}").hasAnyRole("ADMIN", "USER")
-                .requestMatchers(HttpMethod.DELETE, "/api/persons/{id}").hasAnyRole("ADMIN", "USER")
-                    .requestMatchers(HttpMethod.POST, "/api/persons/register").hasAnyRole("ADMIN", "USER")
-                    .requestMatchers(HttpMethod.POST, "/api/accounts/register").hasAnyRole("ADMIN", "USER")
-                    .requestMatchers(HttpMethod.GET, "/api/accounts/{id}").hasAnyRole("ADMIN", "USER")
-                    .requestMatchers(HttpMethod.PUT, "/api/accounts/{id}").hasAnyRole("ADMIN", "USER")
-                    .requestMatchers(HttpMethod.DELETE, "/api/accounts/{id}").hasAnyRole("ADMIN", "USER")
                     .requestMatchers(HttpMethod.GET, "/api/accounts").hasAnyRole("ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/api/body-parts").hasAnyRole("ADMIN", "USER")
-                    .requestMatchers(HttpMethod.GET, "/api/workouts/{id}").hasAnyRole("ADMIN", "USER")
                     .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
                     .requestMatchers("/v3/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
