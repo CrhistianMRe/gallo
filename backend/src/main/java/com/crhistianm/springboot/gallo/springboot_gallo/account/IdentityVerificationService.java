@@ -44,6 +44,7 @@ public class IdentityVerificationService {
 
     @Transactional(readOnly = true)
     public Optional<FieldInfoError> validateUserAllowanceByPersonId(Long personId) {
+        if(personId == null) return Optional.empty();
         FieldInfoError infoError = null;
         Long accountId = accountRepository.findAccountByPersonId(personId).orElseThrow(() -> new NotFoundException(Account.class)).getId();
         if(!isUserAllowed(accountId)){
