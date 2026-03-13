@@ -138,7 +138,7 @@ class IdentityVerificationServiceUnitTest {
         @BeforeEach
         void setUp() {
             fieldOptional = Optional.empty();
-            doAnswer(invo -> {
+            lenient().doAnswer(invo -> {
                 Long personId = invo.getArgument(0, Long.class);
                 Account account = new Account();
                 account.setId(personId);
@@ -198,6 +198,17 @@ class IdentityVerificationServiceUnitTest {
             verify(accountRepository).findAccountByPersonId(eq(1L));
             verify(spyServiceIdentity, times(1)).isUserAllowed(eq(1L));
             verify(environment, times(1)).getProperty(eq("identity.validation.UserAllowance"));
+        }
+
+        @Test
+        void shouldReturnEmptyOptionalWhenPersonIdIsNull() {
+            fieldOptional = spyServiceIdentity.validateUserAllowanceByPersonId(null);
+
+            assertThat(fieldOptional).isEmpty();
+
+            verifyNoInteractions(accountRepository);
+            verify(spyServiceIdentity, times(0)).isUserAllowed(anyLong());
+            verifyNoInteractions(environment);
         }
 
     }
