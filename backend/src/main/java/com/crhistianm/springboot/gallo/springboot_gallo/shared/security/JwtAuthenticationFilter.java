@@ -79,19 +79,16 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             .add("username", email)
             .build();
 
-        String token = Jwts.builder()
-            .subject(email)
-            .claims(claims)
-             //One hour in millis
-            .expiration(new Date(System.currentTimeMillis() + 3600000))
-            //Token created date
-            .issuedAt(new Date())
-            .signWith(SECRET_KEY).compact();
+        //One hour in millis
+        final Date expiresAt = new Date(System.currentTimeMillis() + 3600000);
 
-        response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
+        String accessToken = JwtUtils.createAccessJwt(email, claims, expiresAt);
+
+
+        response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + accessToken);
 
         Map<String, String> body = new HashMap<String, String>();
-        body.put("token", token);
+        body.put("token", accessToken);
         body.put("email", email);
         body.put("message", String.format(env.getProperty("filter.authentication.successful")));
 
