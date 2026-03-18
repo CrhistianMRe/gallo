@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.core.env.Environment;
@@ -15,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
+import com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken.RefreshTokenService;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,11 +36,19 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final Environment env;
 
-    JwtAuthenticationFilter(AuthenticationManager authenticationManager, Environment env) {
-        setFilterProcessesUrl("/api/auth/login");
-        this.authenticationManager = authenticationManager;
-        this.env = env;
-    }
+    private final RefreshTokenService refreshTokenService;
+
+    JwtAuthenticationFilter
+        (
+         AuthenticationManager authenticationManager,
+         Environment env,
+         RefreshTokenService refreshTokenService
+        ) {
+            setFilterProcessesUrl("/api/auth/login");
+            this.authenticationManager = authenticationManager;
+            this.env = env;
+            this.refreshTokenService = refreshTokenService;
+        }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -71,9 +81,9 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         CustomAccountUserDetails accountUserDetails = (CustomAccountUserDetails) authResult.getPrincipal();
         String email = accountUserDetails.getEmail();
+        Long accountId = accountUserDetails.getId();
 
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
-
 
         Claims claims = Jwts.claims()
             .add("authorities", new ObjectMapper().writeValueAsString(roles))
@@ -85,12 +95,16 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         String accessToken = JwtUtils.createAccessJwt(email, claims, expiresAt);
 
-
         response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + accessToken);
 
-        Map<String, String> body = new HashMap<String, String>();
-        body.put("token", accessToken);
+        Map<String, String> body = new LinkedHashMap<String, String>();
+        body.put("accessToken", accessToken);
+        body.put("expiresAt", expiresAt.toInstant().toString());
+
+        String refreshToken = refreshTokenService.createRefreshToken(accountId);
+
         body.put("email", email);
+        body.put("refreshToken", refreshToken);
         body.put("message", String.format(env.getProperty("filter.authentication.successful")));
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
