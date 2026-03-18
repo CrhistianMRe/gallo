@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("api/auth/refresh")
 class RefreshTokenController {
@@ -20,7 +22,7 @@ class RefreshTokenController {
     }
 
     @PostMapping
-    ResponseEntity<Map<String, String>> generateNewToken(@RequestBody RefreshTokenRequestDto requestDto) {
+    ResponseEntity<Map<String, String>> generateNewToken(@Valid @RequestBody RefreshTokenRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(refreshTokenService.refreshAccessToken(requestDto));
     }
 

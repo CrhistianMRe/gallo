@@ -29,19 +29,24 @@ public class RefreshTokenService {
 
     private final EntityManager entityManager;
 
+    private final RefreshTokenValidator refreshTokenValidator;
+
     RefreshTokenService
         (
          RefreshTokenRepository refreshTokenRepository,
+         RefreshTokenValidator refreshTokenValidator,
          EntityManager entityManager
          ) {
             this.refreshTokenRepository = refreshTokenRepository;
+            this.refreshTokenValidator = refreshTokenValidator;
             this.entityManager = entityManager;
         }
 
     @Transactional(readOnly = true)
     Map<String, String> refreshAccessToken(final RefreshTokenRequestDto requestDto) {
-
         final String refreshToken = requestDto.getRefreshToken();
+
+        refreshTokenValidator.validateTokenRefresh(refreshToken);
 
         Account account = refreshTokenRepository.findByToken(refreshToken)
             .orElseThrow(() -> new NotFoundException(RefreshToken.class))
