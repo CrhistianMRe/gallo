@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Gallo Backend</h1>
-  <img alt="Wakatime" src="https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/d07694b7-06a4-40b5-b960-96c684a72f65.svg"/>
+  <img alt="Wakatime" src="https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/e71ab9b3-4e30-404d-ba95-007256ce8280.svg"/>
 </div>
 
 <p align="center">
