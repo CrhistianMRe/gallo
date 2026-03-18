@@ -22,6 +22,7 @@ ALTER TABLE person ADD CONSTRAINT chk_person_weight CHECK (weight >= 020.0 AND w
 
 ALTER TABLE person ADD UNIQUE INDEX uq_person_phone_number (phone_number ASC) VISIBLE;
 
+
 CREATE TABLE IF NOT EXISTS account(
     id bigint NOT NULL,
     email varchar(100) NOT NULL,
@@ -38,6 +39,21 @@ ALTER TABLE account MODIFY id bigint NOT NULL AUTO_INCREMENT;
 ALTER TABLE account ADD UNIQUE INDEX uq_account_email (email ASC) VISIBLE;
 ALTER TABLE account ADD CONSTRAINT fk_account_person_id FOREIGN KEY (person_id) REFERENCES person(id);
 ALTER TABLE account ADD UNIQUE INDEX uq_fk_account_person_id (person_id ASC) VISIBLE;
+
+CREATE TABLE IF NOT EXISTS refresh_token(
+    id bigint NOT NULL,
+    token varchar(36) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    revoked boolean NOT NULL DEFAULT 0,
+    account_id bigint NOT NULL
+);
+
+ALTER TABLE refresh_token ADD PRIMARY KEY (id);
+ALTER TABLE refresh_token MODIFY id bigint NOT NULL AUTO_INCREMENT;
+
+-- No ASC as i think is not necessary and idk why i added it in other unique fields.
+ALTER TABLE refresh_token ADD UNIQUE INDEX uq_token (token) VISIBLE;
+ALTER TABLE refresh_token ADD CONSTRAINT fk_refresh_token_account_id FOREIGN KEY (account_id) REFERENCES account(id);
 
 CREATE TABLE IF NOT EXISTS role(
     id bigint NOT NULL,

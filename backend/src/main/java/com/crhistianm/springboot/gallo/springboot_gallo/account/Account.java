@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
+import com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken.RefreshToken;
 import com.crhistianm.springboot.gallo.springboot_gallo.workout.Workout;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -54,10 +55,13 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<Workout> workouts;
 
+    @OneToMany(mappedBy = "account")
+    private List<RefreshToken> tokens;
 
     Account() {
         this.workouts = new ArrayList<>();
         this.roles = new ArrayList<>();
+        this.tokens = new ArrayList<>();
     }
 
     Account(String email, String password, Person person) {
@@ -120,6 +124,14 @@ public class Account {
         return this;
     }
 
+    public List<RefreshToken> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<RefreshToken> tokens) {
+        this.tokens = tokens;
+    }
+
     public void setAudit(Audit audit) {
         this.audit = audit;
     }
@@ -127,6 +139,7 @@ public class Account {
     public Audit getAudit() {
         return audit;
     }
+
 
     @Override
     public int hashCode() {
@@ -166,9 +179,5 @@ public class Account {
                 + ", updatedAt=" + audit.getUpdatedAt()+ ", enabled=" + audit.isEnabled()+ ", person=" + person + ", roles=" + roles
                  + "}";
     }
-
-
-
-
 
 }

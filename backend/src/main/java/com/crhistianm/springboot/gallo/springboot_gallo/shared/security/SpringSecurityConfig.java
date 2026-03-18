@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
+import com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken.RefreshTokenService;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -25,11 +26,20 @@ class SpringSecurityConfig {
 
     private final Environment environment;
 
-    SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration, AccountUserDetailsService accountService, Environment environment) {
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.accountService = accountService;
-        this.environment = environment;
-    } 
+    private final RefreshTokenService refreshTokenService;
+
+    SpringSecurityConfig
+        (
+         AuthenticationConfiguration authenticationConfiguration,
+         AccountUserDetailsService accountService,
+         Environment environment,
+         RefreshTokenService refreshTokenService
+        ) {
+            this.authenticationConfiguration = authenticationConfiguration;
+            this.accountService = accountService;
+            this.environment = environment;
+            this.refreshTokenService = refreshTokenService;
+        } 
 
     @Bean
     AuthenticationManager authenticationManager() throws Exception{
@@ -47,10 +57,11 @@ class SpringSecurityConfig {
         return http.authorizeHttpRequests((authz) -> authz 
                 .requestMatchers(HttpMethod.GET, "/api/persons").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/api/accounts").hasAnyRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                     .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
                     .requestMatchers("/v3/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager(), environment))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager(), environment, refreshTokenService))
                     .addFilter(new JwtValidationFilter(authenticationManager(), accountService, environment))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
