@@ -11,8 +11,7 @@ The backend is built with Spring Boot and uses MariaDB, while both frontend clie
 [Workflow(Activity Diagram)]
 
 ## Technologies/Features
-### [Backend] [![wakatime](https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/d07694b7-06a4-40b5-b960-96c684a72f65.svg)](https://wakatime.com/@CrhistianMRe/projects/oisgwqpmpc?start=2025-09-03&end=2025-09-09)
-
+### [Backend] [![wakatime](https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/e71ab9b3-4e30-404d-ba95-007256ce8280.svg)](https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/e71ab9b3-4e30-404d-ba95-007256ce8280)
 - Spring Boot
 - Spring Security(JWT)
 - Spring Data JPA(Hibernate)
