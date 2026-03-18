@@ -3,8 +3,11 @@ package com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.NotNull;
+
 final class RefreshTokenRequestDto {
 
+    @NotNull
     private final String refreshToken;
 
     @JsonCreator
