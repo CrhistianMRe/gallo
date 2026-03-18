@@ -3,10 +3,13 @@
   <h1>Gallo</h1>
 </div>
 
-Gallo is a multi-platform system composed of a backend REST API, a JavaFX desktop application,
-and an Android mobile client. All components communicate through a secure REST interface.
+Gallo is a multi-platform system composed of a backend REST API and an Android mobile client. All components communicate through a secure REST interface.
 The backend is built with Spring Boot and uses MariaDB, while both frontend clients consume the API.
 
+<!--Gallo is a multi-platform system composed of a backend REST API, a JavaFX desktop application,
+and an Android mobile client. All components communicate through a secure REST interface.
+The backend is built with Spring Boot and uses MariaDB, while both frontend clients consume the API.
+-->
 ## My workflow
 [Workflow(Activity Diagram)]
 
@@ -23,14 +26,14 @@ The backend is built with Spring Boot and uses MariaDB, while both frontend clie
 - Mockito
 - AssertJ
 
-### [Desktop Client]
+<!-- ### [Desktop Client]
 - JavaFX  
 - Maven
 - Retrofit  
 - TestFX
 - Mockito
 - JUnit
-- AssertJ
+- AssertJ-->
 
 ### [Android Client]
 - Android SDK  
