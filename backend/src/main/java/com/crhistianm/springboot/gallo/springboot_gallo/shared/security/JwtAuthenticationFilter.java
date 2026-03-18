@@ -35,6 +35,7 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final Environment env;
 
     JwtAuthenticationFilter(AuthenticationManager authenticationManager, Environment env) {
+        setFilterProcessesUrl("/api/auth/login");
         this.authenticationManager = authenticationManager;
         this.env = env;
     }
