@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
+import com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken.RefreshTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 
@@ -54,6 +55,9 @@ class SpringEndpointSecurityTest {
     private AccountUserDetailsService service;
 
     @MockitoBean
+    private RefreshTokenService refreshTokenService;
+
+    @MockitoBean
     Validator validator;
 
     @MockitoBean
@@ -70,7 +74,7 @@ class SpringEndpointSecurityTest {
         }
         """, email, password);
 
-        MvcResult result = mockMvc.perform(post("/login")
+        MvcResult result = mockMvc.perform(post("/api/auth/login")
             .contentType(MediaType.APPLICATION_JSON).content(request))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -78,7 +82,7 @@ class SpringEndpointSecurityTest {
 
 
 
-        String token = JsonPath.read(result.getResponse().getContentAsString(), "$.token");
+        String token = JsonPath.read(result.getResponse().getContentAsString(), "$.accessToken");
 
         return token;
 
