@@ -14,6 +14,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
+import com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken.RefreshTokenService;
 
 @ExtendWith(SpringExtension.class)
 @Import(SpringSecurityConfig.class)
@@ -30,6 +31,9 @@ class SpringSecurityConfigTest {
 
     @MockitoBean
     SecurityFilterChain securityFilterChain;
+
+    @MockitoBean 
+    private RefreshTokenService refreshTokenService;
 
 
 
