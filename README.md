@@ -10,8 +10,6 @@ The backend is built with Spring Boot and uses MariaDB, while both frontend clie
 and an Android mobile client. All components communicate through a secure REST interface.
 The backend is built with Spring Boot and uses MariaDB, while both frontend clients consume the API.
 -->
-## My workflow
-[Workflow(Activity Diagram)]
 
 ## Technologies/Features
 ### [Backend] [![wakatime](https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/e71ab9b3-4e30-404d-ba95-007256ce8280.svg)](https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/e71ab9b3-4e30-404d-ba95-007256ce8280)
@@ -47,10 +45,24 @@ The backend is built with Spring Boot and uses MariaDB, while both frontend clie
 - Mockito
 - AssertJ
 
+## My workflow
+<details>
+<summary>Activity diagram</summary>
+
+![Workflow](./docs/ActivityDiagramWorkflowGallo.svg)
+
+</details>
+
+## Database ER
+<details>
+<summary>ER</summary>
+
+![DB ER-diagram](./docs/ERGallo.svg)
+
+</details>
+
 ## Template docs
 - [Requirements](https://drive.google.com/file/d/1diq_zjKFh7muv0KoUWesED698ZbEQZOE/view?usp=sharing)
-- [DB rel-diagram](https://drive.google.com/file/d/17Mow6Cy2x-wizXpR6F3c3Lj6hZUB44Gi/view?usp=sharing)
-- [DB ER-diagram](https://drive.google.com/file/d/1G-CbavoAnz9QBjyq8I9cslvOH4q5mqhN/view?usp=sharing)
 
 [Backend]: https://github.com/CrhistianMRe/gallo-backend
 [Desktop Client]: https://github.com/CrhistianMRe/gallo-desktop
