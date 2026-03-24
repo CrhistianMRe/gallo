@@ -43,6 +43,9 @@ class RefreshTokenServiceUnitTest {
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
 
+    @Mock
+    private RefreshTokenValidator refreshTokenValidator;
+
     @InjectMocks
     private RefreshTokenService refreshTokenService;
 
@@ -110,9 +113,11 @@ class RefreshTokenServiceUnitTest {
     @Nested
     class CreateRefreshTokenMethod {
 
+
         @Test
         void shouldReturnRefreshToken() {
             final Long accountID = 1L;
+
 
             final String responseRefreshToken = refreshTokenService.createRefreshToken(accountID);
 

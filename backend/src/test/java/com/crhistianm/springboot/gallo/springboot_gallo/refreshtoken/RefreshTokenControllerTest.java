@@ -62,4 +62,15 @@ class RefreshTokenControllerTest {
 
     }
 
+    @Test
+    void shouldReturnErrorWhenDtoIsInvalid() throws Exception {
+        final String refreshToken = null;
+        requestDto = new RefreshTokenRequestDto(refreshToken);
+
+        mockMvc.perform(post("/api/auth/refresh")
+            .contentType(MediaType.APPLICATION_JSON).content(jsonMapper.writeValueAsString(requestDto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.refreshToken").value("the field refreshToken must not be null"));
+    }
+
 }
