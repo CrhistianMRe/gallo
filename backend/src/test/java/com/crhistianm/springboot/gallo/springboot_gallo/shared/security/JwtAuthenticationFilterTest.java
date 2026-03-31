@@ -110,7 +110,7 @@ class JwtAuthenticationFilterTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value(Matchers.startsWith("eyJ")))
                 .andExpect(jsonPath("$.expiresAt").value(Matchers.notNullValue()))
-                .andExpect(jsonPath("$.email").value(Matchers.equalTo(email)))
+                .andExpect(jsonPath("$.accountId").value(Matchers.equalTo(1)))
                 .andExpect(jsonPath("$.refreshToken").value(Matchers.equalTo("refreshToken")))
                 .andExpect(jsonPath("$.message").value(Matchers.equalTo("You have successfully logged in!")));
         }
