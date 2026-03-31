@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
 import com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken.RefreshTokenService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -28,17 +29,21 @@ class SpringSecurityConfig {
 
     private final RefreshTokenService refreshTokenService;
 
+    private final ObjectMapper objectMapper;
+
     SpringSecurityConfig
         (
          AuthenticationConfiguration authenticationConfiguration,
          AccountUserDetailsService accountService,
          Environment environment,
-         RefreshTokenService refreshTokenService
+         RefreshTokenService refreshTokenService,
+         ObjectMapper objectMapper
         ) {
             this.authenticationConfiguration = authenticationConfiguration;
             this.accountService = accountService;
             this.environment = environment;
             this.refreshTokenService = refreshTokenService;
+            this.objectMapper = objectMapper;
         } 
 
     @Bean
@@ -61,7 +66,7 @@ class SpringSecurityConfig {
                     .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
                     .requestMatchers("/v3/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager(), environment, refreshTokenService))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager(), environment, refreshTokenService, objectMapper))
                     .addFilter(new JwtValidationFilter(authenticationManager(), accountService, environment))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
