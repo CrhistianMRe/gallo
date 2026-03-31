@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.core.env.Environment;
@@ -38,16 +37,20 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final RefreshTokenService refreshTokenService;
 
+    private final ObjectMapper objectMapper;
+
     JwtAuthenticationFilter
         (
          AuthenticationManager authenticationManager,
          Environment env,
-         RefreshTokenService refreshTokenService
+         RefreshTokenService refreshTokenService,
+         ObjectMapper objectMapper 
         ) {
             setFilterProcessesUrl("/api/auth/login");
             this.authenticationManager = authenticationManager;
             this.env = env;
             this.refreshTokenService = refreshTokenService;
+            this.objectMapper = objectMapper;
         }
 
     @Override
@@ -97,17 +100,17 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + accessToken);
 
-        Map<String, String> body = new LinkedHashMap<String, String>();
-        body.put("accessToken", accessToken);
-        body.put("expiresAt", expiresAt.toInstant().toString());
-
         String refreshToken = refreshTokenService.createRefreshToken(accountId);
 
-        body.put("email", email);
-        body.put("refreshToken", refreshToken);
-        body.put("message", String.format(env.getProperty("filter.authentication.successful")));
+        SuccesfulAuthResponseDto responseDto = SuccesfulAuthResponseDto.builder()
+            .accessToken(accessToken)
+            .expiresAt(expiresAt.toInstant().toString())
+            .accountId(accountId)
+            .refreshToken(refreshToken)
+            .message(env.getProperty("filter.authentication.successful"))
+            .build();
 
-        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+        response.getWriter().write(objectMapper.writeValueAsString(responseDto));
         response.setContentType(CONTENT_TYPE);
         response.setStatus(200);
 
