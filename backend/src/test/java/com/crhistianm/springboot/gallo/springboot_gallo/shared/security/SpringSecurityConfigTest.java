@@ -3,6 +3,8 @@ package com.crhistianm.springboot.gallo.springboot_gallo.shared.security;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.security.SpringSecurityConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ class SpringSecurityConfigTest {
 
     @MockitoBean
     SecurityFilterChain securityFilterChain;
+
+    @MockitoBean
+    private ObjectMapper objectMapper;
 
     @MockitoBean 
     private RefreshTokenService refreshTokenService;
