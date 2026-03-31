@@ -41,6 +41,7 @@ class AccountMapper {
     static AccountResponseDto entityToResponse(Account account){
         AccountUserResponseDto accountDto = new AccountUserResponseDto();
         accountDto.setEmail(account.getEmail());
+        accountDto.setPersonId(account.getPerson().getId());
         return accountDto;
     }
 }
