@@ -149,7 +149,7 @@ class AccountControllerTest {
             doAnswer(invo -> {
                 Long id = invo.getArgument(0, Long.class);
                 if(id.equals(99L)) throw new NotFoundException(Account.class);
-                if(id.equals(1L)) return new AccountUserResponseDto("testemail");
+                if(id.equals(1L)) return new AccountUserResponseDto("testemail", 1L);
 
                 AccountAdminResponseDto accountDto = new AccountAdminResponseDto();
                 accountDto.setEmail("testemail");
