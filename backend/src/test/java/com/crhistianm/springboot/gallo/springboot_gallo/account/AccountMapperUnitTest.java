@@ -5,6 +5,7 @@ import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountDa
 import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenUserAccountRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 
@@ -35,8 +36,13 @@ class AccountMapperUnitTest {
 
         @Test
         void returnsAccountUserResponseDtoFromAccountEntity(){
-            AccountUserResponseDto accountDto = (AccountUserResponseDto) AccountMapper.entityToResponse(givenAccountEntityUser().orElseThrow());
+            Account account = givenAccountEntityUser().orElseThrow();
+
+            account.getPerson().setId(10L);
+
+            AccountUserResponseDto accountDto = (AccountUserResponseDto) AccountMapper.entityToResponse(account);
             assertThat(accountDto.getEmail()).isEqualTo("user@gmail.com");
+            assertThat(accountDto).extracting(AccountUserResponseDto::getPersonId).isEqualTo(10L);
         }
 
         @Test
