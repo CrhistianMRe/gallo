@@ -16,8 +16,6 @@ class AccountAdminResponseDto extends AccountResponseDto{
     @JsonIgnoreProperties({"accounts", "handler", "hibernateLazyInitializer"})
     private List<RoleResponseDto> roles;
 
-    private Long personId;
-
     //As response will show when it was updated/created
     private Audit audit;
 
@@ -55,14 +53,6 @@ class AccountAdminResponseDto extends AccountResponseDto{
 
     void setRoles(List<RoleResponseDto> roles) {
         this.roles = roles;
-    }
-
-    void setPersonId(Long personId) {
-        this.personId = personId;
-    }
-
-    Long getPersonId() {
-        return personId;
     }
 
     @Override

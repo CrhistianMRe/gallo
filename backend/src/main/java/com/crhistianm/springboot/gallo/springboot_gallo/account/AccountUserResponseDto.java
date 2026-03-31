@@ -5,8 +5,9 @@ class AccountUserResponseDto extends AccountResponseDto{
     AccountUserResponseDto() {
     }
 
-    AccountUserResponseDto(String email) {
+    AccountUserResponseDto(String email, Long personId) {
         this.email = email;
+        this.personId = personId;
     }
 
     @Override
@@ -14,6 +15,7 @@ class AccountUserResponseDto extends AccountResponseDto{
         final int prime = 31;
         int result = 1;
         result = prime * result + ((email == null) ? 0 : email.hashCode());
+        result = prime * result + ((personId == null) ? 0 : personId.hashCode());
         return result;
     }
 
@@ -25,18 +27,23 @@ class AccountUserResponseDto extends AccountResponseDto{
             return false;
         if (getClass() != obj.getClass())
             return false;
-        AccountUserResponseDto other = (AccountUserResponseDto) obj;
+        AccountResponseDto other = (AccountResponseDto) obj;
         if (email == null) {
             if (other.email != null)
                 return false;
         } else if (!email.equals(other.email))
+            return false;
+        if (personId == null) {
+            if (other.personId != null)
+                return false;
+        } else if (!personId.equals(other.personId))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "AccountUserResponseDto [email=" + email + "]";
+        return "AccountResponseDto [email=" + email + ", personId=" + personId + "]";
     }
 
 }
