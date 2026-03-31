@@ -90,6 +90,7 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         Claims claims = Jwts.claims()
             .add("authorities", new ObjectMapper().writeValueAsString(roles))
+            .add("accountId", accountId)
             .add("username", email)
             .build();
 
