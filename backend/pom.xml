@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.crhistianm.springboot.gallo</groupId>
 	<artifactId>springboot-gallo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>springboot-gallo</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Gym workout, body condition and goal tracker backend API</description>
 	<url/>
 	<licenses>
 		<license/>
