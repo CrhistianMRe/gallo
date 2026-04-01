@@ -1,0 +1,48 @@
+name: Gallo CD Backend (EC2)
+on:
+  release:
+    types: [published]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Compile JAR
+        run: ./mvnw clean package -DskipTests
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload JAR to S3
+        run: |
+          JAR_FILE=$(ls target/*.jar | grep -v original | head -n1)
+          JAR_NAME=$(basename $JAR_FILE)
+          echo "JAR_NAME=$JAR_NAME" >> $GITHUB_ENV
+          aws s3 cp $JAR_FILE s3://${{ secrets.S3_BUCKET }}/$JAR_NAME
+
+      - name: Deploy via SSM
+        run: |
+          aws ssm send-command \
+            --instance-ids ${{ secrets.INSTANCE_ID }} \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands='[
+              "aws s3 cp s3://${{ secrets.S3_BUCKET }}/${{ env.JAR_NAME }} /home/ec2-user/app/${{ env.JAR_NAME }}",
+              "pkill -f springboot-gallo || true",
+              "nohup java -jar /home/ec2-user/app/${{ env.JAR_NAME }} > /home/ec2-user/app/app.log 2>&1 &"
+            ]'
