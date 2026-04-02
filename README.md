@@ -33,7 +33,7 @@ The backend is built with Spring Boot and uses MariaDB, while both frontend clie
 - JUnit
 - AssertJ-->
 
-### [Android Client]
+### [Android Client] [![wakatime](https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/e0cdd649-1bbc-457e-913d-941ec8a217eb.svg)](https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/e0cdd649-1bbc-457e-913d-941ec8a217eb)
 - Android SDK  
 - Gradle
 - Jetpack Components
