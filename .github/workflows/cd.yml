@@ -44,5 +44,5 @@ jobs:
             --parameters commands='[
               "aws s3 cp s3://${{ secrets.S3_BUCKET }}/${{ env.JAR_NAME }} /home/ec2-user/app/${{ env.JAR_NAME }}",
               "pkill -f springboot-gallo || true",
-              "nohup java -jar /home/ec2-user/app/${{ env.JAR_NAME }} > /home/ec2-user/app/app.log 2>&1 &"
+              "source /home/ec2-user/.bashrc && nohup java -jar /home/ec2-user/app/${{ env.JAR_NAME }} > /home/ec2-user/app/app.log 2>&1 &"
             ]'
