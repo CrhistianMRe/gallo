@@ -22,6 +22,25 @@
 > [!IMPORTANT]
 > This is a sub-repo of [Gallo Project](https://github.com/CrhistianMRe/gallo).
 
+### Local Installation
+- MariaDB 10.6+ (12.2.2-MariaDB used in this project)
+
+1. Install **MariaDB** server database with Gallo SQL [script](https://github.com/CrhistianMRe/gallo-backend/blob/main/backend/src/main/resources/gallo.sql).
+2. Set up environment variables used in [application.properties](https://github.com/CrhistianMRe/gallo-backend/blob/main/backend/src/main/resources/application.properties):
+```bash
+# fish shell
+set -x DB_URL "jdbc:mariadb://yourdatabaseurl:3306/yourdatabasename?sslMode=trust"
+set -x DB_USER "youruser"
+set -x DB_PASSWORD "yourpassword"
+
+# bashrc
+export DB_URL="jdbc:mariadb://yourdatabaseurl:3306/yourdatabasename?sslMode=trust"
+export DB_USER="youruser"
+export DB_PASSWORD="yourpassword"
+```
+
+3. Run [latest release](https://github.com/CrhistianMRe/gallo-backend/releases/latest) jar.
+
 ### Technologies implementations in this API
 
 <details>
