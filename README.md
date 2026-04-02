@@ -13,9 +13,11 @@
   <img alt="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"/>
 </p>
 
-
 > [!TIP]
 > Here you can find the API documentation https://gallospring.duckdns.org/apidocs.html.
+
+> [!IMPORTANT]
+> This is a sub-repo of [Gallo Project](https://github.com/CrhistianMRe/gallo).
 
 #### - Spring Boot
 <details>
