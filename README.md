@@ -65,6 +65,9 @@ As by default UserDetails class contains only username usage, custom UserDetails
 - **Custom UserDetailsService:**
 This service is used with the default UserDetails service loadUserByUsername override method replacing common UserDetails return object for previously described Custom UserDetails implementation.
 
+- **Token refresh**
+JWT token refresh functionality included through an UUID refresh token provided in login.
+
 </details>
 
 <details>
