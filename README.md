@@ -19,17 +19,17 @@
 > [!IMPORTANT]
 > This is a sub-repo of [Gallo Project](https://github.com/CrhistianMRe/gallo).
 
-#### - Spring Boot
+### Technologies implementations in this API
+
 <details>
-<summary>Details</summary>
+<summary>⚙️Spring Boot</summary>
 
 Main framework used to run API REST service, beans configuration and dependency management.
 
 </details>
 
-#### - Spring Security
 <details>
-<summary>Details</summary>
+<summary>🔐 Spring Security</summary>
 
 - **Filter chain:**
 Matches permissions of authorities/roles provided by DB and functional requirements documents exposing/locking endpoint. Also used for filter and UserDetailsService usage.
@@ -45,9 +45,8 @@ This service is used with the default UserDetails service loadUserByUsername ove
 
 </details>
 
-#### - Spring Data JPA(Hibernate)
 <details>
-<summary>Details</summary>
+<summary>🗄️ Spring Data JPA(Hibernate)</summary>
 
 - **Entities:**
 Each table, field and constraint has been mapped respectively to Gallo MariaDB database.
@@ -57,26 +56,25 @@ Provided repository layer between service and db creating queries derived by met
 
 </details>
 
-#### - MariaDB
 <details>
-<summary>Details</summary>
+<summary>🐬 MariaDB</summary>
 
 SQL creation and insert script for retrieve and store of Gallo workout app.
 
+![DB ER-diagram](https://github.com/CrhistianMRe/gallo/blob/main/docs/ERGallo.svg)
+
 </details>
 
-#### - Maven
 <details>
-<summary>Details</summary>
+<summary>📦 Maven</summary>
 
 - **Directory paths:**
 Defined to package ease of use for workflow on local Maven testing and GitHub Actions CI. 
 
 </details>
 
-#### - API endpoints
 <details>
-<summary>Details</summary>
+<summary>🌐 General API</summary>
 
 - **Controller endpoint layer:**
 Used for the only purpose of exposing business logic resolved data for HTTP requests. 
@@ -92,26 +90,23 @@ Furnish whole platform with personalized exception handling custom message respo
 
 </details>
 
-#### - Design Patterns
 <details>
-<summary>Details</summary>
+<summary>🎨 Design Patterns</summary>
 
 - **Builder:**
 Used for entities instance declaration on runtime and testing.
 
 </details>
 
-##### - Testing
 <details>
-<summary>Details</summary>
+<summary>🧪 Testing</summary>
 
 Tests implements JUnit, Mockito, AssertJ and H2 DE, intended to validate data/methods correct functionality integrity for local test and remote CI.
 
 </details>
 
-##### - Swagger 
 <details>
-<summary>Details</summary>
+<summary>📋 Swagger</summary>
 
 Swagger implemented to document Gallo backend platform.
 
