@@ -113,20 +113,23 @@ class SpringEndpointSecurityTest {
     }
 
     @Nested
+    class NoAuthorizationNeededEndpoints{
+
+        @Test
+        void testSwaggerValidAuthority() throws Exception{
+
+            mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk());
+        }
+
+    }
+
+    @Nested
     class AdminAuthorityEndpointsTest{
 
         @BeforeEach
         void setUp() throws Exception{
             prefixWithToken = "Bearer ".concat(generateToken("admin@gmail.com", "12345"));
-        }
-
-        @Test
-        void testSwaggerValidAuthority() throws Exception{
-
-            mockMvc.perform(get("/v3/api-docs")
-                    .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixWithToken))
-                .andExpect(status().isOk());
-
         }
 
         @Nested
@@ -252,15 +255,6 @@ class SpringEndpointSecurityTest {
         @BeforeEach
         void setUp() throws Exception{
             prefixWithToken = "Bearer ".concat(generateToken("user@gmail.com", "12345"));
-
-        }
-
-        @Test
-        void testSwaggerInvalidAuthority()throws Exception{
-
-            mockMvc.perform(get("/v3/api-docs")
-                    .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixWithToken))
-                    .andExpect(status().isForbidden());
 
         }
 
