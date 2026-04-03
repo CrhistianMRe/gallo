@@ -1,6 +1,5 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
@@ -10,37 +9,25 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-class WorkoutSetRequestDto implements RequestDto {
+final class WorkoutSetRequestDto implements RequestDto {
 
     @NotNull(groups = FirstCheck.class)
-    private Long workoutId;
+    private final Long workoutId;
 
     @NotEmpty(groups = FirstCheck.class)
-    private List<@Valid WorkoutSetDto> sets;
+    private final List<@Valid SetRequestDto> sets;
 
-    WorkoutSetRequestDto() {
-        this.sets = new ArrayList<>();
-    }
-
-    WorkoutSetRequestDto(Long workoutId) {
-        this();
+    WorkoutSetRequestDto(Long workoutId, List<SetRequestDto> sets) {
         this.workoutId = workoutId;
+        this.sets = sets == null ? List.of(): List.copyOf(sets);
     }
 
     Long getWorkoutId() {
         return workoutId;
     }
 
-    void setWorkoutId(Long workoutId) {
-        this.workoutId = workoutId;
-    }
-
-    List<WorkoutSetDto> getSets() {
+    List<SetRequestDto> getSets() {
         return sets;
-    }
-
-    void setSets(List<WorkoutSetDto> sets) {
-        this.sets = sets;
     }
 
     @Override
