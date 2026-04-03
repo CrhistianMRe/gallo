@@ -11,36 +11,37 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-class WorkoutSetDto extends AbstractWorkoutSetDto {
+final class SetRequestDto {
 
-    WorkoutSetDto(){
-        super(null, null, false);
-    }
-
-    WorkoutSetDto(Integer repAmount, Double weigthAmount, boolean toFailure) {
-        super(repAmount, weigthAmount, toFailure);
-    }
-
-    @Override
     @NotNull(groups = FirstCheck.class)
     @Max(value = 100, groups = SecondCheck.class)
     @Min(value = 1, groups = SecondCheck.class)
-    Integer getRepAmount() {
-        return super.getRepAmount();
-    }
+    private final Integer repAmount;
 
-    @Override
     @NotNull(groups = FirstCheck.class)
     @Digits(integer = 3, fraction = 2, groups = SecondCheck.class)
     @DecimalMax(value = "600.00", groups = ThirdCheck.class)
     @DecimalMin(value = "020.00", groups = ThirdCheck.class)
-    Double getWeightAmount() {
-        return super.getWeightAmount();
+    private final Double weightAmount;
+
+    private final boolean toFailure;
+
+    SetRequestDto(Integer repAmount, Double weigthAmount, boolean toFailure) {
+        this.repAmount = repAmount;
+        this.weightAmount = weigthAmount;
+        this.toFailure = toFailure;
     }
 
-    @Override
+    Integer getRepAmount() {
+        return this.repAmount;
+    }
+
+    Double getWeightAmount() {
+        return this.weightAmount;
+    }
+
     boolean isToFailure() {
-        return super.isToFailure();
+        return this.toFailure;
     }
 
     @Override
@@ -61,7 +62,7 @@ class WorkoutSetDto extends AbstractWorkoutSetDto {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        WorkoutSetDto other = (WorkoutSetDto) obj;
+        SetRequestDto other = (SetRequestDto) obj;
         if (this.getRepAmount() == null) {
             if (other.getRepAmount() != null)
                 return false;
@@ -79,7 +80,7 @@ class WorkoutSetDto extends AbstractWorkoutSetDto {
 
     @Override
     public String toString() {
-        return "WorkoutSetDto [repAmount=" + this.getRepAmount() + ", weightAmount=" + this.getWeightAmount() + ", toFailure="
+        return "SetRequestDto [repAmount=" + this.getRepAmount() + ", weightAmount=" + this.getWeightAmount() + ", toFailure="
                 + this.isToFailure() + "]";
     }
 

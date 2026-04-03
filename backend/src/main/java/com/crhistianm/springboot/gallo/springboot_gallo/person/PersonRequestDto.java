@@ -14,40 +14,37 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
 //No id as it is auto incremental on db
-class PersonRequestDto implements RequestDto {
+final class PersonRequestDto implements RequestDto {
 
     @NotBlank
     @Size(max = 45)
-    private String firstName;
+    private final String firstName;
 
     @NotBlank
     @Size(max = 45)
-    private String lastName;
+    private final String lastName;
 
     @NotBlank
     @Size(max = 16)
-    private String phoneNumber;
+    private final String phoneNumber;
 
     @NotNull
     @PastOrPresent
-    private LocalDate birthDate;
+    private final LocalDate birthDate;
 
     @NotBlank
     @CorrectGender
-    private String gender;
+    private final String gender;
 
     @DecimalMin("0.50")
     @DecimalMax("3.00")
     @Digits(integer = 1, fraction = 2, message = "{dto.validation.annotation.digits.height}")
-    private Double height;
+    private final Double height;
 
     @Digits(integer = 3, fraction = 1, message = "{dto.validation.annotation.digits.weight}")
     @DecimalMin("20.0")
     @DecimalMax("200.0")
-    private Double weight;
-
-    PersonRequestDto() {
-    }
+    private final Double weight;
 
     PersonRequestDto(String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
             Double height, Double weight) {
@@ -64,56 +61,28 @@ class PersonRequestDto implements RequestDto {
         return firstName;
     }
 
-    void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     String getLastName() {
         return lastName;
-    }
-
-    void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     String getPhoneNumber() {
         return phoneNumber;
     }
 
-    void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     LocalDate getBirthDate() {
         return birthDate;
-    }
-
-    void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
     }
 
     String getGender() {
         return gender;
     }
 
-    void setGender(String gender) {
-        this.gender = gender;
-    }
-
     Double getHeight() {
         return height;
     }
 
-    void setHeight(Double height) {
-        this.height = height;
-    }
-
     Double getWeight() {
         return weight;
-    }
-
-    void setWeight(Double weight) {
-        this.weight = weight;
     }
 
     @Override

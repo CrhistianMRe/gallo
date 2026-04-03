@@ -1,6 +1,5 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.NotEmptyRequest;
@@ -12,22 +11,16 @@ import jakarta.validation.constraints.Size;
 
 
 @NotEmptyRequest(groups = FirstCheck.class, hasSuper = true)
-class AccountUpdateRequestDto extends AbstractAccountRequestDto {
+final class AccountUpdateRequestDto extends AbstractAccountRequestDto {
 
-    private Boolean enabled;
+    private final Boolean enabled;
 
-    private List<RoleRequestDto> roles;
-
-    AccountUpdateRequestDto() {
-        super(null, null, null);
-        this.roles = new ArrayList<>();
-    }
+    private final List<RoleRequestDto> roles;
 
     AccountUpdateRequestDto(String email, String password, Boolean enabled, List<RoleRequestDto> roles, Long personId) {
         super(email, password, personId);
-        this.roles = new ArrayList<>();
+        this.roles = roles == null ? List.of() : List.copyOf(roles);
         this.enabled = enabled;
-        this.roles = roles;
     }
 
     @Override
@@ -42,10 +35,6 @@ class AccountUpdateRequestDto extends AbstractAccountRequestDto {
         return super.getPassword();
     }
 
-    void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
     Boolean isEnabled() {
         return enabled;
     }
@@ -53,11 +42,6 @@ class AccountUpdateRequestDto extends AbstractAccountRequestDto {
     List<RoleRequestDto> getRoles() {
         return roles;
     }
-
-    void setRoles(List<RoleRequestDto> roles) {
-        this.roles = roles;
-    }
-
 
     @Override
     public int hashCode() {

@@ -11,24 +11,22 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-class WorkoutRequestDto implements RequestDto {
+final class WorkoutRequestDto implements RequestDto {
 
     @NotNull(groups = FirstCheck.class)
     @PresentDay(groups = SecondCheck.class)
-    private LocalDate workoutDate;
+    private final LocalDate workoutDate;
 
     @Digits(integer = 5, fraction = 0, groups = FirstCheck.class)
     @Min(value = 20, groups = SecondCheck.class)
     @Max(value = Short.MAX_VALUE-1, groups = SecondCheck.class)
-    private short workoutLength;
+    private final short workoutLength;
 
     @NotNull(groups = FirstCheck.class)
-    private Long accountId;
+    private final Long accountId;
 
     @NotNull(groups = FirstCheck.class)
-    private Long exerciseId;
-
-    WorkoutRequestDto() {}
+    private final Long exerciseId;
 
     WorkoutRequestDto(Long accountId, LocalDate workoutDate, short workoutLength, Long exerciseId) {
         this.accountId = accountId;
@@ -41,32 +39,16 @@ class WorkoutRequestDto implements RequestDto {
         return accountId;
     }
 
-    void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
     LocalDate getWorkoutDate() {
         return workoutDate;
-    }
-
-    void setWorkoutDate(LocalDate workoutDate) {
-        this.workoutDate = workoutDate;
     }
 
     short getWorkoutLength() {
         return workoutLength;
     }
 
-    void setWorkoutLength(short workoutLength) {
-        this.workoutLength = workoutLength;
-    }
-
     Long getExerciseId() {
         return exerciseId;
-    }
-
-    void setExerciseId(Long exerciseId) {
-        this.exerciseId = exerciseId;
     }
 
     @Override

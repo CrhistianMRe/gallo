@@ -1,13 +1,43 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 
-class WorkoutSetResponseDto extends AbstractWorkoutSetDto {
+class WorkoutSetResponseDto {
 
-    WorkoutSetResponseDto(){
-        super(null, null, false);
+    private Integer repAmount;
+
+    private Double weightAmount;
+
+    private boolean toFailure;
+
+    WorkoutSetResponseDto() {}
+
+    WorkoutSetResponseDto(Integer repAmount, Double weightAmount, boolean toFailure) {
+        this.repAmount = repAmount;
+        this.weightAmount = weightAmount;
+        this.toFailure = toFailure;
     }
 
-    WorkoutSetResponseDto(Integer repAmount, Double weigthAmount, boolean toFailure) {
-        super(repAmount, weigthAmount, toFailure);
+    Integer getRepAmount() {
+        return repAmount;
+    }
+
+    void setRepAmount(Integer repAmount) {
+        this.repAmount = repAmount;
+    }
+
+    Double getWeightAmount() {
+        return weightAmount;
+    }
+
+    void setWeightAmount(Double weightAmount) {
+        this.weightAmount = weightAmount;
+    }
+
+    boolean isToFailure() {
+        return toFailure;
+    }
+
+    void setToFailure(boolean toFailure) {
+        this.toFailure = toFailure;
     }
 
     @Override

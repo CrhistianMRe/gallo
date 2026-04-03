@@ -5,13 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 //Id not in dto as it is auto incremental on db
-class AccountRequestDto extends AbstractAccountRequestDto {
+final class AccountRequestDto extends AbstractAccountRequestDto {
 
-    private boolean admin;
-
-    AccountRequestDto() {
-        super(null, null, null);
-    }
+    private final boolean admin;
 
     AccountRequestDto(String email, String password, Long personId, boolean admin) {
         super(email, password, personId);
@@ -39,10 +35,6 @@ class AccountRequestDto extends AbstractAccountRequestDto {
 
     boolean isAdmin() {
         return admin;
-    }
-
-    void setAdmin(boolean admin) {
-        this.admin = admin;
     }
 
     @Override

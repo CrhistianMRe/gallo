@@ -5,11 +5,11 @@ import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
 //This class is temporarily public as the migration is ongoing
 abstract class AbstractAccountRequestDto implements RequestDto {
 
-    private String email;
+    private final String email;
 
-    private String password;
+    private final String password;
 
-    private Long personId;
+    private final Long personId;
 
     AbstractAccountRequestDto(String email, String password, Long personId) {
         this.email = email;
@@ -21,24 +21,12 @@ abstract class AbstractAccountRequestDto implements RequestDto {
         return email;
     }
 
-    void setEmail(String email) {
-        this.email = email;
-    }
-
     String getPassword() {
         return password;
     }
 
-    void setPassword(String password) {
-        this.password = password;
-    }
-
     Long getPersonId() {
         return personId;
-    }
-
-    void setPersonId(Long personId) {
-        this.personId = personId;
     }
 
     @Override
@@ -50,15 +38,4 @@ abstract class AbstractAccountRequestDto implements RequestDto {
     @Override
     public abstract String toString();
 
-
-    
-
-
-
-
-
-
-
-
-    
 }

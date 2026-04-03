@@ -2,7 +2,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 
 class WorkoutSetMapper {
 
-    static WorkoutSet dtoToEntity(WorkoutSetDto dto) {
+    static WorkoutSet dtoToEntity(SetRequestDto dto) {
         return new WorkoutSetBuilder()
             .repAmount(dto.getRepAmount().byteValue())
             .weightAmount(dto.getWeightAmount())
