@@ -2,6 +2,8 @@ package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 final class RoleRequestDto implements RequestDto {
 
@@ -9,10 +11,15 @@ final class RoleRequestDto implements RequestDto {
 
     private final String name;
 
-    RoleRequestDto(Long id, String name) {
+    @JsonCreator
+    RoleRequestDto
+    (
+     @JsonProperty(value = "id") Long id, 
+     @JsonProperty(value = "name") String name
+     ) {
         this.id = id;
         this.name = name;
-    }
+     }
 
     Long getId() {
         return id;

@@ -3,6 +3,8 @@ package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.FirstCheck;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.SecondCheck;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.ThirdCheck;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -26,9 +28,15 @@ final class SetRequestDto {
 
     private final boolean toFailure;
 
-    SetRequestDto(Integer repAmount, Double weigthAmount, boolean toFailure) {
+    @JsonCreator
+    SetRequestDto
+        (
+         @JsonProperty(value = "repAmount") Integer repAmount,
+         @JsonProperty(value = "weightAmount") Double weightAmount, 
+         @JsonProperty(value = "toFailure" ) boolean toFailure
+         ) {
         this.repAmount = repAmount;
-        this.weightAmount = weigthAmount;
+        this.weightAmount = weightAmount;
         this.toFailure = toFailure;
     }
 

@@ -5,6 +5,8 @@ import java.util.List;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.NotEmptyRequest;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.FirstCheck;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.SecondCheck;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -17,11 +19,19 @@ final class AccountUpdateRequestDto extends AbstractAccountRequestDto {
 
     private final List<RoleRequestDto> roles;
 
-    AccountUpdateRequestDto(String email, String password, Boolean enabled, List<RoleRequestDto> roles, Long personId) {
+    @JsonCreator
+    AccountUpdateRequestDto
+    (
+     @JsonProperty(value = "email") String email,
+     @JsonProperty(value = "password") String password,
+     @JsonProperty(value = "enabled") Boolean enabled,
+     @JsonProperty(value = "roles") List<RoleRequestDto> roles,
+     @JsonProperty(value = "personId") Long personId
+     ) {
         super(email, password, personId);
         this.roles = roles == null ? List.of() : List.copyOf(roles);
         this.enabled = enabled;
-    }
+     }
 
     @Override
     @Email(groups = SecondCheck.class)

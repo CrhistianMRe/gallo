@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -46,8 +48,17 @@ final class PersonRequestDto implements RequestDto {
     @DecimalMax("200.0")
     private final Double weight;
 
-    PersonRequestDto(String firstName, String lastName, String phoneNumber, LocalDate birthDate, String gender,
-            Double height, Double weight) {
+    @JsonCreator
+    PersonRequestDto
+    (
+     @JsonProperty(value = "firstName") String firstName,
+     @JsonProperty(value = "lastName") String lastName,
+     @JsonProperty(value = "phoneNumber") String phoneNumber,
+     @JsonProperty(value = "birthDate") LocalDate birthDate,
+     @JsonProperty(value = "gender") String gender,
+     @JsonProperty(value = "height") Double height,
+     @JsonProperty(value = "weight") Double weight
+     ) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -55,7 +66,7 @@ final class PersonRequestDto implements RequestDto {
         this.gender = gender;
         this.height = height;
         this.weight = weight;
-    }
+     }
 
     String getFirstName() {
         return firstName;
