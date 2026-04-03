@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.FirstCheck;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.SecondCheck;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
@@ -28,12 +30,19 @@ final class WorkoutRequestDto implements RequestDto {
     @NotNull(groups = FirstCheck.class)
     private final Long exerciseId;
 
-    WorkoutRequestDto(Long accountId, LocalDate workoutDate, short workoutLength, Long exerciseId) {
+    @JsonCreator
+    WorkoutRequestDto
+    (
+     @JsonProperty(value = "accountId") Long accountId,
+     @JsonProperty(value = "workoutDate") LocalDate workoutDate,
+     @JsonProperty(value = "workoutLength") short workoutLength,
+     @JsonProperty(value = "exerciseId") Long exerciseId
+     ) {
         this.accountId = accountId;
         this.workoutDate = workoutDate;
         this.workoutLength = workoutLength;
         this.exerciseId = exerciseId;
-    }
+     }
 
     Long getAccountId() {
         return accountId;

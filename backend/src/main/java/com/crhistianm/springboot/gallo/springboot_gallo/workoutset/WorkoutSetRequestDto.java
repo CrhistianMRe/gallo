@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.FirstCheck;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,7 +19,12 @@ final class WorkoutSetRequestDto implements RequestDto {
     @NotEmpty(groups = FirstCheck.class)
     private final List<@Valid SetRequestDto> sets;
 
-    WorkoutSetRequestDto(Long workoutId, List<SetRequestDto> sets) {
+    @JsonCreator
+    WorkoutSetRequestDto
+    (
+     @JsonProperty(value = "workoutId") Long workoutId,
+     @JsonProperty(value = "sets") List<SetRequestDto> sets
+     ) {
         this.workoutId = workoutId;
         this.sets = sets == null ? List.of(): List.copyOf(sets);
     }

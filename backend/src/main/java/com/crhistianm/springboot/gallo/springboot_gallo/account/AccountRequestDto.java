@@ -1,5 +1,8 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,10 +12,17 @@ final class AccountRequestDto extends AbstractAccountRequestDto {
 
     private final boolean admin;
 
-    AccountRequestDto(String email, String password, Long personId, boolean admin) {
+    @JsonCreator
+    AccountRequestDto
+    (
+     @JsonProperty(value = "email") String email,
+     @JsonProperty(value = "password") String password,
+     @JsonProperty(value = "personId") Long personId,
+     @JsonProperty(value = "admin") boolean admin
+     ) {
         super(email, password, personId);
         this.admin = admin;
-    }
+     }
 
     @Override
     @Email
