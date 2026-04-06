@@ -31,7 +31,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBui
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
 import com.crhistianm.springboot.gallo.springboot_gallo.workout.Workout;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenWorkoutSetDtoList;
+import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenSetRequestDtoList;
 import static com.crhistianm.springboot.gallo.springboot_gallo.workout.WorkoutData.getWorkoutInstance;
 
 import jakarta.persistence.EntityManager;
@@ -58,10 +58,6 @@ class WorkoutSetServiceUnitTest {
 
         @BeforeEach
         void setUp() {
-            requestDto = new WorkoutSetRequestDto();
-            requestDto.setWorkoutId(10L);
-            requestDto.setSets(givenWorkoutSetDtoList());
-
             lenient().doAnswer(invo -> {
                 return invo.getArgument(0, List.class);
             }).when(workoutSetRepository).saveAll(anyList());
@@ -79,6 +75,10 @@ class WorkoutSetServiceUnitTest {
 
         @Test
         void shouldReturnResponseDtoWhenRequestIsValid() {
+            Long workoutId = 10L;
+
+            requestDto = new WorkoutSetRequestDto(workoutId, givenSetRequestDtoList());
+
             List<WorkoutSetResponseDto> expectedListResponse = workoutSetService.saveAll(requestDto);
 
             assertThat(expectedListResponse).hasSize(4);
@@ -110,7 +110,10 @@ class WorkoutSetServiceUnitTest {
 
         @Test
         void shouldThrowExceptionWhenRequestIsInvalid() {
-            requestDto.setWorkoutId(11L);
+            Long workoutId = 11L;
+
+            requestDto = new WorkoutSetRequestDto(workoutId, givenSetRequestDtoList());
+
             List<FieldInfoError> expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutSetService.saveAll(requestDto)).actual().getFieldErrors();
 

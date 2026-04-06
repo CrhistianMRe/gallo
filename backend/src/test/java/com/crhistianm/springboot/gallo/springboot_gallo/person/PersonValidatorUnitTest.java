@@ -13,6 +13,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,13 +59,20 @@ class PersonValidatorUnitTest {
                 if(!invo.getArgument(1, PersonRequestDto.class).getPhoneNumber().equals("1111")) field = new FieldInfoErrorBuilder().name("phone").build();
                 return Optional.ofNullable(field);
             }).when(personService).validateUniquePhoneNumber(isNull(), any(PersonRequestDto.class));
-            personRequestDto = new PersonRequestDto();
             fields = new ArrayList<>();
         }
 
         @Test
         void shouldNotThrowExceptionWhenAnyAuthorityPhoneNumberIsAvailable(){
-            personRequestDto.setPhoneNumber("1111");
+            String firstName = null;
+            String lastName = null;
+            String phoneNumber = "1111";
+            LocalDate birthDate = null;
+            String gender = null;
+            Double height = null;
+            Double weight = null;
+
+            personRequestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
             assertDoesNotThrow(() -> {
                 personValidator.validateRequest(null, personRequestDto);
             });
@@ -74,7 +82,16 @@ class PersonValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWhenAnyAuthorityPhoneNumberIsNotAvailable(){
-            personRequestDto.setPhoneNumber("2222");
+            String firstName = null;
+            String lastName = null;
+            String phoneNumber = "2222";
+            LocalDate birthDate = null;
+            String gender = null;
+            Double height = null;
+            Double weight = null;
+
+            personRequestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             List<FieldInfoError> fields = new ArrayList<>();
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() ->{
@@ -104,13 +121,21 @@ class PersonValidatorUnitTest {
                     if(!invo.getArgument(1, PersonRequestDto.class).getPhoneNumber().equals("1111")) field = new FieldInfoErrorBuilder().name("phone").build();
                     return Optional.ofNullable(field);
                 }).when(personService).validateUniquePhoneNumber(anyLong(), any(PersonRequestDto.class));
-                personRequestDto = new PersonRequestDto();
                 fields = new ArrayList<>();
             }
 
             @Test
             void shouldThrowExceptionWhenPhoneNumberIsNotAvailableButUserIsAllowed(){
-                personRequestDto.setPhoneNumber("2222");
+                String firstName = null;
+                String lastName = null;
+                String phoneNumber = "2222";
+                LocalDate birthDate = null;
+                String gender = null;
+                Double height = null;
+                Double weight = null;
+
+                personRequestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
                 fields = assertThatExceptionOfType(ValidationServiceException.class)
                     .isThrownBy(() ->{
                         personValidator.validateRequest(1L, personRequestDto);
@@ -122,7 +147,15 @@ class PersonValidatorUnitTest {
 
             @Test
             void shouldThrowExceptionWhenUserIsNotAllowed(){
-                personRequestDto.setPhoneNumber("1111");
+                String firstName = null;
+                String lastName = null;
+                String phoneNumber = "1111";
+                LocalDate birthDate = null;
+                String gender = null;
+                Double height = null;
+                Double weight = null;
+
+                personRequestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
                 fields = assertThatExceptionOfType(ValidationServiceException.class)
                     .isThrownBy(() ->{
                         personValidator.validateRequest(2L, personRequestDto);
@@ -133,7 +166,16 @@ class PersonValidatorUnitTest {
 
             @Test
             void shouldThrowExceptionWithTwoErrorsWhenAllConditionsAreMet(){
-                personRequestDto.setPhoneNumber("2222");
+                String firstName = null;
+                String lastName = null;
+                String phoneNumber = "2222";
+                LocalDate birthDate = null;
+                String gender = null;
+                Double height = null;
+                Double weight = null;
+
+                personRequestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
                 fields = assertThatExceptionOfType(ValidationServiceException.class).isThrownBy(() -> {
                     personValidator.validateRequest(2L, personRequestDto);
                 }).actual().getFieldErrors();
@@ -150,7 +192,16 @@ class PersonValidatorUnitTest {
 
             @Test
             void shouldNotThrowExceptionWhenAllConditionsAreValid(){
-                personRequestDto.setPhoneNumber("1111");
+                String firstName = null;
+                String lastName = null;
+                String phoneNumber = "1111";
+                LocalDate birthDate = null;
+                String gender = null;
+                Double height = null;
+                Double weight = null;
+
+                personRequestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
                 assertDoesNotThrow(() ->{
                     personValidator.validateRequest(1L, personRequestDto);
                 });

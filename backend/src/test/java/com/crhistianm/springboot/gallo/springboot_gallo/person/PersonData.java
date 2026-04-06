@@ -10,23 +10,25 @@ public class PersonData {
     }
     
     static Optional<PersonRequestDto> givenPersonRequestDtoOne(){
-        PersonRequestDto person = new PersonRequestDto();
-        person.setFirstName("one");
-        person.setLastName("1one");
-        person.setBirthDate(LocalDate.of(2004, 01, 01));
-        person.setGender("M");
-        person.setPhoneNumber("123123123");
-        return Optional.of(person);
+        String firstName = "one";
+        String lastName = "1one";
+        LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+        String gender = "M";
+        String phoneNumber = "123123123";
+        Double height = null;
+        Double weight = null;
+        return Optional.of(new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight));
     }
 
     static Optional<PersonRequestDto> givenPersonRequestDtoTwo(){
-        PersonRequestDto person = new PersonRequestDto();
-        person.setFirstName("two");
-        person.setLastName("2two");
-        person.setBirthDate(LocalDate.now());
-        person.setGender("M");
-        person.setPhoneNumber("123123123");
-        return Optional.of(person);
+        String firstName = "two";
+        String lastName = "2two";
+        LocalDate birthDate = (LocalDate.now());
+        String gender = "M";
+        String phoneNumber = "123123123";
+        Double height = null;
+        Double weight = null;
+        return Optional.of(new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight));
     }
 
     static Optional<Person> givenPersonEntityOne(){

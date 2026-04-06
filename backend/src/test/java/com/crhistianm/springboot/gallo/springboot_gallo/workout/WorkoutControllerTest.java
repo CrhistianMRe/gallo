@@ -38,6 +38,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonCon
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.ConstraintValidatorContext;
+import net.bytebuddy.asm.Advice.Local;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
 import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
@@ -116,11 +117,7 @@ class WorkoutControllerTest {
 
         @BeforeEach
         void setUp() {
-            requestDto = new WorkoutRequestDto();
-            requestDto.setAccountId(1L);
-            requestDto.setExerciseId(1L);
-            requestDto.setWorkoutLength((short)60);
-            requestDto.setWorkoutDate(LocalDate.now());
+
             doAnswer(invo -> {
                 Workout argEntity = WorkoutMapper.requestToEntity(invo.getArgument(0, WorkoutRequestDto.class));
                 argEntity.setId(10L);
@@ -137,6 +134,16 @@ class WorkoutControllerTest {
 
         @Test
         void shouldReturnResponseWithCreatedStatus() throws Exception {
+            Long accountId = 1L;
+
+            Long exerciseId = 1L;
+
+            short workoutLength = 60;
+
+            LocalDate workoutDate = LocalDate.now();
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
             mockMvc.perform(post("/api/workouts")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
@@ -149,7 +156,15 @@ class WorkoutControllerTest {
 
         @Test
         void shouldReturnDtoException() throws Exception {
-            requestDto.setAccountId(null);
+            Long accountId = null;
+
+            Long exerciseId = 1L;
+
+            short workoutLength = 60;
+
+            LocalDate workoutDate = LocalDate.now();
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             mockMvc.perform(post("/api/workouts")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))

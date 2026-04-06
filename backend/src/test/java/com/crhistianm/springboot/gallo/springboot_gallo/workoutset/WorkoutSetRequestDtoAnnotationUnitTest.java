@@ -1,9 +1,10 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenWorkoutSetDtoList;
+import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenSetRequestDtoList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -27,13 +28,14 @@ class WorkoutSetRequestDtoAnnotationUnitTest {
     @BeforeEach
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
-        workoutSetRequestDto = new WorkoutSetRequestDto();
-        workoutSetRequestDto.setWorkoutId(1L); 
-        workoutSetRequestDto.setSets(givenWorkoutSetDtoList());
     }
 
     @Test
     void shouldReturnEmptyViolationsWhenDtoIsValid() {
+        Long workoutId = 1L;
+
+        workoutSetRequestDto = new WorkoutSetRequestDto(workoutId, givenSetRequestDtoList());
+
         violations = validator.validate(workoutSetRequestDto, GroupsOrder.class);
         assertThat(violations).isEmpty();
     }
@@ -43,7 +45,9 @@ class WorkoutSetRequestDtoAnnotationUnitTest {
 
         @Test
         void shouldReturnNullViolation() {
-            workoutSetRequestDto.setWorkoutId(null);
+            Long workoutId = null;
+
+            workoutSetRequestDto = new WorkoutSetRequestDto(workoutId, givenSetRequestDtoList());
 
             violations = validator.validate(workoutSetRequestDto, GroupsOrder.class);
 
@@ -60,7 +64,12 @@ class WorkoutSetRequestDtoAnnotationUnitTest {
 
         @Test
         void shouldReturnTypeEmptyViolation() {
-            workoutSetRequestDto.setSets(new ArrayList<>());
+            Long workoutId = 1L;
+
+            List<SetRequestDto> sets = new ArrayList<>();
+
+            workoutSetRequestDto = new WorkoutSetRequestDto(workoutId, sets);
+
             violations = validator.validate(workoutSetRequestDto, GroupsOrder.class);
 
             assertThat(violations).hasSize(1);

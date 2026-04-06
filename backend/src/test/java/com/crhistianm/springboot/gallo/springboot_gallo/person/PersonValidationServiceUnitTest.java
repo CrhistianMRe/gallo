@@ -12,6 +12,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.IdentityVerificationService;
@@ -56,7 +57,6 @@ class PersonValidationServiceUnitTest {
 
         @BeforeEach
         void setUp(){
-            personRequestDto = new PersonRequestDto();
             doAnswer(invo ->{
                 return invo.getArgument(1, String.class).equals("1111");
             }).when(spyPersonValidationService).isPhoneNumberAvailable(anyLong(), anyString());
@@ -65,7 +65,16 @@ class PersonValidationServiceUnitTest {
         @Test
         void returnsOptionalFieldInfoError() {
             doReturn("phoneNumber env").when(env).getProperty("person.validation.UniquePhoneNumber");
-            personRequestDto.setPhoneNumber("2222");
+
+            String firstName = null;
+            String lastName = null;
+            String phoneNumber = "2222";
+            LocalDate birthDate = null;
+            String gender = null;
+            Double height = null;
+            Double weight = null;
+
+            personRequestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
             
             Optional<FieldInfoError> fieldOptional; 
 
@@ -87,7 +96,16 @@ class PersonValidationServiceUnitTest {
         @Test
         void returnsEmptyOptionalFieldInfoError() {
             Optional<FieldInfoError> fieldOptional;
-            personRequestDto.setPhoneNumber("1111");
+            String firstName = null;
+            String lastName = null;
+            String phoneNumber = "1111";
+            LocalDate birthDate = null;
+            String gender = null;
+            Double height = null;
+            Double weight = null;
+
+            personRequestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             fieldOptional = spyPersonValidationService.validateUniquePhoneNumber(2L, personRequestDto);
             assertThat(fieldOptional).isEmpty();
         }

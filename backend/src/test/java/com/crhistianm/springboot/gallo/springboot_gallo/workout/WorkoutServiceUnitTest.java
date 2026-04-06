@@ -121,12 +121,6 @@ class WorkoutServiceUnitTest {
 
         @BeforeEach
         void setUp() {
-            workoutRequestDto = new WorkoutRequestDto();
-            workoutRequestDto.setWorkoutDate(LocalDate.of(2004, 9, 28));
-            workoutRequestDto.setWorkoutLength((short)60);
-            workoutRequestDto.setExerciseId(10L);
-            workoutRequestDto.setAccountId(20L);
-
             doAnswer(invo -> {
                 Long accountId = invo.getArgument(0, WorkoutRequestDto.class).getAccountId();
                 if(accountId.equals(2L)) throw new ValidationServiceException("Error");
@@ -158,6 +152,16 @@ class WorkoutServiceUnitTest {
 
         @Test
         void shouldReturnResponseDtoWhenRequestIsValid() {
+            Long accountId = 20L;
+
+            LocalDate workoutDate = LocalDate.of(2004, 9, 28);
+
+            short workoutLength = 60;
+ 
+            Long exerciseId = 10L;
+
+            workoutRequestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
             WorkoutResponseDto expectedResponse = workoutService.save(workoutRequestDto);
 
             assertThat(expectedResponse).extracting(WorkoutResponseDto::getId).isEqualTo(1L);
@@ -173,7 +177,15 @@ class WorkoutServiceUnitTest {
 
         @Test
         void shouldThrowExceptionWhenRequestIsInvalid() {
-            workoutRequestDto.setAccountId(2L);
+            Long accountId = 2L;
+
+            LocalDate workoutDate = LocalDate.of(2004, 9, 28);
+
+            short workoutLength = 60;
+ 
+            Long exerciseId = 10L;
+
+            workoutRequestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             String errorMessage = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutService.save(workoutRequestDto))

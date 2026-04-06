@@ -12,20 +12,19 @@ import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData
 public class AccountData {
 
     static Optional<AccountRequestDto> givenUserAccountRequestDto(){
-        AccountRequestDto accountCreateDto = new AccountRequestDto();
-        accountCreateDto.setEmail("erikuser@gmail.com");
-        accountCreateDto.setPassword("12345");
-        accountCreateDto.setPersonId(1L);
-        return Optional.of(accountCreateDto);
+        String email = "erikuser@gmail.com";
+        String password = "12345";
+        Long personId = 1L;
+        boolean admin = false;
+        return Optional.of(new AccountRequestDto(email, password, personId, admin));
     }
 
     static Optional<AccountRequestDto> givenAdminAccountRequestDto(){
-        AccountRequestDto accountCreateDto = new AccountRequestDto();
-        accountCreateDto.setEmail("erikadmin@gmail.com");
-        accountCreateDto.setPassword("12345");
-        accountCreateDto.setPersonId(2L);
-        accountCreateDto.setAdmin(true);
-        return Optional.of(accountCreateDto);
+        String email = "erikadmin@gmail.com";
+        String password = "12345";
+        Long personId = 2L;
+        boolean admin = true;
+        return Optional.of(new AccountRequestDto(email, password, personId, admin));
     }
 
 

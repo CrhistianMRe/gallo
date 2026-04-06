@@ -25,17 +25,17 @@ class WorkoutMapperUnitTest {
 
     @Test
     void shouldReturnEntityFromRequestDto() {
-        final short WORKOUT_LENGTH = 60;
-        final LocalDate WORKOUT_DATE = LocalDate.of(2004, 9, 28);
+        short workoutLength = 60;
+        LocalDate workoutDate = LocalDate.of(2004, 9, 28);
+        Long exerciseId = null;
+        Long accountId = null;
 
-        WorkoutRequestDto requestDto = new WorkoutRequestDto();
-        requestDto.setWorkoutLength(WORKOUT_LENGTH);
-        requestDto.setWorkoutDate(WORKOUT_DATE);
+        WorkoutRequestDto requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
         Workout expectedEntity = WorkoutMapper.requestToEntity(requestDto);
 
-        assertThat(expectedEntity).extracting(Workout::getWorkoutDate).isEqualTo(WORKOUT_DATE);
-        assertThat(expectedEntity).extracting(Workout::getWorkoutLength).isEqualTo(WORKOUT_LENGTH);
+        assertThat(expectedEntity).extracting(Workout::getWorkoutDate).isEqualTo(workoutDate);
+        assertThat(expectedEntity).extracting(Workout::getWorkoutLength).isEqualTo(workoutLength);
     }
     
 }

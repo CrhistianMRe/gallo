@@ -203,8 +203,11 @@ class AccountServiceUnitTest {
 
         @Test
         void shouldThrowExceptionWhenUserRequestIsInvalid() {
-            AccountRequestDto requestDto = givenUserAccountRequestDto().orElseThrow();
-            requestDto.setPersonId(10L);
+            String email = "erikuser@gmail.com";
+            String password = "12345";
+            Long personId = 10L;
+            boolean admin = false;
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
 
             assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> accountService.save(requestDto));
@@ -215,12 +218,9 @@ class AccountServiceUnitTest {
     @Nested
     class UpdateModuleTest {
 
-        AccountUpdateRequestDto accountDto;
 
         @BeforeEach
         void setUp() {
-            accountDto = new AccountUpdateRequestDto();
-
             lenient().doAnswer(invo -> {
                 Person person = getPersonInstance();
                 person.setId(1L);
@@ -263,6 +263,15 @@ class AccountServiceUnitTest {
 
             @Test
             void shouldThrowExceptionWhenAccountPathIdIsNotFound() {
+
+                String email = null;
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
                 String message = assertThatExceptionOfType(NotFoundException.class)
                     .isThrownBy(() -> accountService.update(2L, accountDto)).actual().getMessage();
 
@@ -278,6 +287,14 @@ class AccountServiceUnitTest {
 
             @Test
             void shouldNotThrowExceptionWhenAccountPathIdIsFound() {
+                String email = null;
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
                 assertDoesNotThrow(() -> accountService.update(1L, accountDto));
 
                 verify(accountRepository, times(1)).findById(1L);
@@ -295,7 +312,13 @@ class AccountServiceUnitTest {
 
             @Test
             void shouldThrowExceptionWhenIsNotValid() {
-                accountDto.setEmail("exception");
+                String email = "exception";
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                 String message = assertThatExceptionOfType(ValidationServiceException.class)
                     .isThrownBy(() -> accountService.update(1L, accountDto)).actual().getMessage();
@@ -311,7 +334,13 @@ class AccountServiceUnitTest {
 
             @Test
             void shouldNotThrowExceptionWhenIsValid() {
-                accountDto.setEmail("noexception");
+                String email = "noexception";
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                 assertDoesNotThrow(() -> accountService.update(1L, accountDto));
 
@@ -338,16 +367,16 @@ class AccountServiceUnitTest {
                 expectedResponse = new AccountAdminResponseDto();
             }
 
-            @AfterEach
-            void verifyCommonInteractions(){
-                verify(accountRepository, times(1)).findById(1L);
-                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
-                verify(accountRepository, times(1)).save(any(Account.class));
-                verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
-            }
-
             @Test
             void shouldReturnPersistedAccountWhenAllFieldsAreEmpty() {
+                String email = null;
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
                 AccountAdminResponseDto expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 assertThat(expectedResponse.getId()).isEqualTo(1L);
@@ -358,15 +387,21 @@ class AccountServiceUnitTest {
 
                 verifyNoInteractions(entityManager);
                 verifyNoInteractions(passwordEncoder);
+                verify(accountRepository, times(1)).findById(1L);
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
+                verify(accountRepository, times(1)).save(any(Account.class));
+                verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
             }
 
             @Test
             void shouldReturnUpdatedAccountWhenAllFieldsAreFilled() {
-                accountDto.setPersonId(10L);
-                accountDto.setEmail("example@gmail.com");
-                accountDto.setEnabled(true);
-                accountDto.setPassword("12345");
-                accountDto.setRoles(List.of(new RoleRequestDto(1L, "role1"), new RoleRequestDto(2L, "role2")));
+                String email = "example@gmail.com";
+                String password = "12345";
+                Boolean enabled = true;
+                List<RoleRequestDto> roles = List.of(new RoleRequestDto(1L, "role1"), new RoleRequestDto(2L, "role2"));
+                Long personId = 10L;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                 expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
@@ -384,11 +419,21 @@ class AccountServiceUnitTest {
                 assertThat(roleTwo).isNotEmpty();
 
                 verify(entityManager, times(1)).getReference(eq(Person.class), eq(10L));
+                verify(accountRepository, times(1)).findById(1L);
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
+                verify(accountRepository, times(1)).save(any(Account.class));
+                verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
             }
 
             @Test
             void shouldAssignPersonToAccountWhenPersonIdIsNotNull() {
-                accountDto.setPersonId(10L);
+                String email = null;
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = 10L;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                 expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
@@ -397,11 +442,21 @@ class AccountServiceUnitTest {
                 verify(entityManager, times(1)).getReference(eq(Person.class), eq(10L));
 
                 verifyNoInteractions(passwordEncoder);
+                verify(accountRepository, times(1)).findById(1L);
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
+                verify(accountRepository, times(1)).save(any(Account.class));
+                verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
             }
 
             @Test
             void shouldAssignEmailWhenEmailIsNotNull() {
-                accountDto.setEmail("example@gmail.com");
+                String email = "example@gmail.com";
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                 expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
@@ -411,11 +466,21 @@ class AccountServiceUnitTest {
 
                 verifyNoInteractions(passwordEncoder);
                 verifyNoInteractions(entityManager);
+                verify(accountRepository, times(1)).findById(1L);
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
+                verify(accountRepository, times(1)).save(any(Account.class));
+                verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
             }
 
             @Test
             void shouldAssignEnabledWhenEnabledIsNotNull() {
-                accountDto.setEnabled(true);
+                String email = null;
+                String password = null;
+                Boolean enabled = true;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                 expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
@@ -425,22 +490,42 @@ class AccountServiceUnitTest {
 
                 verifyNoInteractions(passwordEncoder);
                 verifyNoInteractions(entityManager);
+                verify(accountRepository, times(1)).findById(1L);
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
+                verify(accountRepository, times(1)).save(any(Account.class));
+                verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
             }
 
             @Test
             void shouldAssignPasswordWhenPasswordIsNotNull() {
-                accountDto.setPassword("12345");
+                String email = null;
+                String password = "12345";
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                 expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
                 verify(passwordEncoder, times(1)).encode(eq("12345"));
 
                 verifyNoInteractions(entityManager);
+                verify(accountRepository, times(1)).findById(1L);
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
+                verify(accountRepository, times(1)).save(any(Account.class));
+                verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
             }
 
             @Test
             void shouldAssignRolesWhenRolesAreNotEmpty() {
-                accountDto.setRoles(List.of(new RoleRequestDto(1L, "role1"), new RoleRequestDto(2L, "role2")));
+                String email = null;
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = List.of(new RoleRequestDto(1L, "role1"), new RoleRequestDto(2L, "role2"));
+                Long personId = null;
+
+                AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                 expectedResponse = (AccountAdminResponseDto) accountService.update(1L, accountDto);
 
@@ -450,6 +535,10 @@ class AccountServiceUnitTest {
 
                 verifyNoInteractions(passwordEncoder);
                 verifyNoInteractions(entityManager);
+                verify(accountRepository, times(1)).findById(1L);
+                verify(accountValidator, times(1)).validateUpdateRequest(eq(1L), eq(accountDto));
+                verify(accountRepository, times(1)).save(any(Account.class));
+                verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
             }
 
 

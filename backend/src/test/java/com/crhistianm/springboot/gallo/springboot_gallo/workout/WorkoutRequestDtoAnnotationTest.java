@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.util.Set;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,22 +29,16 @@ class WorkoutRequestDtoAnnotationTest {
 
     Set<ConstraintViolation<WorkoutRequestDto>> violations;
 
-    @BeforeEach
-    void setUpBeforeEach() {
-        requestDto = new WorkoutRequestDto();
-        requestDto.setAccountId(1L);
-        requestDto.setWorkoutLength((short)60);
-        requestDto.setExerciseId(1L);
-        requestDto.setWorkoutDate(LocalDate.now());
-    }
-
-    @AfterEach
-    void setUpAfterEach() {
-        violations.clear();
-    }
-
     @Test
     void shouldReturnEmptyViolationsWhenDtoIsValid() {
+
+        Long accountId = 1L;
+        LocalDate workoutDate = LocalDate.now();
+        short workoutLength = 60;
+        Long exerciseId = 1L;
+
+        requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
         violations = validator.validate(requestDto, GroupsOrder.class);
         assertThat(violations).isEmpty();
     }
@@ -56,7 +48,13 @@ class WorkoutRequestDtoAnnotationTest {
 
         @Test
         void shouldReturnNullViolation() {
-            requestDto.setWorkoutDate(null);
+            Long accountId = 1L;
+            LocalDate workoutDate = null;
+            short workoutLength = 60;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
             violations = validator.validate(requestDto, GroupsOrder.class);
 
             assertThat(violations).hasSize(1);
@@ -67,7 +65,13 @@ class WorkoutRequestDtoAnnotationTest {
 
         @Test
         void shouldReturnPresentDayViolation() {
-            requestDto.setWorkoutDate(LocalDate.of(1,1,1));
+            Long accountId = 1L;
+            LocalDate workoutDate = LocalDate.of(1,1,1);
+            short workoutLength = 60;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
             violations = validator.validate(requestDto, GroupsOrder.class);
 
             assertThat(violations).hasSize(1);
@@ -84,7 +88,13 @@ class WorkoutRequestDtoAnnotationTest {
 
         @Test
         void shouldReturnMinimumValueViolation() {
-            requestDto.setWorkoutLength((short)19);
+            Long accountId = 1L;
+            LocalDate workoutDate = LocalDate.now();
+            short workoutLength = 19;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
             violations = validator.validate(requestDto, GroupsOrder.class);
 
             assertThat(violations).hasSize(1);
@@ -95,7 +105,12 @@ class WorkoutRequestDtoAnnotationTest {
 
         @Test
         void shouldReturnMaximumValueViolation() {
-            requestDto.setWorkoutLength(Short.MAX_VALUE);
+            Long accountId = 1L;
+            LocalDate workoutDate = LocalDate.now();
+            short workoutLength = Short.MAX_VALUE;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             violations = validator.validate(requestDto, GroupsOrder.class);
 
@@ -112,7 +127,13 @@ class WorkoutRequestDtoAnnotationTest {
 
         @Test
         void shouldReturnNullViolation() {
-            requestDto.setAccountId(null);
+            Long accountId = null;
+            LocalDate workoutDate = LocalDate.now();
+            short workoutLength = Short.MAX_VALUE;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
             violations = validator.validate(requestDto, GroupsOrder.class);
 
             assertThat(violations).hasSize(1);
@@ -128,7 +149,13 @@ class WorkoutRequestDtoAnnotationTest {
 
         @Test
         void shouldReturnNullViolation() {
-            requestDto.setExerciseId(null);
+            Long accountId = 1L;
+            LocalDate workoutDate = LocalDate.now();
+            short workoutLength = Short.MAX_VALUE;
+            Long exerciseId = null;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
             violations = validator.validate(requestDto, GroupsOrder.class);
 
             assertThat(violations).hasSize(1);

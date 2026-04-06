@@ -44,7 +44,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidNotBlank(){
-            person.setFirstName("");
+            String firstName = "";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -54,6 +63,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidNotBlank(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -61,7 +80,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidSize(){
-            person.setFirstName("somenametoolongsomenametoolongsomenametoolongsomenametoolong");
+            String firstName = "somenametoolongsomenametoolongsomenametoolongsomenametoolong";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -71,6 +99,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidSize(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -81,14 +119,18 @@ class PersonRequestDtoAnnotationTest {
     @Nested
     class LastNameFieldTest{
 
-        @BeforeEach
-        void setUp(){
-            person = givenPersonRequestDtoOne().orElseThrow();
-        }
-
         @Test
         void testInvalidNotBlank(){
-            person.setLastName("");
+            String firstName = "one";
+            String lastName = "";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -98,6 +140,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidNotBlank(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -105,7 +157,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidSize(){
-            person.setLastName("somelastnametoolongsomelastnametoolongsomelastnametoolongsomelastnametoolong");
+            String firstName = "one";
+            String lastName = "somenametoolongsomenametoolongsomenametoolongsomenametoolong";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -115,6 +176,7 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidSize(){
+            person = givenPersonRequestDtoOne().orElseThrow();
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -125,14 +187,18 @@ class PersonRequestDtoAnnotationTest {
     @Nested
     class PhoneNumberFieldTest{
         
-        @BeforeEach
-        void setUp(){
-            person = givenPersonRequestDtoOne().orElseThrow();
-        }
-
         @Test
         void testInvalidNotBlank(){
-            person.setPhoneNumber("");
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -142,6 +208,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidNotBlank(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -149,7 +225,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidSize(){
-            person.setPhoneNumber("+502 555 555 555 555");
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "+502 555 555 555 555";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -160,6 +245,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidSize(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -171,14 +266,18 @@ class PersonRequestDtoAnnotationTest {
     @Nested
     class BirthDateFieldTest{
 
-        @BeforeEach
-        void setUp(){
-            person = givenPersonRequestDtoOne().orElseThrow();
-        }
-
         @Test
         void testInvalidNotNull(){
-            person.setBirthDate(null);
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = null;
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -188,6 +287,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidNotNull(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -195,7 +304,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidPastOrPresent(){
-            person.setBirthDate(LocalDate.parse("2028-09-02"));
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = LocalDate.now().plusYears(1);
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -205,6 +323,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidPastOrPresent(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -215,14 +343,18 @@ class PersonRequestDtoAnnotationTest {
     @Nested
     class GenderFieldTest{
 
-        @BeforeEach
-        void setUp(){
-            person = givenPersonRequestDtoOne().orElseThrow();
-        }
-
         @Test
         void testInvalidNotBlank(){
-            person.setGender(null);
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = null;
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -233,6 +365,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidNotBlank(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -240,7 +382,17 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidCorrectGender(){
-            person.setGender("WOMAN");
+
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "A";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -250,6 +402,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidCorrectGender(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -260,14 +422,18 @@ class PersonRequestDtoAnnotationTest {
     @Nested
     class HeightFieldTest{
 
-        @BeforeEach
-        void setUp(){
-            person = givenPersonRequestDtoOne().orElseThrow();
-        }
-
         @Test
         void testInvalidDecimalMin(){
-            person.setHeight(0.49);
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = 0.49;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -277,6 +443,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidDecimalMin(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -284,7 +460,17 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidDecimalMax(){
-            person.setHeight(4.00);
+
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = 4.00;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -294,6 +480,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidDecimalMax(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -301,7 +497,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidDigits(){
-            person.setHeight(2.24543334);
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = 2.24543334;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -310,6 +515,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidDigits(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -320,14 +535,19 @@ class PersonRequestDtoAnnotationTest {
     @Nested
     class WeightFieldTest{
 
-        @BeforeEach
-        void setUp(){
-            person = givenPersonRequestDtoOne().orElseThrow();
-        }
-
         @Test
         void testInvalidDecimalMin(){
-            person.setWeight(19.0);
+
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = 19.0;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -337,6 +557,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidDecimalMin(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -344,7 +574,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidDecimalMax(){
-            person.setWeight(220.0);
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = 220.0;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -354,6 +593,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidDecimalMax(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
@@ -361,7 +610,16 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testInvalidDigits(){
-            person.setWeight(100.222);
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = 100.222;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
@@ -371,16 +629,21 @@ class PersonRequestDtoAnnotationTest {
 
         @Test
         void testValidDigits(){
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            person = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             violations = validator.validate(person);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
         }
 
-
     }
-
-    
-
-
     
 }
