@@ -1,6 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenWorkoutSetDtoList;
+import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenSetRequestDtoList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyByte;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -55,11 +55,6 @@ class WorkoutSetValidationServiceUnitTest {
 
         @BeforeEach
         void setUp() {
-            requestDto = new WorkoutSetRequestDto();
-            requestDto.setWorkoutId(1L);
-            requestDto.setSets(givenWorkoutSetDtoList());
-
-
             doAnswer(invo -> {
                 final Long ARG_WORKOUT_ID = invo.getArgument(0, Long.class);
                 return ARG_WORKOUT_ID.equals(2L);
@@ -68,6 +63,10 @@ class WorkoutSetValidationServiceUnitTest {
 
         @Test
         void shouldReturnEmptyOptional() {
+            Long workoutId = 1L;
+
+            requestDto = new WorkoutSetRequestDto(workoutId, givenSetRequestDtoList());
+
             expectedErrorOptional = spyValidationService.validateWorkoutSetLimit(requestDto, LIMIT);
 
             assertThat(expectedErrorOptional).isEmpty();
@@ -76,7 +75,7 @@ class WorkoutSetValidationServiceUnitTest {
                 (
                  eq(requestDto.getWorkoutId()),
                  eq(LIMIT),
-                 eq((short)givenWorkoutSetDtoList().size())
+                 eq((short) givenSetRequestDtoList().size())
                 );
 
             verifyNoInteractions(env);
@@ -88,7 +87,10 @@ class WorkoutSetValidationServiceUnitTest {
                 return invo.getArgument(0, String.class);
             }).when(env).getProperty(anyString());
 
-            requestDto.setWorkoutId(2L);
+            Long workoutId = 2L;
+
+            requestDto = new WorkoutSetRequestDto(workoutId, givenSetRequestDtoList());
+
             expectedErrorOptional = spyValidationService.validateWorkoutSetLimit(requestDto, LIMIT);
 
             assertThat(expectedErrorOptional).isNotEmpty();
@@ -99,13 +101,13 @@ class WorkoutSetValidationServiceUnitTest {
             assertThat(expectedError).extracting(FieldInfoError::getName).isEqualTo("sets");
             assertThat(expectedError).extracting(FieldInfoError::getOwnerClass).isEqualTo(WorkoutSetRequestDto.class);
             assertThat(expectedError).extracting(FieldInfoError::getType).isEqualTo(List.class);
-            assertThat(expectedError).extracting(FieldInfoError::getValue).isEqualTo(givenWorkoutSetDtoList());
+            assertThat(expectedError).extracting(FieldInfoError::getValue).isEqualTo(givenSetRequestDtoList());
 
             verify(spyValidationService, times(1)).doesWorkoutSetCountExceedLimit
                 (
                  eq(requestDto.getWorkoutId()),
                  eq(LIMIT),
-                 eq((short)givenWorkoutSetDtoList().size())
+                 eq((short)givenSetRequestDtoList().size())
                 );
             verify(env, times(1)).getProperty(eq("workoutset.validation.WorkoutSetLimit"));
         }

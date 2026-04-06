@@ -228,8 +228,14 @@ class IdentityVerificationServiceUnitTest {
         void shouldReturnErrorOptionalWhenAuthorityIsNotAdmin() {
             doReturn("errormessage").when(environment).getProperty(anyString());
             doReturn(false).when(spyServiceIdentity).isAdminAuthority();
-            AccountRequestDto accountDto = new AccountRequestDto();
-            accountDto.setEmail("test");
+
+            String email = "test";
+            String password = null;
+            Long personId = null;
+            boolean admin = false;
+
+            AccountRequestDto accountDto = new AccountRequestDto(email, password, personId, admin);
+
             fieldOptional = spyServiceIdentity.validateAdminRequired(accountDto, "email");
 
             assertThat(fieldOptional).isNotEmpty();
@@ -249,8 +255,13 @@ class IdentityVerificationServiceUnitTest {
         @Test
         void shouldReturnEmptyOptionalWhenAuthorityIsAdmin() {
             doReturn(true).when(spyServiceIdentity).isAdminAuthority();
-            AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto();
-            accountDto.setEnabled(true);
+            String email = null;
+            String password = null;
+            Long personId = null;
+            List<RoleRequestDto> roles = null;
+            Boolean enabled = true;
+
+            AccountUpdateRequestDto accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
             fieldOptional = spyServiceIdentity.validateAdminRequired(accountDto, "enabled");
             assertThat(fieldOptional).isEmpty();

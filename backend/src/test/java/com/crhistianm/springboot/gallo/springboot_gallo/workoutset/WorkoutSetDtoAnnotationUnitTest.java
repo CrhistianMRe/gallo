@@ -14,25 +14,29 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
-class WorkoutSetDtoAnnotationUnitTest {
+class SetRequestDtoAnnotationUnitTest {
 
     private Validator validator;
 
-    WorkoutSetDto workoutSetDto;
+    SetRequestDto requestDto;
 
-    Set<ConstraintViolation<WorkoutSetDto>> violations;
+    Set<ConstraintViolation<SetRequestDto>> violations;
 
     @BeforeEach
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
-        workoutSetDto = new WorkoutSetDto();
-        workoutSetDto.setRepAmount(10);
-        workoutSetDto.setWeightAmount(020.00);
+
     }
 
     @Test
     void shouldReturnEmptyViolationsWhenDtoIsValid() {
-        violations = validator.validate(workoutSetDto, GroupsOrder.class);
+        Integer repAmount = 10;
+        Double weightAmount = 020.00;
+        boolean toFailure = false;
+
+        requestDto = new SetRequestDto(repAmount, weightAmount, toFailure);
+
+        violations = validator.validate(requestDto, GroupsOrder.class);
         assertThat(violations).hasSize(0);
     }
 
@@ -41,8 +45,13 @@ class WorkoutSetDtoAnnotationUnitTest {
 
         @Test
         void shouldReturnNullViolation() {
-            workoutSetDto.setRepAmount(null);
-            violations = validator.validate(workoutSetDto, GroupsOrder.class);
+            Integer repAmount = null;
+            Double weightAmount = 020.00;
+            boolean toFailure = false;
+
+            requestDto = new SetRequestDto(repAmount, weightAmount, toFailure);
+
+            violations = validator.validate(requestDto, GroupsOrder.class);
 
 
             assertThat(violations).hasSize(1);
@@ -53,8 +62,13 @@ class WorkoutSetDtoAnnotationUnitTest {
 
         @Test
         void shouldReturnMaxViolation() {
-            workoutSetDto.setRepAmount(101);
-            violations = validator.validate(workoutSetDto, GroupsOrder.class);
+            Integer repAmount = 101;
+            Double weightAmount = 020.00;
+            boolean toFailure = false;
+
+            requestDto = new SetRequestDto(repAmount, weightAmount, toFailure);
+
+            violations = validator.validate(requestDto, GroupsOrder.class);
 
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must be less than or equal to 100");
@@ -64,8 +78,13 @@ class WorkoutSetDtoAnnotationUnitTest {
 
         @Test
         void shouldReturnMinViolation() {
-            workoutSetDto.setRepAmount(0);
-            violations = validator.validate(workoutSetDto, GroupsOrder.class);
+            Integer repAmount = 0;
+            Double weightAmount = 020.00;
+            boolean toFailure = false;
+
+            requestDto = new SetRequestDto(repAmount, weightAmount, toFailure);
+
+            violations = validator.validate(requestDto, GroupsOrder.class);
 
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must be greater than or equal to 1");

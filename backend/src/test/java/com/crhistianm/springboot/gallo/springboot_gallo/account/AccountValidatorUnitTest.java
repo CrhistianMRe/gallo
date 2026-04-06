@@ -55,13 +55,10 @@ public class AccountValidatorUnitTest {
     @Nested
     class ValidateRequestMethodTest {
 
-        AccountRequestDto accountRequestDto;
-
         List<FieldInfoError> fields;
 
         @BeforeEach
         void setUp(){
-            accountRequestDto = new AccountRequestDto();
             fields = new ArrayList<>();
 
             lenient().doAnswer(invo ->{
@@ -107,9 +104,12 @@ public class AccountValidatorUnitTest {
 
         @Test
         void shouldNotThrowExceptionWhenAllConditionsAreValid() {
-            accountRequestDto.setPersonId(1L);
-            accountRequestDto.setEmail("example@gmail.com");
-            accountRequestDto.setAdmin(true);
+            String email = "example@gmail.com";
+            String password = null;
+            Long personId = 1L;
+            boolean admin = true;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
 
             assertDoesNotThrow(() -> {
                 accountValidator.validateRequest(accountRequestDto);
@@ -119,10 +119,12 @@ public class AccountValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWith4ErrorsWhenAllConditionsAreMet(){
-            accountRequestDto.setEmail("invalid@gmail.com");
-            accountRequestDto.setPassword("adminerror");
-            accountRequestDto.setPersonId(2L);
-            accountRequestDto.setAdmin(true);
+            String email = "invalid@gmail.com";
+            String password = "adminerror";
+            Long personId = 2L;
+            boolean admin = true;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
             
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> {
@@ -148,8 +150,12 @@ public class AccountValidatorUnitTest {
         void shouldThrowExceptionWithOnlyPersonNotRegisteredError() {
             doReturn(Optional.of(new FieldInfoErrorBuilder().name("registered").build())).when(personService).validatePersonRegistered(anyLong());
 
-            accountRequestDto.setEmail("example@gmail.com");
-            accountRequestDto.setPersonId(1L);
+            String email = "example@gmail.com";
+            String password = null;
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
 
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> {
@@ -169,8 +175,12 @@ public class AccountValidatorUnitTest {
         void shouldThrowExceptionWithOnlyPersonAssignedError(){
             doReturn(Optional.of(new FieldInfoErrorBuilder().name("assigned").build())).when(accountService).validatePersonAssigned(isNull(), any(AccountRequestDto.class));
 
-            accountRequestDto.setEmail("example@gmail.com");
-            accountRequestDto.setPersonId(1L);
+            String email = "example@gmail.com";
+            String password = null;
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
 
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() ->{
@@ -188,9 +198,13 @@ public class AccountValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWithOnlyUniqueEmailError(){
-            accountRequestDto.setEmail("invalid@gmail.com");
-            accountRequestDto.setPersonId(1L);
-            accountRequestDto.setAdmin(true);
+
+            String email = "invalid@gmail.com";
+            String password = null;
+            Long personId = 1L;
+            boolean admin = true;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
 
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() ->{
@@ -208,10 +222,13 @@ public class AccountValidatorUnitTest {
         
         @Test
         void shouldThrowExceptionWithOnlyAdminRequiredError(){
-            accountRequestDto.setEmail("example@gmail.com");
-            accountRequestDto.setPassword("adminerror");
-            accountRequestDto.setPersonId(1L);
-            accountRequestDto.setAdmin(true);
+
+            String email = "example@gmail.com";
+            String password = "adminerror";
+            Long personId = 1L;
+            boolean admin = true;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
 
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() ->{
@@ -235,8 +252,6 @@ public class AccountValidatorUnitTest {
     @Nested
     class ValidateUpdateRequestMethodTest {
         
-        AccountUpdateRequestDto accountRequestDto;
-
         String errorsString;
 
         List<FieldInfoError> fields;
@@ -247,7 +262,6 @@ public class AccountValidatorUnitTest {
 
         @BeforeEach
         void setUp() {
-            accountRequestDto = new AccountUpdateRequestDto();
             errorsString = "None";
 
             lenient().doAnswer(invo -> {
@@ -329,7 +343,14 @@ public class AccountValidatorUnitTest {
 
             @Test
             void shouldOnlyRunPersonIdFieldValidation() {
-                accountRequestDto.setPersonId(2L);
+                String email = null;
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = 2L;
+
+                AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
                 accountValidator.validateUpdateRequest(1L, accountRequestDto);
 
                 verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
@@ -340,7 +361,14 @@ public class AccountValidatorUnitTest {
 
             @Test
             void shouldOnlyRunEmailFieldValidation() {
-                accountRequestDto.setEmail("example");
+                String email = "example";
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
                 accountValidator.validateUpdateRequest(1L, accountRequestDto);
 
                 verify(accountService, times(1)).validateUniqueEmail(eq(1L), eq(accountRequestDto));
@@ -349,7 +377,14 @@ public class AccountValidatorUnitTest {
 
             @Test
             void shouldOnlyRunEnabledFieldValidation() {
-                accountRequestDto.setEnabled(true);
+                String email = null;
+                String password = null;
+                Boolean enabled = true;
+                List<RoleRequestDto> roles = null;
+                Long personId = null;
+
+                AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
                 accountValidator.validateUpdateRequest(1L, accountRequestDto);
 
                 verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("enabled"));
@@ -358,7 +393,14 @@ public class AccountValidatorUnitTest {
 
             @Test
             void shouldOnlyRunRolesFieldValidation() {
-                accountRequestDto.setRoles(List.of(new RoleRequestDto(1L, "name")));
+                String email = null;
+                String password = null;
+                Boolean enabled = null;
+                List<RoleRequestDto> roles = List.of(new RoleRequestDto(1L, "name"));
+                Long personId = null;
+
+                AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
                 accountValidator.validateUpdateRequest(1L, accountRequestDto);
 
                 verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("roles"));
@@ -373,11 +415,14 @@ public class AccountValidatorUnitTest {
         @Test
         void shouldThrowExceptionWithMaximumPossibleErrorsWith1Role() {
             errorsString = "assigned, adminPersonId, uniqueEmail, adminEnabled, adminRole";
-            accountRequestDto.setPersonId(30L);
-            accountRequestDto.setRoles(List.of(new RoleRequestDto(2L, "adderror")));
-            accountRequestDto.setPassword(errorsString);
-            accountRequestDto.setEmail("email");
-            accountRequestDto.setEnabled(true);
+
+            String email = "email";
+            String password = errorsString;
+            Boolean enabled = true;
+            List<RoleRequestDto> roles = List.of(new RoleRequestDto(2L, "adderror"));
+            Long personId = 30L;
+
+            AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> {
@@ -418,13 +463,16 @@ public class AccountValidatorUnitTest {
         @Test
         void shouldThrowExceptionWithMaximumPossibleErrorsWithMultipleRole() {
             errorsString = "assigned, adminPersonId, uniqueEmail, adminEnabled, adminRole";
-            accountRequestDto.setPersonId(3L);
             List<RoleRequestDto> roleList = new ArrayList<>();
             for(int i = 0; i < 10; i++) roleList.add(new RoleRequestDto((2L), "adderror"));
-            accountRequestDto.setPassword(errorsString);
-            accountRequestDto.setEmail("email");
-            accountRequestDto.setEnabled(true);
-            accountRequestDto.setRoles(roleList);
+
+            String email = "email";
+            String password = errorsString;
+            Boolean enabled = true;
+            List<RoleRequestDto> roles = roleList;
+            Long personId = 3L;
+
+            AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> {
@@ -466,6 +514,14 @@ public class AccountValidatorUnitTest {
 
         @Test
         void shouldNotThrowExceptionWhenUserAuthorityIsAllowed(){
+            String email = null;
+            String password = null;
+            Boolean enabled = null;
+            List<RoleRequestDto> roles = null;
+            Long personId = null;
+
+            AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
             assertDoesNotThrow(() -> {
                 accountValidator.validateUpdateRequest(1L, accountRequestDto);
             });
@@ -483,6 +539,14 @@ public class AccountValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWhenUserAuthorityIsNotAllowed() {
+            String email = null;
+            String password = null;
+            Boolean enabled = null;
+            List<RoleRequestDto> roles = null;
+            Long personId = null;
+
+            AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
             fields = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> {
                     accountValidator.validateUpdateRequest(3L, accountRequestDto);
@@ -515,8 +579,14 @@ public class AccountValidatorUnitTest {
                 @Test
                 void shouldThrowExceptionWhenPersonIsNotRegistered() {   
                     errorsString = "registered";
-                    accountRequestDto.setPassword(errorsString);
-                    accountRequestDto.setPersonId(20L);
+
+                    String email = null;
+                    String password = errorsString;
+                    Boolean enabled = null;
+                    List<RoleRequestDto> roles = null;
+                    Long personId = 20L;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                     fields = assertThatExceptionOfType(ValidationServiceException.class)
                         .isThrownBy(() -> {
@@ -546,8 +616,14 @@ public class AccountValidatorUnitTest {
                 @Test
                 void shouldThrowExceptionWhenPersonIsAssigned() {
                     errorsString = "assigned";
-                    accountRequestDto.setPersonId(2L);
-                    accountRequestDto.setPassword(errorsString);
+
+                    String email = null;
+                    String password = errorsString;
+                    Boolean enabled = null;
+                    List<RoleRequestDto> roles = null;
+                    Long personId = 2L;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                     fields = assertThatExceptionOfType(ValidationServiceException.class)
                         .isThrownBy(() ->{
@@ -575,8 +651,14 @@ public class AccountValidatorUnitTest {
                 @Test
                 void shouldThrowExceptionWhenUserIsNotAdmin() {
                     errorsString = "adminPersonId";
-                    accountRequestDto.setPersonId(2L);
-                    accountRequestDto.setPassword(errorsString);
+
+                    String email = null;
+                    String password = errorsString;
+                    Boolean enabled = null;
+                    List<RoleRequestDto> roles = null;
+                    Long personId = 2L;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                     fields = assertThatExceptionOfType(ValidationServiceException.class)
                         .isThrownBy(() -> {
@@ -604,8 +686,20 @@ public class AccountValidatorUnitTest {
                 @Nested
                 class NotThrownExceptionTest {
 
-                    @AfterEach
-                    void verifyMethodValidation() {
+                    @Test
+                    void shouldNotThrowExceptionWhenPersonIsRegistered() {
+                        String password = null;
+                        String email = null;
+                        Boolean enabled = null;
+                        List<RoleRequestDto> roles = null;
+                        Long personId = 2L;
+
+                        AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
+                        assertDoesNotThrow(() -> {
+                            accountValidator.validateUpdateRequest(1L, accountRequestDto);
+                        });
+
                         verify(identityService, times(1)).validateAllowanceByAccountId(eq(1L));
                         verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
                         verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
@@ -615,38 +709,58 @@ public class AccountValidatorUnitTest {
                         verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("enabled"));
                         verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("roles"));
                         verify(roleService, times(0)).validateRoleExists(any(RoleRequestDto.class));
-                    }
-
-
-                    @Test
-                    void shouldNotThrowExceptionWhenPersonIsRegistered() {
-                        accountRequestDto.setPersonId(2L);
-
-                        assertDoesNotThrow(() -> {
-                            accountValidator.validateUpdateRequest(1L, accountRequestDto);
-                        });
 
                     }
 
                     @Test
                     void shouldNotThrowExceptionWhenPersonIsNotAssigned() {
-                        accountRequestDto.setPersonId(2L);
-                        accountRequestDto.setPassword(errorsString);
+                        String password = errorsString;
+                        String email = null;
+                        Boolean enabled = null;
+                        List<RoleRequestDto> roles = null;
+                        Long personId = 2L;
+
+                        AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                         assertDoesNotThrow(() -> {
                             accountValidator.validateUpdateRequest(1L, accountRequestDto);
                         });
+
+                        verify(identityService, times(1)).validateAllowanceByAccountId(eq(1L));
+                        verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
+                        verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
+                        verify(accountService, times(1)).validatePersonAssigned(eq(1L), eq(accountRequestDto));
+
+                        verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
+                        verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("enabled"));
+                        verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("roles"));
+                        verify(roleService, times(0)).validateRoleExists(any(RoleRequestDto.class));
 
                     }
 
                     @Test
                     void shouldNotThrowExceptionWhenUserIsAdmin() {
-                        accountRequestDto.setPersonId(2L);
-                        accountRequestDto.setPassword(errorsString);
+                        String password = errorsString;
+                        String email = null;
+                        Boolean enabled = null;
+                        List<RoleRequestDto> roles = null;
+                        Long personId = 2L;
+
+                        AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                         assertDoesNotThrow(() -> {
                             accountValidator.validateUpdateRequest(1L, accountRequestDto);
                         });
+
+                        verify(identityService, times(1)).validateAllowanceByAccountId(eq(1L));
+                        verify(personService, times(1)).validatePersonRegistered(eq(accountRequestDto.getPersonId()));
+                        verify(identityService, times(1)).validateAdminRequired(eq(accountRequestDto), eq("personId"));
+                        verify(accountService, times(1)).validatePersonAssigned(eq(1L), eq(accountRequestDto));
+
+                        verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
+                        verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("enabled"));
+                        verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("roles"));
+                        verify(roleService, times(0)).validateRoleExists(any(RoleRequestDto.class));
 
                     }
 
@@ -657,13 +771,27 @@ public class AccountValidatorUnitTest {
             @Nested
             class EmailFieldTest { 
 
-                @BeforeEach
-                void setUp(){
-                    accountRequestDto.setEmail("email");
-                }
+                @Test
+                void shouldThrowExceptionWhenEmailIsNotValid() {
+                    String password = "uniqueEmail";
+                    String email = "email";
+                    Boolean enabled = null;
+                    List<RoleRequestDto> roles = null;
+                    Long personId = null;
 
-                @AfterEach
-                void verifyMethodValidation() {
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
+                    fields = assertThatExceptionOfType(ValidationServiceException.class)
+                        .isThrownBy(() -> {
+                            accountValidator.validateUpdateRequest(1L, accountRequestDto);
+                        }).actual().getFieldErrors();
+
+                    assertThat(fields).hasSize(1);
+
+                    FieldInfoError fieldUniqueEmail = fields.get(0);
+
+                    assertThat(fieldUniqueEmail.getName()).isEqualTo("uniqueEmail");
+
                     verify(accountService, times(1)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
                     verify(identityService, times(1)).validateAllowanceByAccountId(eq(1L));
 
@@ -676,53 +804,42 @@ public class AccountValidatorUnitTest {
                 }
 
                 @Test
-                void shouldThrowExceptionWhenEmailIsNotValid() {
-                    accountRequestDto.setPassword("uniqueEmail");
-
-                    fields = assertThatExceptionOfType(ValidationServiceException.class)
-                        .isThrownBy(() -> {
-                            accountValidator.validateUpdateRequest(1L, accountRequestDto);
-                        }).actual().getFieldErrors();
-
-                    assertThat(fields).hasSize(1);
-
-                    FieldInfoError fieldUniqueEmail = fields.get(0);
-
-                    assertThat(fieldUniqueEmail.getName()).isEqualTo("uniqueEmail");
-                }
-
-                @Test
                 void shouldNotThrowExceptionWhenEmailIsValid() {
+                    String password = null;
+                    String email = "email";
+                    Boolean enabled = null;
+                    List<RoleRequestDto> roles = null;
+                    Long personId = null;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
                     assertDoesNotThrow(() -> accountValidator.validateUpdateRequest(1L, accountRequestDto));
+
+                    verify(accountService, times(1)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
+                    verify(identityService, times(1)).validateAllowanceByAccountId(eq(1L));
+
+                    verify(personService, times(0)).validatePersonRegistered(anyLong());
+                    verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
+                    verify(accountService, times(0)).validatePersonAssigned(anyLong(),  any(AccountUpdateRequestDto.class));
+                    verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("enabled"));
+                    verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("roles"));
+                    verify(roleService, times(0)).validateRoleExists(any(RoleRequestDto.class));
                 }
 
             }
 
             @Nested
             class EnabledFieldTest {
-
-                @BeforeEach
-                void setUp(){
-                    accountRequestDto.setEnabled(true);
-                }
-
-                @AfterEach
-                void verifyMethodValidation() { 
-                    verify(identityService, times(1)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("enabled"));
-                    verify(identityService, times(1)).validateAllowanceByAccountId(eq(1L));
-
-                    verify(personService, times(0)).validatePersonRegistered(anyLong());
-                    verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
-                    verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
-                    verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
-                    verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("roles"));
-                    verify(roleService, times(0)).validateRoleExists(any(RoleRequestDto.class));
-
-                }
                 
                 @Test
                 void shouldThrowExceptionWhenUserIsNotAdmin() {
-                    accountRequestDto.setPassword("adminEnabled");
+                    String password = "adminEnabled";
+                    String email = null;
+                    Boolean enabled = true;
+                    List<RoleRequestDto> roles = null;
+                    Long personId = null;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                     fields = assertThatExceptionOfType(ValidationServiceException.class)
                         .isThrownBy(() -> {
@@ -735,11 +852,38 @@ public class AccountValidatorUnitTest {
 
                     assertThat(fieldAdminEnabled.getName()).isEqualTo("adminEnabled");
 
+                    verify(identityService, times(1)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("enabled"));
+                    verify(identityService, times(1)).validateAllowanceByAccountId(eq(1L));
+
+                    verify(personService, times(0)).validatePersonRegistered(anyLong());
+                    verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
+                    verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
+                    verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
+                    verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("roles"));
+                    verify(roleService, times(0)).validateRoleExists(any(RoleRequestDto.class));
                 }
 
                 @Test
                 void shouldNotThrowExceptionWhenUserIsAdmin() {
+                    String password = null;
+                    String email = null;
+                    Boolean enabled = true;
+                    List<RoleRequestDto> roles = null;
+                    Long personId = null;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
                     assertDoesNotThrow(() -> accountValidator.validateUpdateRequest(1L, accountRequestDto));
+
+                    verify(identityService, times(1)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("enabled"));
+                    verify(identityService, times(1)).validateAllowanceByAccountId(eq(1L));
+
+                    verify(personService, times(0)).validatePersonRegistered(anyLong());
+                    verify(accountService, times(0)).validateUniqueEmail(anyLong(), any(AccountUpdateRequestDto.class));
+                    verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("personId"));
+                    verify(accountService, times(0)).validatePersonAssigned(anyLong(), any(AccountUpdateRequestDto.class));
+                    verify(identityService, times(0)).validateAdminRequired(any(AccountUpdateRequestDto.class), eq("roles"));
+                    verify(roleService, times(0)).validateRoleExists(any(RoleRequestDto.class));
                 }
 
             }
@@ -757,7 +901,14 @@ public class AccountValidatorUnitTest {
                 @Test
                 void shouldThrowExceptionWhenIdIsNotValid() {
                     roleList.add(new RoleRequestDto(2L, "name"));
-                    accountRequestDto.setRoles(roleList);
+
+                    String password = null;
+                    String email = null;
+                    Boolean enabled = null;
+                    List<RoleRequestDto> roles = roleList;
+                    Long personId = null;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                     fields = assertThatExceptionOfType(ValidationServiceException.class)
                         .isThrownBy(() -> {
@@ -784,7 +935,14 @@ public class AccountValidatorUnitTest {
                 @Test
                 void shouldThrowExceptionWhenNameIsNotValid() {
                     roleList.add(new RoleRequestDto(1L, "adderror"));
-                    accountRequestDto.setRoles(roleList);
+
+                    String password = null;
+                    String email = null;
+                    Boolean enabled = null;
+                    List<RoleRequestDto> roles = roleList;
+                    Long personId = null;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                     fields = assertThatExceptionOfType(ValidationServiceException.class)
                         .isThrownBy(() -> {
@@ -812,7 +970,14 @@ public class AccountValidatorUnitTest {
                 @Test
                 void shouldThrowExceptionWhenMultipleRoleHaveAllFieldsInvalid() { 
                     for(int i = 0; i < 10; i++) roleList.add(new RoleRequestDto((2L), "adderror"));
-                    accountRequestDto.setRoles(roleList);
+
+                    String password = null;
+                    String email = null;
+                    Boolean enabled = null;
+                    List<RoleRequestDto> roles = roleList;
+                    Long personId = null;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                     fields = assertThatExceptionOfType(ValidationServiceException.class)
                         .isThrownBy(() -> {
@@ -843,7 +1008,14 @@ public class AccountValidatorUnitTest {
                 @Test
                 void shouldNotThrowExceptionWhenMultipleRoleHaveAllFieldsValid() {
                     for(int i = 0; i < 10; i++) roleList.add(new RoleRequestDto((1L), "name"));
-                    accountRequestDto.setRoles(roleList);
+
+                    String password = null;
+                    String email = null;
+                    Boolean enabled = null;
+                    List<RoleRequestDto> roles = roleList;
+                    Long personId = null;
+
+                    AccountUpdateRequestDto accountRequestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
 
                     assertDoesNotThrow(() -> {
                         accountValidator.validateUpdateRequest(1L, accountRequestDto);

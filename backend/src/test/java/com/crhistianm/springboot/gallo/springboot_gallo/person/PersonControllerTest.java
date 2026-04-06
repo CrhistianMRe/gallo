@@ -60,14 +60,15 @@ class PersonControllerTest {
         @BeforeEach
         void setUp () {
             //All valid fields
-            personRequest = new PersonRequestDto();
-            personRequest.setFirstName("exampleFirst");
-            personRequest.setLastName("exampleLast");
-            personRequest.setPhoneNumber("12345678");
-            personRequest.setBirthDate(LocalDate.of(2010, 02, 23));
-            personRequest.setGender("M");
-            personRequest.setHeight(1.60);
-            personRequest.setWeight(60.00);
+            String firstName = "exampleFirst";
+            String lastName = "exampleLast";
+            String phoneNumber = "12345678";
+            LocalDate birthDate = LocalDate.of(2010, 02, 23);
+            String gender = "M";
+            Double height = 1.60;
+            Double weight = 60.00;
+
+            personRequest = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
 
             doAnswer(invo -> {
                 PersonResponseDto personResponseDto = PersonMapper.entityToResponse(PersonMapper.requestToEntity(invo.getArgument(0, PersonRequestDto.class)));
@@ -99,7 +100,15 @@ class PersonControllerTest {
 
         @Test
         void shouldReturnErrorWhenDtoFieldIsInvalid() throws Exception {
-            personRequest.setPhoneNumber("");
+            String firstName = "exampleFirst";
+            String lastName = "exampleLast";
+            String phoneNumber = "";
+            LocalDate birthDate = LocalDate.of(2010, 02, 23);
+            String gender = "M";
+            Double height = 1.60;
+            Double weight = 60.00;
+
+            personRequest = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
 
             mockMvc.perform(request(HttpMethod.POST, "/api/persons")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(personRequest)))
@@ -164,14 +173,15 @@ class PersonControllerTest {
         @BeforeEach
         void setUp(){
 
-            personRequest = new PersonRequestDto();
-            personRequest.setFirstName("exampleFirst");
-            personRequest.setLastName("exampleLast");
-            personRequest.setPhoneNumber("12345678");
-            personRequest.setBirthDate(LocalDate.of(2010, 02, 23));
-            personRequest.setGender("M");
-            personRequest.setHeight(1.60);
-            personRequest.setWeight(60.00);
+            String firstName = "exampleFirst";
+            String lastName = "exampleLast";
+            String phoneNumber = "12345678";
+            LocalDate birthDate = LocalDate.of(2010, 02, 23);
+            String gender = "M";
+            Double height = 1.60;
+            Double weight = 60.00;
+
+            personRequest = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
 
             when(personService.update(anyLong(), any(PersonRequestDto.class))).thenAnswer(invo -> {
                 if(invo.getArgument(0, Long.class) != 1L) throw new NotFoundException(Person.class);
@@ -207,7 +217,15 @@ class PersonControllerTest {
 
         @Test
         void shouldReturnErrorWhenDtoFieldIsInvalid() throws Exception {
-            personRequest.setPhoneNumber("");
+            String firstName = "exampleFirst";
+            String lastName = "exampleLast";
+            String phoneNumber = "";
+            LocalDate birthDate = LocalDate.of(2010, 02, 23);
+            String gender = "M";
+            Double height = 1.60;
+            Double weight = 60.00;
+
+            personRequest = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
             mockMvc.perform(put("/api/persons/1")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(personRequest)))
                 .andExpect(jsonPath("$.phoneNumber").value("the field phoneNumber must not be blank"))

@@ -2,6 +2,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,6 @@ class AccountUpdateRequestDtoAnnotationUnitTest{
     @BeforeEach
     void setUpValidator() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
-        accountDto = new AccountUpdateRequestDto();
     }
 
     @Nested
@@ -32,6 +32,14 @@ class AccountUpdateRequestDtoAnnotationUnitTest{
 
         @Test
         void shouldReturnEmptyRequestViolation() {
+            String email = null;
+            String password = null;
+            Boolean enabled = null;
+            List<RoleRequestDto> roles = null;
+            Long personId = null;
+
+            accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
             violations = validator.validate(accountDto, GroupsOrder.class);
             String violation = violations.stream().map(ConstraintViolation::getMessage).findFirst().orElseThrow();
 
@@ -41,7 +49,14 @@ class AccountUpdateRequestDtoAnnotationUnitTest{
 
         @Test
         void shouldNotReturnEmptyRequestViolation(){
-            accountDto.setEnabled(true);
+            String email = null;
+            String password = null;
+            Boolean enabled = true;
+            List<RoleRequestDto> roles = null;
+            Long personId = null;
+
+            accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
             violations = validator.validate(accountDto, GroupsOrder.class);
 
             assertThat(violations).hasSize(0);
@@ -54,7 +69,14 @@ class AccountUpdateRequestDtoAnnotationUnitTest{
 
         @Test
         void shouldReturnEmailViolation(){
-            accountDto.setEmail("bademail.com");
+            String email = "bademail.com";
+            String password = null;
+            Boolean enabled = null;
+            List<RoleRequestDto> roles = null;
+            Long personId = null;
+
+            accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
             violations = validator.validate(accountDto, GroupsOrder.class);
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).contains("must be a well-formed email address");
@@ -63,7 +85,14 @@ class AccountUpdateRequestDtoAnnotationUnitTest{
 
         @Test
         void shouldNotReturnEmailViolation() {
-            accountDto.setEmail("goodemail@mail.com");
+            String email = "goodemail@mail.com";
+            String password = null;
+            Boolean enabled = null;
+            List<RoleRequestDto> roles = null;
+            Long personId = null;
+
+            accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
             violations = validator.validate(accountDto, GroupsOrder.class);
             assertThat(violations).hasSize(0);
         }
@@ -75,7 +104,14 @@ class AccountUpdateRequestDtoAnnotationUnitTest{
 
         @Test
         void shouldReturnSizeViolation() {
-            accountDto.setPassword("222");
+            String email = null;
+            String password = "222";
+            Boolean enabled = null;
+            List<RoleRequestDto> roles = null;
+            Long personId = null;
+
+            accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
             violations = validator.validate(accountDto, GroupsOrder.class);
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(v -> v.getPropertyPath().toString()).contains("password");
@@ -83,7 +119,14 @@ class AccountUpdateRequestDtoAnnotationUnitTest{
         
         @Test
         void shouldNotReturnSizeViolation() {
-            accountDto.setPassword("2222");
+            String email = null;
+            String password = "2222";
+            Boolean enabled = null;
+            List<RoleRequestDto> roles = null;
+            Long personId = null;
+
+            accountDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
             violations = validator.validate(accountDto, GroupsOrder.class);
             assertThat(violations).hasSize(0);
 

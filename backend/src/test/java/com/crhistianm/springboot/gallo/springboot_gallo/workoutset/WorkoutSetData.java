@@ -7,32 +7,41 @@ public class WorkoutSetData {
 
     public static WorkoutSet getWorkoutSetInstance(){ return new WorkoutSet(); }
 
-    static List<WorkoutSetDto> givenWorkoutSetDtoList() {
-        WorkoutSetDto firstSet = new WorkoutSetDto();
+    static List<SetRequestDto> givenSetRequestDtoList() {
 
-        firstSet.setRepAmount(20);
-        firstSet.setWeightAmount(20.00);
-        firstSet.setToFailure(true);
+        Integer repAmount = 20;
 
-        WorkoutSetDto secondSet = new WorkoutSetDto();
+        Double weightAmount = 20.00;
 
-        secondSet.setRepAmount(40);
-        secondSet.setWeightAmount(40.00);
-        secondSet.setToFailure(true);
+        boolean toFailure = true;
 
-        WorkoutSetDto thirdSet = new WorkoutSetDto();
+        SetRequestDto firstSet = new SetRequestDto(repAmount, weightAmount, toFailure);
 
-        thirdSet.setRepAmount(60);
-        thirdSet.setWeightAmount(60.00);
-        thirdSet.setToFailure(true);
+        repAmount = 40;
 
-        WorkoutSetDto fourthSet = new WorkoutSetDto();
+        weightAmount = 40.00;
 
-        fourthSet.setRepAmount(80);
-        fourthSet.setWeightAmount(80.00);
-        fourthSet.setToFailure(false);
+        toFailure = true;
 
-        List<WorkoutSetDto> setDtoList = new ArrayList<>();
+        SetRequestDto secondSet = new SetRequestDto(repAmount, weightAmount, toFailure);
+
+        repAmount = 60;
+
+        weightAmount = 60.00;
+
+        toFailure = true;
+
+        SetRequestDto thirdSet = new SetRequestDto(repAmount, weightAmount, toFailure);
+
+        repAmount = 80;
+
+        weightAmount = 80.00;
+
+        toFailure = false;
+
+        SetRequestDto fourthSet = new SetRequestDto(repAmount, weightAmount, toFailure);
+
+        List<SetRequestDto> setDtoList = new ArrayList<>();
 
         setDtoList.add(firstSet);
         setDtoList.add(secondSet);

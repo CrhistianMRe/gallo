@@ -1,6 +1,6 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenWorkoutSetDtoList;
+import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenSetRequestDtoList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,10 +56,6 @@ class WorkoutSetValidatorUnitTest {
 
         @BeforeEach
         void setUp() {
-            requestDto = new WorkoutSetRequestDto();
-
-            requestDto.setWorkoutId(1L);
-            requestDto.setSets(givenWorkoutSetDtoList());
 
             doAnswer(invo ->{
                 FieldInfoError responseError = null;
@@ -89,6 +86,12 @@ class WorkoutSetValidatorUnitTest {
 
         @Test
         void shouldNotThrowErrorsWhenAllConditionsAreMet() {
+            Long workoutId = 1L;
+
+            List<SetRequestDto> sets = givenSetRequestDtoList();
+
+            requestDto = new WorkoutSetRequestDto(workoutId, sets);
+
             assertDoesNotThrow(() -> workoutSetValidator.validateSaveAllRequest(requestDto));
 
             verify(workoutValidationService, times(1)).validateWorkoutExistence(eq(requestDto.getWorkoutId()));
@@ -98,8 +101,19 @@ class WorkoutSetValidatorUnitTest {
 
         @Test
         void shouldThrowMaximumErrorAmountWhenAllConditionsAreInvalid() {
-            requestDto.setWorkoutId(4L);
-            requestDto.getSets().add(new WorkoutSetDto());
+            Long workoutId = 4L;
+
+            List<SetRequestDto> sets = givenSetRequestDtoList();
+
+            Integer repAmount = null;
+
+            Double weightAmount = null;
+
+            boolean toFailure = false;
+
+            sets.add(new SetRequestDto(repAmount, weightAmount, toFailure));
+
+            requestDto = new WorkoutSetRequestDto(workoutId, sets);
 
             expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutSetValidator.validateSaveAllRequest(requestDto)).actual().getFieldErrors();
@@ -117,7 +131,19 @@ class WorkoutSetValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWhenOnlyLimitIsInvalid(){
-            requestDto.getSets().add(new WorkoutSetDto());
+            Long workoutId = 1L;
+
+            List<SetRequestDto> sets = givenSetRequestDtoList();
+
+            Integer repAmount = null;
+
+            Double weightAmount = null;
+
+            boolean toFailure = false;
+
+            sets.add(new SetRequestDto(repAmount, weightAmount, toFailure));
+
+            requestDto = new WorkoutSetRequestDto(workoutId, sets);
 
             expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutSetValidator.validateSaveAllRequest(requestDto)).actual().getFieldErrors();
@@ -133,7 +159,19 @@ class WorkoutSetValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWhenOnlyWorkoutExistenceIsInvalid(){
-            requestDto.setWorkoutId(2L);
+            Long workoutId = 2L;
+
+            List<SetRequestDto> sets = new ArrayList<>();
+
+            Integer repAmount = null;
+
+            Double weightAmount = null;
+
+            boolean toFailure = false;
+
+            sets.add(new SetRequestDto(repAmount, weightAmount, toFailure));
+
+            requestDto = new WorkoutSetRequestDto(workoutId, sets);
 
             expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutSetValidator.validateSaveAllRequest(requestDto)).actual().getFieldErrors();
@@ -149,7 +187,19 @@ class WorkoutSetValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWhenOnlyWorkoutUserAllowanceIsInvalid() {
-            requestDto.setWorkoutId(3L);
+            Long workoutId = 3L;
+
+            List<SetRequestDto> sets = new ArrayList<>();
+
+            Integer repAmount = null;
+
+            Double weightAmount = null;
+
+            boolean toFailure = false;
+
+            sets.add(new SetRequestDto(repAmount, weightAmount, toFailure));
+
+            requestDto = new WorkoutSetRequestDto(workoutId, sets);
 
             expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutSetValidator.validateSaveAllRequest(requestDto)).actual().getFieldErrors();

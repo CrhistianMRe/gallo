@@ -9,10 +9,11 @@ class WorkoutSetMapperUnitTest {
 
     @Test
     void shouldReturnEntityFromDto() {
-        WorkoutSetDto workoutSetDto = new WorkoutSetDto();
-        workoutSetDto.setRepAmount(40);
-        workoutSetDto.setWeightAmount(40.00);
-        workoutSetDto.setToFailure(false);
+        Integer repAmount = 40;
+        Double weightAmount = 40.00;
+        boolean toFailure = false;
+
+        SetRequestDto workoutSetDto = new SetRequestDto(repAmount, weightAmount, toFailure);
 
         WorkoutSet expectedEntity = WorkoutSetMapper.dtoToEntity(workoutSetDto);
 

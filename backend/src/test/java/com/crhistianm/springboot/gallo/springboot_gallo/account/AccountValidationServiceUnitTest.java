@@ -57,13 +57,10 @@ class AccountValidationServiceUnitTest {
     @Nested
     class ValidatePersonAssignedMethodTest {
 
-        AccountRequestDto accountRequestDto;
-
         FieldInfoError field;
 
         @BeforeEach
         void setUp(){
-            accountRequestDto = new AccountRequestDto();
             doAnswer(invo -> {
                 return !invo.getArgument(1, Long.class).equals(1L);
             }).when(spyAccountValidationService).isPersonIdAssigned(isNull(), anyLong());
@@ -72,7 +69,14 @@ class AccountValidationServiceUnitTest {
         @Test
         void returnsOptionalFieldInfoError(){
             doReturn("person env").when(env).getProperty("account.validation.PersonAssigned");
-            accountRequestDto.setPersonId(2L);
+
+            String email = null;
+            String password = null;
+            Long personId = 2L;
+            boolean admin = false;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
+
             Optional<FieldInfoError> fieldOptional;
 
             fieldOptional = spyAccountValidationService.validatePersonAssigned(null, accountRequestDto);
@@ -94,8 +98,14 @@ class AccountValidationServiceUnitTest {
         @Test
         void returnsEmptyOptionalFieldInfoError(){
             Optional<FieldInfoError> fieldOptional;
-            accountRequestDto.setPersonId(1L);
-            fieldOptional = spyAccountValidationService.validatePersonAssigned(null ,accountRequestDto);
+            String email = null;
+            String password = null;
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
+
+            fieldOptional = spyAccountValidationService.validatePersonAssigned(null, accountRequestDto);
             assertThat(fieldOptional).isEmpty();
         }
 
@@ -104,13 +114,10 @@ class AccountValidationServiceUnitTest {
     @Nested
     class ValidateUniqueEmailMethodTest {
 
-        AccountRequestDto accountRequestDto;
-
         FieldInfoError field;
 
         @BeforeEach
         void setUp() {
-            accountRequestDto = new AccountRequestDto();
             doAnswer(invo -> {
                 return invo.getArgument(1, String.class).equals("example@gmail.com");
             }).when(spyAccountValidationService).isEmailAvailable(anyLong(), anyString());
@@ -119,7 +126,13 @@ class AccountValidationServiceUnitTest {
         @Test
         void returnsOptionalFieldInfoError() {
             doReturn("email env").when(env).getProperty("account.validation.UniqueEmail");
-            accountRequestDto.setEmail("invalid@gmail.com");
+            String email = "invalid@gmail.com";
+            String password = null;
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
+
             Optional<FieldInfoError> fieldOptional;
             fieldOptional = spyAccountValidationService.validateUniqueEmail(2L, accountRequestDto);
 
@@ -136,7 +149,13 @@ class AccountValidationServiceUnitTest {
 
         @Test
         void returnsEmptyOptionalFieldInfoError() {
-            accountRequestDto.setEmail("example@gmail.com");
+            String email = "example@gmail.com";
+            String password = null;
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto accountRequestDto = new AccountRequestDto(email, password, personId, admin);
+
             Optional<FieldInfoError> fieldOptional;
             fieldOptional = spyAccountValidationService.validateUniqueEmail(2L, accountRequestDto);
             assertThat(fieldOptional).isEmpty();

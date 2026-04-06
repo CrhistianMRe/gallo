@@ -114,10 +114,16 @@ class WorkoutValidationServiceUnitTest {
 
         @BeforeEach
         void setUp() {
-            requestDto = new WorkoutRequestDto();
-            requestDto.setAccountId(1L);
-            requestDto.setExerciseId(1L);
-            requestDto.setWorkoutDate(LocalDate.of(1, 1, 1));
+            Long accountId = 1L;
+
+            Long exerciseId = 1L;
+
+            LocalDate workoutDate = LocalDate.of(1, 1, 1);
+
+            short workoutLength = 0;
+                 
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
             expectedErrorOptional = Optional.empty(); 
             doAnswer(invo -> {
                 return invo.getArgument(3, Integer.class) == 1;

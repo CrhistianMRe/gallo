@@ -5,6 +5,7 @@ import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData
 import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.givenPersonEntityTwo;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,8 +75,15 @@ class PersonServiceUnitTest {
 
         @Test
         void shouldThrowExceptionWhenRequestIsInvalid() {
-            PersonRequestDto requestDto = givenPersonRequestDtoOne().orElseThrow();
-            requestDto.setPhoneNumber("666");
+            String firstName = "one";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "666";
+            Double height = null;
+            Double weight = null;
+
+            PersonRequestDto requestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
 
             assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> personService.save(requestDto));
@@ -149,7 +157,6 @@ class PersonServiceUnitTest {
 
         @BeforeEach
         void setUp(){
-            requestDto = new PersonRequestDto();
             when(personRepository.findById(anyLong())).thenAnswer(invo -> {
                 if(invo.getArgument(0, Long.class) == 1L){
                     return Optional.of(new Person());
@@ -197,16 +204,34 @@ class PersonServiceUnitTest {
 
         @Test
         void testUpdateEmpty(){
+            String firstName = null;
+            String lastName = null;
+            String phoneNumber = null;
+            LocalDate birthDate = null;
+            String gender = null;
+            Double height = null;
+            Double weight = null;
+
+            PersonRequestDto requestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
+
             assertThrows(NotFoundException.class, () ->{
-                personService.update(2L, new PersonRequestDto());
+                personService.update(2L, requestDto);
             });
             verify(personRepository, times(1)).findById(anyLong());
         }
 
         @Test
         void shouldThrowExceptionWhenRequestIsInvalid() {
-            requestDto = givenPersonRequestDtoOne().orElseThrow();
-            requestDto.setFirstName("error");
+
+            String firstName = "error";
+            String lastName = "1one";
+            LocalDate birthDate = (LocalDate.of(2004, 01, 01));
+            String gender = "M";
+            String phoneNumber = "123123123";
+            Double height = null;
+            Double weight = null;
+
+            requestDto = new PersonRequestDto(firstName, lastName, phoneNumber, birthDate, gender, height, weight);
 
             assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> personService.update(1L, requestDto));

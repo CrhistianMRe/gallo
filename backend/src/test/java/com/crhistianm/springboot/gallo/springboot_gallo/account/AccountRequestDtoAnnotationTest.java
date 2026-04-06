@@ -1,6 +1,5 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.givenUserAccountRequestDto;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -24,26 +23,24 @@ class AccountRequestDtoAnnotationTest{
     @Autowired
     private Validator validator;
 
-    private AccountRequestDto account;
-
     @MockitoBean
     private AccountService accountService;
 
     Set<ConstraintViolation<AccountRequestDto>> violations;
 
-
     @Nested
     class PersonIdFieldTest{
 
-        @BeforeEach
-        void setUp(){
-            account = givenUserAccountRequestDto().orElseThrow();
-        }
-
         @Test
         void testInvalidNotNull(){
-            account.setPersonId(null);
-            violations = validator.validate(account);
+            String email = "erikuser@gmail.com";
+            String password = "12345";
+            Long personId = null;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
+            violations = validator.validate(requestDto);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be null");
@@ -52,7 +49,14 @@ class AccountRequestDtoAnnotationTest{
         
         @Test 
         void testValidNotNull(){
-            violations = validator.validate(account);
+            String email = "erikuser@gmail.com";
+            String password = "12345";
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
+            violations = validator.validate(requestDto);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
         }
@@ -61,16 +65,17 @@ class AccountRequestDtoAnnotationTest{
 
     @Nested
     class EmailFieldTest{
-        
-        @BeforeEach
-        void setUp(){
-            account = givenUserAccountRequestDto().orElseThrow();
-        }
 
         @Test
         void testInvalidNotBlank(){
-            account.setEmail("");
-            violations = validator.validate(account);
+            String email = "";
+            String password = "12345";
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
+            violations = validator.validate(requestDto);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be blank");
@@ -79,15 +84,28 @@ class AccountRequestDtoAnnotationTest{
 
         @Test
         void testValidNotBlank(){
-            violations = validator.validate(account);
+            String email = "erikuser@gmail.com";
+            String password = "12345";
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
+            violations = validator.validate(requestDto);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
         }
 
         @Test
         void testInvalidEmail(){
-            account.setEmail("notavalidemail,com");
-            violations = validator.validate(account);
+            String email = "notavalidemail,com";
+            String password = "12345";
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
+            violations = validator.validate(requestDto);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must be a well-formed email address");
@@ -96,7 +114,14 @@ class AccountRequestDtoAnnotationTest{
 
         @Test
         void testValidEmail(){
-            violations = validator.validate(account);
+            String email = "erikuser@gmail.com";
+            String password = "12345";
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
+            violations = validator.validate(requestDto);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
         }
@@ -106,15 +131,17 @@ class AccountRequestDtoAnnotationTest{
     @Nested
     class PasswordFieldTest{
 
-        @BeforeEach
-        void setUp(){
-            account = givenUserAccountRequestDto().orElseThrow();
-        }
-
         @Test
         void testInvalidNotBlank(){
-            account.setPassword("");
-            violations = validator.validate(account);
+
+            String email = "erikuser@gmail.com";
+            String password = "";
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
+            violations = validator.validate(requestDto);
             assertFalse(violations.isEmpty());
             assertThat(violations).hasSize(1);
             assertThat(violations).extracting(ConstraintViolation::getMessage).containsOnly("must not be blank");
@@ -123,7 +150,14 @@ class AccountRequestDtoAnnotationTest{
 
         @Test
         void testValidNotBlank(){
-            violations = validator.validate(account);
+            String email = "erikuser@gmail.com";
+            String password = "12345";
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
+            violations = validator.validate(requestDto);
             assertTrue(violations.isEmpty());
             assertThat(violations).hasSize(0);
         }

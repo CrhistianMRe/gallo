@@ -52,14 +52,9 @@ class AccountControllerTest {
     @Nested
     class CreateModuleTest {
 
-        AccountRequestDto requestDto;
 
         @BeforeEach
         void setUp() {
-            requestDto = new AccountRequestDto();
-            requestDto.setEmail("email@gmail.com");
-            requestDto.setPassword("12345");
-            requestDto.setPersonId(1L);
             doAnswer(invo ->{
                 Account account = AccountMapper.requestToEntity(invo.getArgument(0, AccountRequestDto.class));
                 Person person = getPersonInstance();
@@ -72,6 +67,14 @@ class AccountControllerTest {
         @Test
         void testCreate() throws Exception{
             //Given
+            
+            String email = "email@gmail.com";
+            String password = "12345";
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
             mockMvc.perform(post("/api/accounts")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 //Then
@@ -83,7 +86,13 @@ class AccountControllerTest {
 
         @Test
         void shouldReturnFieldMessageWhenFieldIsInvalid() throws Exception {
-            requestDto.setPassword("");
+            String email = "email@gmail.com";
+            String password = "";
+            Long personId = 1L;
+            boolean admin = false;
+
+            AccountRequestDto requestDto = new AccountRequestDto(email, password, personId, admin);
+
             mockMvc.perform(request(HttpMethod.POST, "/api/accounts")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())
@@ -208,17 +217,8 @@ class AccountControllerTest {
     @Nested
     class UpdateModuleTest {
 
-        AccountUpdateRequestDto requestDto;
-
         @BeforeEach
         void setUp() {
-            requestDto = new AccountUpdateRequestDto();
-            requestDto.setEmail("email@gmail.com");
-            requestDto.setEnabled(true);
-            requestDto.setPassword("12345");
-            requestDto.setPersonId(1L);
-            requestDto.setRoles(new ArrayList<>(List.of(new RoleRequestDto(1L, "role"))));
-            
             doAnswer(invo -> {
                 AccountAdminResponseDto responseDto = null;
                 if(invo.getArgument(0, Long.class).equals(1L)) {
@@ -245,6 +245,15 @@ class AccountControllerTest {
 
         @Test
         void shouldReturnResponseWhenAccountIsUpdated() throws Exception {
+
+            String email = "email@gmail.com";
+            String password = "12345";
+            boolean enabled = true;
+            List<RoleRequestDto> roles = List.of(new RoleRequestDto(1L, "role"));
+            Long personId = 1L;
+
+            AccountUpdateRequestDto requestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+
             mockMvc.perform(patch("/api/accounts/1")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -258,6 +267,15 @@ class AccountControllerTest {
 
         @Test
         void shouldReturnNotFoundMessageWhenPathIdIsNotFound() throws Exception {
+
+            String email = "email@gmail.com";
+            String password = "12345";
+            boolean enabled = true;
+            List<RoleRequestDto> roles = List.of(new RoleRequestDto(1L, "role"));
+            Long personId = 1L;
+
+            AccountUpdateRequestDto requestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+            
             mockMvc.perform(patch("/api/accounts/2")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isNotFound())
@@ -266,7 +284,15 @@ class AccountControllerTest {
 
         @Test
         void shouldReturnFieldMessageWhenFieldIsInvalid() throws Exception {
-            requestDto.setEmail("email");
+
+            String email = "email";
+            String password = "12345";
+            boolean enabled = true;
+            List<RoleRequestDto> roles = List.of(new RoleRequestDto(1L, "role"));
+            Long personId = 1L;
+
+            AccountUpdateRequestDto requestDto = new AccountUpdateRequestDto(email, password, enabled, roles, personId);
+            
             mockMvc.perform(patch("/api/accounts/1")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())

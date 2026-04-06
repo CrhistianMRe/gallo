@@ -104,8 +104,6 @@ class WorkoutValidatorUnitTest {
         @BeforeEach
         void setUp() {
             list = new ArrayList<>();
-            requestDto = new WorkoutRequestDto();
-
             doAnswer(invo -> {
                 FieldInfoError error = null;
                 Long id = invo.getArgument(0, Long.class);
@@ -155,18 +153,24 @@ class WorkoutValidatorUnitTest {
 
         @Test
         void shouldNotThrowAnyExceptionWhenRequestIsValid() {
-            requestDto.setAccountId(1L);
-            requestDto.setWorkoutLength((short)1);
-            requestDto.setExerciseId(1L);
+            Long accountId = 1L;
+            LocalDate workoutDate = null;
+            short workoutLength = 1;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             assertDoesNotThrow(() -> workoutValidator.validateRequest(requestDto));
         }
 
         @Test
         void shouldThrowMaximumAmountOfErrorsWhenAllFieldsAreInvalid(){
-            requestDto.setAccountId(10L);
-            requestDto.setWorkoutLength((short)2);
-            requestDto.setExerciseId(2L);
+            Long accountId = 10L;
+            LocalDate workoutDate = null;
+            short workoutLength = 2;
+            Long exerciseId = 2L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             list = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutValidator.validateRequest(requestDto))
@@ -184,9 +188,12 @@ class WorkoutValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWhenAccountIsNotRegistered() {
-            requestDto.setAccountId(2L);
-            requestDto.setWorkoutLength((short)1);
-            requestDto.setExerciseId(1L);
+            Long accountId = 2L;
+            LocalDate workoutDate = null;
+            short workoutLength = 1;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             list = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutValidator.validateRequest(requestDto))
@@ -201,9 +208,12 @@ class WorkoutValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWhenExerciseDoesNotExist() {
-            requestDto.setAccountId(1L);
-            requestDto.setWorkoutLength((short)1);
-            requestDto.setExerciseId(2L);
+            Long accountId = 1L;
+            LocalDate workoutDate = null;
+            short workoutLength = 1;
+            Long exerciseId = 2L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             list = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutValidator.validateRequest(requestDto))
@@ -218,9 +228,12 @@ class WorkoutValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWhenUserIsNotAllowed() {
-            requestDto.setAccountId(3L);
-            requestDto.setWorkoutLength((short)1);
-            requestDto.setExerciseId(1L);
+            Long accountId = 3L;
+            LocalDate workoutDate = null;
+            short workoutLength = 1;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             list = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutValidator.validateRequest(requestDto))
@@ -235,9 +248,12 @@ class WorkoutValidatorUnitTest {
 
         @Test
         void shouldThrowExceptionWhenPerDayWorkoutLimitIsExceeded() {
-            requestDto.setAccountId(1L);
-            requestDto.setWorkoutLength((short)2);
-            requestDto.setExerciseId(1L);
+            Long accountId = 1L;
+            LocalDate workoutDate = null;
+            short workoutLength = 2;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             list = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutValidator.validateRequest(requestDto))
