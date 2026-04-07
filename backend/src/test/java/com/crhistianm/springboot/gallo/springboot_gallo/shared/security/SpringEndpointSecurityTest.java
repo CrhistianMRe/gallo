@@ -27,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
@@ -140,6 +141,7 @@ class SpringEndpointSecurityTest {
                 mockMvc.perform(post("/api/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", prefixWithToken))
+                    .andDo(MockMvcResultHandlers.log())
                     .andExpect(status().isBadRequest());
             }
 
