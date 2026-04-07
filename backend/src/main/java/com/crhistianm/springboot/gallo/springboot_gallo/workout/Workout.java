@@ -8,10 +8,12 @@ import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
 import com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSet;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -24,16 +26,20 @@ public class Workout {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private LocalDate workoutDate;
 
+    @Column(nullable = true)
     private short workoutLength;
 
     //This relationship is not bidirectional 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Exercise exercise;
 
     //bidirectional
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Account account;
 
     @OneToMany(mappedBy = "workout")

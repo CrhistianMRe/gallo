@@ -4,7 +4,11 @@ package com.crhistianm.springboot.gallo.springboot_gallo.exercise;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.crhistianm.springboot.gallo.springboot_gallo.bodypart.BodyPart;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,20 +28,25 @@ public class Exercise {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 60)
     private String name;
 
+    @Column(nullable = true, length = 200)
     private String description;
 
+    @Column(nullable = false)
+    @ColumnDefault(value = "false")
     private Boolean weightRequired;
 
+    @Column(nullable = true, length = 255)
     private String imageUrl;
 
     //Not bidirectional as i only expect to need bodyparts of a exercise, not inverse
     @ManyToMany
     @JoinTable(
         name = "exercise_body_part",
-        joinColumns = @JoinColumn (name = "exercise_id"),
-        inverseJoinColumns = @JoinColumn(name = "body_part_id"),
+        joinColumns = @JoinColumn (name = "exercise_id", nullable = false),
+        inverseJoinColumns = @JoinColumn(name = "body_part_id", nullable = false),
         uniqueConstraints = {@UniqueConstraint(columnNames = {"exercise_id", "body_part_id"})}
     )
     private List<BodyPart> bodyParts;

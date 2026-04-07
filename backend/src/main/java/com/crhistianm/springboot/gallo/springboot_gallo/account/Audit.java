@@ -2,6 +2,9 @@ package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.ColumnDefault;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -9,10 +12,14 @@ import jakarta.persistence.PreUpdate;
 @Embeddable
 class Audit {
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = true)
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
+    @ColumnDefault(value = "true")
     private boolean enabled;
 
     @PrePersist

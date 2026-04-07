@@ -31,23 +31,25 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, length = 100)
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false, length = 150)
     private String password;
 
     @Embedded
     private Audit audit = new Audit();
 
     @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(nullable = false, unique = true)
     private Person person;
 
     @ManyToMany
     @JoinTable(
         name = "account_role",
-        joinColumns = @JoinColumn(name = "account_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id"),
+        joinColumns = @JoinColumn(name = "account_id", nullable = false),
+        inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false),
         uniqueConstraints = {@UniqueConstraint(columnNames = {"account_id", "role_id"})}
     )
     private List<Role> roles;
