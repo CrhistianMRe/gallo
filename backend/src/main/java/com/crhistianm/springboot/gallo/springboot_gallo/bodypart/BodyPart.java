@@ -15,7 +15,7 @@ public class BodyPart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 45, nullable = false)
     private String name;
 
     BodyPart() {

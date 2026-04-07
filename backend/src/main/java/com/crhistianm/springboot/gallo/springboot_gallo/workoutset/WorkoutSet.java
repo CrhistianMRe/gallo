@@ -1,11 +1,15 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.crhistianm.springboot.gallo.springboot_gallo.workout.Workout;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -17,14 +21,19 @@ public class WorkoutSet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, precision = 2)
     private Byte repAmount;
 
+    @Column(nullable = false, precision = 5)
     private Double weightAmount;
 
+    @Column(nullable = false)
+    @ColumnDefault(value = "false")
     private Boolean toFailure;
 
     //Bidirectional
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Workout workout;
 
     WorkoutSet(){

@@ -2,6 +2,8 @@ package com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
 
 import jakarta.persistence.Column;
@@ -28,6 +30,7 @@ public class RefreshToken {
     private LocalDateTime expiresAt;
 
     @Column(nullable = false)
+    @ColumnDefault(value = "false")
     private Boolean revoked;
 
     @ManyToOne

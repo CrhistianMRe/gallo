@@ -2,6 +2,8 @@ package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.Check;
+
 import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -20,19 +22,28 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 45)
     private String firstName;
 
+    @Column(nullable = false, length = 45)
     private String lastName;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, length = 16)
     private String phoneNumber;
 
+    @Column(nullable = false)
     private LocalDate birthDate;
 
+    @Column(nullable = false, length = 2)
+    @Check(constraints = "gender IN ('M', 'F', 'NT')")
     private String gender;
 
+    @Column(nullable = true, precision = 3)
+    @Check(constraints = "height >= 0.50 AND height <= 3.00")
     private Double height;
 
+    @Column(nullable = true, precision = 4)
+    @Check(constraints = "weight >= 020.0 AND weight <= 200.0")
     private Double weight;
 
     @OneToOne(mappedBy = "person", cascade = CascadeType.REMOVE)
