@@ -33,10 +33,19 @@ class JwtValidationFilter extends BasicAuthenticationFilter {
 
     private final Environment env;
 
-    JwtValidationFilter(AuthenticationManager authenticationManager, AccountUserDetailsService accountService, Environment env) {
+    private final ObjectMapper objectMapper;
+
+    JwtValidationFilter
+        (
+         AuthenticationManager authenticationManager,
+         AccountUserDetailsService accountService,
+         Environment env,
+         ObjectMapper objectMapper
+         ) {
         super(authenticationManager);
         this.accountService = accountService;
-        this.env= env;
+        this.env = env;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -62,9 +71,8 @@ class JwtValidationFilter extends BasicAuthenticationFilter {
                 Object authoritiesClaims = claims.get("authorities");
 
                 Collection<? extends GrantedAuthority> authorities = Arrays.asList(
-                        new ObjectMapper()
+                        objectMapper
                         //Use JsonCreator to use role instead of authority
-                        .addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityJsonCreator.class)
                         //Read array of SimpleGrantedAuthority values
                         .readValue(authoritiesClaims.toString().getBytes(), SimpleGrantedAuthority[].class)
                         );

@@ -68,7 +68,7 @@ class SpringSecurityConfig {
                     .requestMatchers("/apidocs.html").permitAll()
                     .anyRequest().authenticated())
                     .addFilter(new JwtAuthenticationFilter(authenticationManager(), environment, refreshTokenService, objectMapper))
-                    .addFilter(new JwtValidationFilter(authenticationManager(), accountService, environment))
+                    .addFilter(new JwtValidationFilter(authenticationManager(), accountService, environment, objectMapper))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();

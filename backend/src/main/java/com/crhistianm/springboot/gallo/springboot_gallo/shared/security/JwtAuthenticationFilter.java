@@ -62,7 +62,7 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             String password = null;
 
             try {
-                account = new ObjectMapper().readValue(request.getInputStream(), Account.class);
+                account = objectMapper.readValue(request.getInputStream(), Account.class);
                 password = account.getPassword();
                 email = account.getEmail();
             } catch (StreamReadException e) {
@@ -89,7 +89,7 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
 
         Claims claims = Jwts.claims()
-            .add("authorities", new ObjectMapper().writeValueAsString(roles))
+            .add("authorities", objectMapper.writeValueAsString(roles))
             .add("accountId", accountId)
             .add("username", email)
             .build();
@@ -126,7 +126,7 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         body.put("message", env.getProperty("filter.authentication.unsuccessful"));
         body.put("error", failed.getMessage());
 
-        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+        response.getWriter().write(objectMapper.writeValueAsString(body));
         response.setStatus(401);
         response.setContentType(CONTENT_TYPE);
 
