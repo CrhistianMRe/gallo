@@ -34,7 +34,12 @@ class AccountRepositoryTest {
         Person person = getPersonInstance();
         person.setFirstName("two");
         person.setId(1L);
-        Account account = new AccountBuilder().email("example@gmail.com").person(person).build();
+
+        Account account = new AccountBuilder()
+            .email("example@gmail.com")
+            .password("password")
+            .person(person).build();
+
         accountRepository.save(account);
 
         assertTrue(accountRepository.findByEmail("example@gmail.com").isPresent());
