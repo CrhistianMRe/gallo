@@ -30,8 +30,7 @@ class AccountTest {
     @DisplayName("Testing per persists createdAt Date")
     @Sql(scripts = "classpath:personinserts.sql")
     void testLifeCyclePersist(){
-        Person person = getPersonInstance();
-        person.setFirstName("example");
+        Person person = entityManager.getReference(Person.class, 1L);
         Account account = new AccountBuilder().email("example@gmail.com").password("12345").person(person).build();
         boolean result = false;
         Account accountResult = accountRepository.save(account);
