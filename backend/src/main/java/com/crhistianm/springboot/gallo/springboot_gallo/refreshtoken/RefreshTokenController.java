@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 
 @RestController
@@ -21,6 +22,7 @@ class RefreshTokenController {
         this.refreshTokenService = refreshTokenService;
     }
 
+    @SecurityRequirements(value = {})
     @PostMapping
     ResponseEntity<Map<String, String>> generateNewToken(@Valid @RequestBody RefreshTokenRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(refreshTokenService.refreshAccessToken(requestDto));
