@@ -1,5 +1,7 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,22 +25,22 @@ public class PersonController {
     private PersonService personService;
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody PersonRequestDto personDto){
+    public ResponseEntity<PersonResponseDto> create(@Valid @RequestBody PersonRequestDto personDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDto));
     }
 
     @GetMapping
-    public ResponseEntity<?> viewAll(){
+    public ResponseEntity<List<PersonResponseDto>> viewAll(){
         return ResponseEntity.ok(personService.getAll());
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<?> viewById(@PathVariable Long id) {
+    public ResponseEntity<PersonResponseDto> viewById(@PathVariable Long id) {
          return ResponseEntity.ok(personService.getById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody PersonRequestDto person){
+    public ResponseEntity<PersonResponseDto> update(@PathVariable Long id, @Valid @RequestBody PersonRequestDto person){
         return ResponseEntity.ok(personService.update(id, person));
     }
 

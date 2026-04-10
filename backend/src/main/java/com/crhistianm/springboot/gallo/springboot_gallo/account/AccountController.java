@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.GroupsOrder;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -26,22 +29,34 @@ class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @ApiResponse
+    (
+     responseCode = "201",
+     content = @Content(
+         schema = @Schema(
+             type = "object",
+             oneOf = {AccountUserResponseDto.class, AccountAdminResponseDto.class}
+             ))
+    )
     @PostMapping
-    ResponseEntity<?> create(@Valid @RequestBody AccountRequestDto accountDto){
+    ResponseEntity<AccountResponseDto> create(@Valid @RequestBody AccountRequestDto accountDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.save(accountDto));
     }
 
     @PatchMapping("/{id}")
+    @AccountApiResponse200
     ResponseEntity<AccountResponseDto> update(@PathVariable Long id, @Validated(GroupsOrder.class) @RequestBody AccountUpdateRequestDto requestDto){
         return ResponseEntity.ok(accountService.update(id, requestDto)); 
     }
 
     @DeleteMapping("/{id}")
+    @AccountApiResponse200
     ResponseEntity<AccountResponseDto> delete(@PathVariable Long id) {
         return ResponseEntity.ok(accountService.delete(id));
     }
 
     @GetMapping("/{id}")
+    @AccountApiResponse200
     ResponseEntity<AccountResponseDto> viewById(@PathVariable Long id){
         return ResponseEntity.ok(accountService.getById(id));
     }
