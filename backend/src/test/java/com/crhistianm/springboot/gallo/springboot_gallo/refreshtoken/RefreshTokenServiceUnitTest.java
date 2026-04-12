@@ -100,10 +100,10 @@ class RefreshTokenServiceUnitTest {
 
         @Test
         void shouldReturnValidRefreshToken() {
-            Map<String, String> responseMap  = refreshTokenService.refreshAccessToken(requestDto);
+            RefreshTokenResponseDto responseDto = refreshTokenService.refreshAccessToken(requestDto);
 
-            assertThat(responseMap).extractingByKey("accessToken").asString().startsWith("eyJ");
-            assertThat(responseMap).extractingByKey("expiresAt").asString().isNotEmpty();
+            assertThat(responseDto).extracting(RefreshTokenResponseDto::getAccessToken).asString().startsWith("eyJ");
+            assertThat(responseDto).extracting(RefreshTokenResponseDto::getExpiresAt).asString().isNotEmpty();
 
             verify(refreshTokenRepository, times(1)).findByToken(requestDto.getRefreshToken());
         }

@@ -41,11 +41,11 @@ class RefreshTokenControllerTest {
     @BeforeEach
     void setUp() {
         doAnswer(invo -> {
-            Map<String, String> responseMap = new HashMap<>();
+            RefreshTokenResponseDto responseDto = new RefreshTokenResponseDto();
 
-            responseMap.put("accessToken", "valid");
+            responseDto.setAccessToken("valid");
 
-            return responseMap;
+            return responseDto;
         }).when(refreshTokenService).refreshAccessToken(any(RefreshTokenRequestDto.class));
 
     }
