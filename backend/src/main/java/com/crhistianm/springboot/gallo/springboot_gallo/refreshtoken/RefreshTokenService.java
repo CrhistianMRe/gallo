@@ -3,8 +3,6 @@ package com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -43,7 +41,7 @@ public class RefreshTokenService {
         }
 
     @Transactional(readOnly = true)
-    Map<String, String> refreshAccessToken(final RefreshTokenRequestDto requestDto) {
+    RefreshTokenResponseDto refreshAccessToken(final RefreshTokenRequestDto requestDto) {
         final String refreshToken = requestDto.getRefreshToken();
 
         refreshTokenValidator.validateTokenRefresh(refreshToken);
@@ -73,12 +71,12 @@ public class RefreshTokenService {
 
         final String accessToken = JwtUtils.createAccessJwt(email, claims, expiresAt);
 
-        Map<String, String> response = new HashMap<>();
+        RefreshTokenResponseDto responseDto = new RefreshTokenResponseDto();
 
-        response.put("accessToken", accessToken);
-        response.put("expiresAt", expiresAt.toInstant().toString());
+        responseDto.setAccessToken(accessToken);
+        responseDto.setExpiresAt(expiresAt.toInstant().toString());
 
-        return response;
+        return responseDto;
     }
 
     @Transactional

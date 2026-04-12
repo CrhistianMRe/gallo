@@ -1,7 +1,5 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken;
 
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +22,7 @@ class RefreshTokenController {
 
     @SecurityRequirements(value = {})
     @PostMapping
-    ResponseEntity<Map<String, String>> generateNewToken(@Valid @RequestBody RefreshTokenRequestDto requestDto) {
+    ResponseEntity<RefreshTokenResponseDto> generateNewToken(@Valid @RequestBody RefreshTokenRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(refreshTokenService.refreshAccessToken(requestDto));
     }
 
