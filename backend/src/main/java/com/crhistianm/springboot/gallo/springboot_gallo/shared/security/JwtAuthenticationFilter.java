@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,12 +41,14 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
     JwtAuthenticationFilter
         (
          AuthenticationManager authenticationManager,
          Environment env,
          RefreshTokenService refreshTokenService,
-         ObjectMapper objectMapper 
+         ObjectMapper objectMapper
         ) {
             setFilterProcessesUrl("/api/auth/login");
             this.authenticationManager = authenticationManager;
@@ -124,7 +128,7 @@ class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         Map<String, String> body = new HashMap<String, String>();
 
         body.put("message", env.getProperty("filter.authentication.unsuccessful"));
-        body.put("error", failed.getMessage());
+        LOGGER.error("Authentication failed", failed);
 
         response.getWriter().write(objectMapper.writeValueAsString(body));
         response.setStatus(401);
