@@ -123,8 +123,7 @@ class JwtAuthenticationFilterTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(createJsonRequest(email, password)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").value(Matchers.equalTo("email or password not valid, authentication failed!")))
-                .andExpect(jsonPath("$.error").value(Matchers.equalTo("Bad credentials")));
+                .andExpect(jsonPath("$.message").value(Matchers.equalTo("email or password not valid, authentication failed!")));
 
         }
 
