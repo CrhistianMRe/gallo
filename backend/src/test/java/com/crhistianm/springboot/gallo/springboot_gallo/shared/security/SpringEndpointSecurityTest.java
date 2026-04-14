@@ -237,7 +237,7 @@ class SpringEndpointSecurityTest {
             void shouldReturnNotFoundStatusWhenViewPageGetRequestIsSent() throws Exception {
                 mockMvc.perform(get("/api/workouts/1?page=0&size=4")
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isOk());
+                    .andExpect(status().isNotFound());
             }
 
             @Test
@@ -361,7 +361,7 @@ class SpringEndpointSecurityTest {
             void shouldReturnNotFoundStatusWhenViewPageGetRequestIsSent() throws Exception {
                 mockMvc.perform(get("/api/workouts/1?page=0&size=4")
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isOk());
+                    .andExpect(status().isNotFound());
             }
 
             @Test
