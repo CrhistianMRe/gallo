@@ -1,12 +1,11 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
-import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.ValidationServiceErrorList;
 import com.crhistianm.springboot.gallo.springboot_gallo.person.PersonValidationService;
 
 @Component
@@ -28,38 +27,39 @@ class AccountValidator {
     }
 
     void validateRequest(AccountRequestDto accountDto) {
-        List<FieldInfoError> fields = new ArrayList<>();
-        personService.validatePersonRegistered(accountDto.getPersonId()).ifPresent(fields::add);
+        ValidationServiceErrorList errorList = new ValidationServiceErrorList();
+
+        personService.validatePersonRegistered(accountDto.getPersonId()).ifPresent(errorList::add);
         //Null id as is account creation
-        accountService.validatePersonAssigned(null, accountDto).ifPresent(fields::add);
+        accountService.validatePersonAssigned(null, accountDto).ifPresent(errorList::add);
         //Null id as is account creation
-        accountService.validateUniqueEmail(null, accountDto).ifPresent(fields::add);
+        accountService.validateUniqueEmail(null, accountDto).ifPresent(errorList::add);
 
         if(accountDto.isAdmin()){
-            identityService.validateAdminRequired(accountDto, "admin").ifPresent(fields::add);
+            identityService.validateAdminRequired(accountDto, "admin").ifPresent(errorList::add);
         }
 
-        if(!fields.isEmpty()) throw new ValidationServiceException(fields);
+        errorList.throwFieldErrors();
     }
 
     void validateUpdateRequest(Long accountPathId, AccountUpdateRequestDto accountDto) {
-        List<FieldInfoError> fields = new ArrayList<>();
+        ValidationServiceErrorList errorList = new ValidationServiceErrorList();
 
-        identityService.validateAllowanceByAccountId(accountPathId).ifPresent(fields::add);
+        identityService.validateAllowanceByAccountId(accountPathId).ifPresent(errorList::add);
 
         if(accountDto.getPersonId() != null){ 
-            personService.validatePersonRegistered(accountDto.getPersonId()).ifPresent(fields::add);
-            accountService.validatePersonAssigned(accountPathId, accountDto).ifPresent(fields::add);
-            identityService.validateAdminRequired(accountDto, "personId").ifPresent(fields::add);
+            personService.validatePersonRegistered(accountDto.getPersonId()).ifPresent(errorList::add);
+            accountService.validatePersonAssigned(accountPathId, accountDto).ifPresent(errorList::add);
+            identityService.validateAdminRequired(accountDto, "personId").ifPresent(errorList::add);
         }
-        if(accountDto.getEmail() != null) accountService.validateUniqueEmail(accountPathId, accountDto).ifPresent(fields::add);
-        if(accountDto.isEnabled() != null) identityService.validateAdminRequired(accountDto, "enabled").ifPresent(fields::add);
+        if(accountDto.getEmail() != null) accountService.validateUniqueEmail(accountPathId, accountDto).ifPresent(errorList::add);
+        if(accountDto.isEnabled() != null) identityService.validateAdminRequired(accountDto, "enabled").ifPresent(errorList::add);
         if(!accountDto.getRoles().isEmpty()) {
-            identityService.validateAdminRequired(accountDto, "roles").ifPresent(fields::add);
-            fields.addAll(accountDto.getRoles().stream().flatMap(role -> roleService.validateRoleExists(role).stream()).toList());
+            identityService.validateAdminRequired(accountDto, "roles").ifPresent(errorList::add);
+            errorList.addAll(accountDto.getRoles().stream().flatMap(role -> roleService.validateRoleExists(role).stream()).toList());
         }
 
-        if(!fields.isEmpty()) throw new ValidationServiceException(fields);
+        errorList.throwFieldErrors();
     }
 
     void validateByIdRequest(Long accountId) {

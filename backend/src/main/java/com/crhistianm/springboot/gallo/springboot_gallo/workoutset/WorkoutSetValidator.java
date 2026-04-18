@@ -1,13 +1,9 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.IdentityVerificationService;
-import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
-import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.ValidationServiceErrorList;
 import com.crhistianm.springboot.gallo.springboot_gallo.workout.WorkoutValidationService;
 
 @Component
@@ -31,7 +27,7 @@ class WorkoutSetValidator {
         }
 
     void validateSaveAllRequest(WorkoutSetRequestDto requestDto) {
-        List<FieldInfoError> errorFields = new ArrayList<>();
+        ValidationServiceErrorList errorFields = new ValidationServiceErrorList();
 
         workoutValidationService.validateWorkoutExistence(requestDto.getWorkoutId()).ifPresent(errorFields::add);
 
@@ -40,7 +36,7 @@ class WorkoutSetValidator {
         final byte LIMIT = 10;
         workoutSetValidationService.validateWorkoutSetLimit(requestDto, LIMIT).ifPresent(errorFields::add);
 
-        if(!errorFields.isEmpty()) throw new ValidationServiceException(errorFields);
+        errorFields.throwFieldErrors();
     }
 
 }
