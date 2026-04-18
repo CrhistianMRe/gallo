@@ -36,9 +36,13 @@ class WorkoutValidator {
         }
 
     void validateByIdRequest(Long accountId) {
-        identityService.validateAllowanceByAccountId(accountId).ifPresent(f -> {
-            throw new ValidationServiceException(List.of(f));
-        });
+        List<FieldInfoError> errorList = new ArrayList<>();
+
+        accountService.validateAccountRegistered(accountId).ifPresent(errorList::add);
+        identityService.validateAllowanceByAccountId(accountId).ifPresent(errorList::add);
+
+            //Aqui te quedaste tenes que verificar sin tirar el 404 en las que son ambiguas como esta
+        if(!errorList.isEmpty()) throw new ValidationServiceException(errorList);
     }
 
     void validateRequest(WorkoutRequestDto requestDto) {
