@@ -10,13 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.RequestDto;
-import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
-import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorMapper;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoError;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.security.CustomAccountUserDetails;
-import com.crhistianm.springboot.gallo.springboot_gallo.workout.Workout;
-
 
 @Service
 public class IdentityVerificationService {
@@ -46,7 +42,7 @@ public class IdentityVerificationService {
     public Optional<FieldInfoError> validateUserAllowanceByPersonId(Long personId) {
         if(personId == null) return Optional.empty();
         FieldInfoError infoError = null;
-        Long accountId = accountRepository.findAccountByPersonId(personId).orElseThrow(() -> new NotFoundException(Account.class)).getId();
+        Long accountId = accountRepository.findAccountByPersonId(personId).orElseThrow().getId();
         if(!isUserAllowed(accountId)){
             infoError = new FieldInfoErrorBuilder()
                     .name("path id")
@@ -76,7 +72,7 @@ public class IdentityVerificationService {
         FieldInfoError infoError  = null;
 
         Long accountId = accountRepository.findAccountByWorkoutId(workoutId)
-            .orElseThrow(() -> new NotFoundException(Workout.class)).getId();
+            .orElseThrow().getId();
 
         if(!isUserAllowed(accountId)) {
             infoError =  new FieldInfoErrorBuilder()
