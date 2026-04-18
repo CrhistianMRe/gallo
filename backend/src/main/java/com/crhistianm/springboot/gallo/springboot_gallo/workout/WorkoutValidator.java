@@ -39,7 +39,11 @@ class WorkoutValidator {
     void validateByIdRequest(Long accountId) {
         ValidationServiceErrorList errorList = new ValidationServiceErrorList();
 
-        accountService.validateAccountRegistered(accountId).ifPresent(errorList::add);
+        accountService.validateAccountRegistered(accountId).ifPresent(error -> {
+            errorList.add(error);
+            errorList.throwFieldErrors();
+        });
+
         identityService.validateAllowanceByAccountId(accountId).ifPresent(errorList::add);
 
         errorList.throwFieldErrors();
@@ -48,8 +52,15 @@ class WorkoutValidator {
     void validateRequest(WorkoutRequestDto requestDto) {
         ValidationServiceErrorList errorList = new ValidationServiceErrorList();
 
-        accountService.validateAccountRegistered(requestDto.getAccountId()).ifPresent(errorList::add);
-        exerciseService.validateExerciseExistence(requestDto.getExerciseId()).ifPresent(errorList::add);
+        accountService.validateAccountRegistered(requestDto.getAccountId()).ifPresent(error -> {
+            errorList.add(error);
+            errorList.throwFieldErrors();
+        });
+
+        exerciseService.validateExerciseExistence(requestDto.getExerciseId()).ifPresent(error -> {
+            errorList.add(error);
+            errorList.throwFieldErrors();
+        });
 
         identityService.validateAllowanceByAccountId(requestDto.getAccountId()).ifPresent(errorList::add);
 

@@ -29,7 +29,10 @@ class WorkoutSetValidator {
     void validateSaveAllRequest(WorkoutSetRequestDto requestDto) {
         ValidationServiceErrorList errorFields = new ValidationServiceErrorList();
 
-        workoutValidationService.validateWorkoutExistence(requestDto.getWorkoutId()).ifPresent(errorFields::add);
+        workoutValidationService.validateWorkoutExistence(requestDto.getWorkoutId()).ifPresent(error -> {
+            errorFields.add(error);
+            errorFields.throwFieldErrors();
+        });
 
         identityVerificationService.validateUserAllowanceByWorkoutId(requestDto.getWorkoutId()).ifPresent(errorFields::add);
 
