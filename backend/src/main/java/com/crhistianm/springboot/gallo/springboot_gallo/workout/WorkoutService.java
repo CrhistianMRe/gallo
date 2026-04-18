@@ -8,10 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.Account;
 import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
-import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
 
 import jakarta.persistence.EntityManager;
-
 
 @Service
 class WorkoutService {
@@ -30,7 +28,6 @@ class WorkoutService {
 
     @Transactional(readOnly = true)
     PagedModel<WorkoutResponseDto> getByAccountId(Long accountId, int page, int size) {
-        if(!workoutRepository.existsByAccountId(accountId)) throw new NotFoundException(Workout.class);
         workoutValidator.validateByIdRequest(accountId);
         Page<WorkoutResponseDto> responsePage = workoutRepository.findByAccountId(accountId, PageRequest.of(page, size))
             .map(WorkoutMapper::entityToResponse);
