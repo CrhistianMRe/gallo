@@ -64,11 +64,6 @@ class WorkoutServiceUnitTest {
         void setUp() {
             accountId = null;
 
-            doAnswer(invo ->{
-                Long argAccountId = invo.getArgument(0, Long.class);
-                return !argAccountId.equals(99L);
-            }).when(workoutRepository).existsByAccountId(anyLong());
-
             lenient().doAnswer(invo -> {
                 if(!invo.getArgument(0, Long.class).equals(1L)) throw new ValidationServiceException();
                 return null;
@@ -108,7 +103,6 @@ class WorkoutServiceUnitTest {
             assertThat(listResponse).extracting(WorkoutResponseDto::getWorkoutDate).contains(LocalDate.of(2000, 01, 01)).hasSize(4);
 
             verify(workoutValidator, times(1)).validateByIdRequest(eq(accountId));
-            verify(workoutRepository, times(1)).existsByAccountId(eq(accountId));
             verify(workoutRepository, times(1)).findByAccountId(eq(accountId), eq(PageRequest.of(0, 1)));
         }
 
@@ -117,23 +111,8 @@ class WorkoutServiceUnitTest {
             accountId = 2L;
             assertThatExceptionOfType(Exception.class).isThrownBy(() -> workoutService.getByAccountId(accountId, 0, 1));
 
-            verify(workoutRepository, times(1)).existsByAccountId(accountId);
-            verifyNoMoreInteractions(workoutRepository);
             verify(workoutValidator, times(1)).validateByIdRequest(eq(accountId));
-        }
-
-        @Test
-        void shouldThrowNotFoundException() {
-            accountId = 99L;
-            String message = assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> workoutService.getByAccountId(accountId, 0, 1))
-                .actual().getMessage();
-
-            assertThat(message).isEqualTo("Workout not found");
-
-            verify(workoutRepository, times(1)).existsByAccountId(eq(accountId));
-            verifyNoMoreInteractions(workoutRepository);
-            verifyNoInteractions(workoutValidator);
+            verifyNoInteractions(workoutRepository);
         }
 
     } 

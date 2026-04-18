@@ -234,10 +234,10 @@ class SpringEndpointSecurityTest {
         class Workout {
 
             @Test
-            void shouldReturnNotFoundStatusWhenViewPageGetRequestIsSent() throws Exception {
+            void shouldReturnBadRequestStatusWhenViewPageGetRequestIsSent() throws Exception {
                 mockMvc.perform(get("/api/workouts/1?page=0&size=4")
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isBadRequest());
             }
 
             @Test
@@ -358,10 +358,10 @@ class SpringEndpointSecurityTest {
         class Workout {
 
             @Test
-            void shouldReturnNotFoundStatusWhenViewPageGetRequestIsSent() throws Exception {
+            void shouldReturnBadRequestStatusWhenViewPageGetRequestIsSent() throws Exception {
                 mockMvc.perform(get("/api/workouts/1?page=0&size=4")
                         .header("Authorization", prefixWithToken))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isBadRequest());
             }
 
             @Test
