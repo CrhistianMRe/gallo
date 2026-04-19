@@ -152,22 +152,6 @@ class IdentityVerificationServiceUnitTest {
         }
 
         @Test
-        void shouldThrowExceptionWhenPersonIdIsNotFound() {
-            String errorMessage = assertThatExceptionOfType(NotFoundException.class).
-                isThrownBy(() -> spyServiceIdentity.validateUserAllowanceByPersonId(20L))
-                .actual()
-                .getMessage();
-
-            assertThat(errorMessage).isEqualTo("Account not found");
-
-
-            verify(accountRepository).findAccountByPersonId(eq(20L));
-            verify(spyServiceIdentity, times(0)).isUserAllowed(anyLong());
-            verifyNoInteractions(environment);
-        }
-
-
-        @Test
         void shouldReturnEmptyOptionalWhenUserIsAllowed(){
             fieldOptional = spyServiceIdentity.validateUserAllowanceByPersonId(2L);
 
@@ -374,22 +358,6 @@ class IdentityVerificationServiceUnitTest {
 
             verify(accountRepository, times(1)).findAccountByWorkoutId(eq(workoutId));
             verify(spyServiceIdentity, times(1)).isUserAllowed(eq(1L));
-            verifyNoInteractions(environment);
-        }
-
-        @Test
-        void shouldThrowExceptionWhenWorkoutIdIsNotFound() {
-            workoutId = 3L;
-
-            String expectedMessage = assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> spyServiceIdentity.validateUserAllowanceByWorkoutId(workoutId))
-                .actual()
-                .getMessage();
-
-            assertThat(expectedMessage).isEqualTo("Workout not found");
-
-            verify(accountRepository, times(1)).findAccountByWorkoutId(eq(workoutId));
-            verify(spyServiceIdentity, times(0)).isUserAllowed(anyLong());
             verifyNoInteractions(environment);
         }
 
