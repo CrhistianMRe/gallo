@@ -8,8 +8,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -51,34 +53,68 @@ class WorkoutValidatorUnitTest {
     private WorkoutValidator workoutValidator;
 
     @Nested
-    class ViewModule {
+    class ValidateByIdRequestMethodTest {
 
         Long accountId;
 
         @BeforeEach
         void setUp() {
             accountId = null;
-            doAnswer(invo -> {
-                FieldInfoError errorOptional = null;
-                if(invo.getArgument(0, Long.class).equals(2L)) {
-                    errorOptional = new FieldInfoErrorBuilder().name("error").build();
+            lenient().doAnswer(invo -> {
+                FieldInfoError fieldError = null;
+
+                final Long argAccountId = invo.getArgument(0, Long.class);
+
+                if(!argAccountId.equals(1L)) {
+                    fieldError = new FieldInfoErrorBuilder().name("allowance").build();
                 }
-                return Optional.ofNullable(errorOptional);
+                return Optional.ofNullable(fieldError);
             }).when(identityVerificationService).validateAllowanceByAccountId(anyLong());
+
+            doAnswer(invo ->{
+                FieldInfoError fieldError = null;
+
+                final Long argAccountId = invo.getArgument(0, Long.class);
+
+                if(argAccountId.equals(2L)) fieldError = new FieldInfoErrorBuilder().name("registered").build();
+
+                return Optional.ofNullable(fieldError);
+            }).when(accountService).validateAccountRegistered(anyLong());
 
         }
 
         @Test
-        void shouldThrowValidationExceptionWhenUserIsNotAllowed() {
+        void shouldThrowValidationExceptionWithOnlyAccountRegisteredError() {
             accountId = 2L;
 
-            String errorName = assertThatExceptionOfType(ValidationServiceException.class)
+            final List<FieldInfoError> errorList = assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> workoutValidator.validateByIdRequest(accountId))
-                .actual().getFieldErrors().get(0).getName();
+                .actual()
+                .getFieldErrors();
 
-            assertThat(errorName).isEqualTo("error");
+            assertThat(errorList).hasSize(1);
 
-            verify(identityVerificationService).validateAllowanceByAccountId(accountId);
+            assertThat(errorList).extracting(FieldInfoError::getName).containsOnlyOnce("registered");
+                
+            verify(accountService, times(1)).validateAccountRegistered(eq(accountId));
+            verifyNoInteractions(identityVerificationService);
+        }
+
+        @Test
+        void shouldThrowValidationExceptionWithOnlyInvalidAllowanceError() {
+            accountId = 3L;
+
+            final List<FieldInfoError> errorList = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutValidator.validateByIdRequest(accountId))
+                .actual()
+                .getFieldErrors();
+
+            assertThat(errorList).hasSize(1);
+
+            assertThat(errorList).extracting(FieldInfoError::getName).containsOnlyOnce("allowance");
+
+            verify(accountService, times(1)).validateAccountRegistered(eq(accountId));
+            verify(identityVerificationService, times(1)).validateAllowanceByAccountId(eq(accountId));
         }
 
         @Test
@@ -86,7 +122,9 @@ class WorkoutValidatorUnitTest {
             accountId = 1L;
             assertDoesNotThrow(() -> workoutValidator.validateByIdRequest(accountId));
 
-            verify(identityVerificationService).validateAllowanceByAccountId(accountId);
+
+            verify(accountService, times(1)).validateAccountRegistered(eq(accountId));
+            verify(identityVerificationService, times(1)).validateAllowanceByAccountId(eq(accountId));
         }
 
     }
@@ -108,32 +146,33 @@ class WorkoutValidatorUnitTest {
                 FieldInfoError error = null;
                 Long id = invo.getArgument(0, Long.class);
 
-                if(id.equals(2L)) error = new FieldInfoErrorBuilder().name("accountRegisteredError").build();
                 if(id.equals(10L)) error = new FieldInfoErrorBuilder().name("accountRegisteredError").build();
 
                 return Optional.ofNullable(error);
             }).when(accountService).validateAccountRegistered(anyLong());
 
-            doAnswer(invo -> {
+            lenient().doAnswer(invo -> {
                 FieldInfoError error = null;
                 Long id = invo.getArgument(0, Long.class);
 
                 if(id.equals(2L)) error = new FieldInfoErrorBuilder().name("exerciseExistenceError").build();
+                if(id.equals(10L)) error = new FieldInfoErrorBuilder().name("exerciseExistenceError").build();
 
                 return Optional.ofNullable(error);
             }).when(exerciseService).validateExerciseExistence(anyLong());
 
-            doAnswer(invo -> {
+            lenient().doAnswer(invo -> {
                 FieldInfoError error = null;
                 Long id = invo.getArgument(0, Long.class);
 
+                if(id.equals(2L)) error = new FieldInfoErrorBuilder().name("allowanceByAccountIdError").build();
                 if(id.equals(3L)) error = new FieldInfoErrorBuilder().name("allowanceByAccountIdError").build();
                 if(id.equals(10L)) error = new FieldInfoErrorBuilder().name("allowanceByAccountIdError").build();
 
                 return Optional.ofNullable(error);
             }).when(identityVerificationService).validateAllowanceByAccountId(anyLong());
 
-            doAnswer(invo -> {
+            lenient().doAnswer(invo -> {
                 FieldInfoError error = null;
                 WorkoutRequestDto argRequestDto = invo.getArgument(0, WorkoutRequestDto.class);
 
@@ -141,14 +180,6 @@ class WorkoutValidatorUnitTest {
 
                 return Optional.ofNullable(error);
             }).when(workoutService).validatePerDayWorkoutLimit(any(WorkoutRequestDto.class), anyInt());
-        }
-
-        @AfterEach
-        void setUpAfterEach() {
-            verify(workoutService, times(1)).validatePerDayWorkoutLimit(eq(requestDto), eq(2));
-            verify(accountService, times(1)).validateAccountRegistered(requestDto.getAccountId());
-            verify(exerciseService, times(1)).validateExerciseExistence(requestDto.getExerciseId());
-            verify(identityVerificationService, times(1)).validateAllowanceByAccountId(requestDto.getAccountId());
         }
 
         @Test
@@ -161,11 +192,66 @@ class WorkoutValidatorUnitTest {
             requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
 
             assertDoesNotThrow(() -> workoutValidator.validateRequest(requestDto));
+
+            verify(accountService, times(1)).validateAccountRegistered(eq(accountId));
+            verify(exerciseService, times(1)).validateExerciseExistence(eq(exerciseId));
+            verify(identityVerificationService, times(1)).validateAllowanceByAccountId(eq(accountId));
+            verify(workoutService, times(1)).validatePerDayWorkoutLimit(eq(requestDto), eq(2));
         }
 
         @Test
-        void shouldThrowMaximumAmountOfErrorsWhenAllFieldsAreInvalid(){
+        void shouldThrowMaximumOfTwoErrors(){
+            Long accountId = 3L;
+            LocalDate workoutDate = null;
+            short workoutLength = 2;
+            Long exerciseId = 1L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
+            list = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutValidator.validateRequest(requestDto))
+                .actual()
+                .getFieldErrors();
+
+            assertThat(list).isNotEmpty();
+            assertThat(list).hasSize(2);
+
+            assertThat(list).extracting(FieldInfoError::getName).containsOnlyOnce("perDayWorkoutLimitError");
+            assertThat(list).extracting(FieldInfoError::getName).containsOnlyOnce("allowanceByAccountIdError");
+
+            verify(accountService, times(1)).validateAccountRegistered(eq(accountId));
+            verify(exerciseService, times(1)).validateExerciseExistence(eq(exerciseId));
+            verify(identityVerificationService, times(1)).validateAllowanceByAccountId(eq(accountId));
+            verify(workoutService, times(1)).validatePerDayWorkoutLimit(eq(requestDto), eq(2));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenOnlyAccountIsNotRegistered() {
             Long accountId = 10L;
+            LocalDate workoutDate = null;
+            short workoutLength = 2;
+            Long exerciseId = 10L;
+
+            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
+
+            list = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutValidator.validateRequest(requestDto))
+                .actual()
+                .getFieldErrors();
+
+            assertThat(list).hasSize(1);
+
+            assertThat(list).extracting(FieldInfoError::getName).containsOnly("accountRegisteredError");
+
+            verify(accountService, times(1)).validateAccountRegistered(eq(accountId));
+            verifyNoInteractions(exerciseService);
+            verifyNoInteractions(identityVerificationService);
+            verifyNoInteractions(workoutService);
+        }
+
+        @Test
+        void shouldThrowExceptionOnlyExerciseDoesNotExist() {
+            Long accountId = 1L;
             LocalDate workoutDate = null;
             short workoutLength = 2;
             Long exerciseId = 2L;
@@ -177,57 +263,18 @@ class WorkoutValidatorUnitTest {
                 .actual()
                 .getFieldErrors();
 
-            assertThat(list).isNotEmpty();
-            assertThat(list).hasSize(4);
-
-            assertThat(list).extracting(FieldInfoError::getName).contains("exerciseExistenceError");
-            assertThat(list).extracting(FieldInfoError::getName).contains("perDayWorkoutLimitError");
-            assertThat(list).extracting(FieldInfoError::getName).contains("accountRegisteredError");
-            assertThat(list).extracting(FieldInfoError::getName).contains("allowanceByAccountIdError");
-        }
-
-        @Test
-        void shouldThrowExceptionWhenAccountIsNotRegistered() {
-            Long accountId = 2L;
-            LocalDate workoutDate = null;
-            short workoutLength = 1;
-            Long exerciseId = 1L;
-
-            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
-
-            list = assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> workoutValidator.validateRequest(requestDto))
-                .actual()
-                .getFieldErrors();
-
-            assertThat(list).isNotEmpty();
-            assertThat(list).hasSize(1);
-
-            assertThat(list).extracting(FieldInfoError::getName).containsOnly("accountRegisteredError");
-        }
-
-        @Test
-        void shouldThrowExceptionWhenExerciseDoesNotExist() {
-            Long accountId = 1L;
-            LocalDate workoutDate = null;
-            short workoutLength = 1;
-            Long exerciseId = 2L;
-
-            requestDto = new WorkoutRequestDto(accountId, workoutDate, workoutLength, exerciseId);
-
-            list = assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> workoutValidator.validateRequest(requestDto))
-                .actual()
-                .getFieldErrors();
-
-            assertThat(list).isNotEmpty();
             assertThat(list).hasSize(1);
 
             assertThat(list).extracting(FieldInfoError::getName).containsOnly("exerciseExistenceError");
+
+            verify(accountService, times(1)).validateAccountRegistered(eq(accountId));
+            verify(exerciseService, times(1)).validateExerciseExistence(eq(exerciseId));
+            verifyNoInteractions(identityVerificationService);
+            verifyNoInteractions(workoutService);
         }
 
         @Test
-        void shouldThrowExceptionWhenUserIsNotAllowed() {
+        void shouldThrowExceptionWithOnlyInvalidAllowanceError() {
             Long accountId = 3L;
             LocalDate workoutDate = null;
             short workoutLength = 1;
@@ -244,10 +291,15 @@ class WorkoutValidatorUnitTest {
             assertThat(list).hasSize(1);
 
             assertThat(list).extracting(FieldInfoError::getName).containsOnly("allowanceByAccountIdError");
+
+            verify(accountService, times(1)).validateAccountRegistered(eq(accountId));
+            verify(exerciseService, times(1)).validateExerciseExistence(eq(exerciseId));
+            verify(identityVerificationService, times(1)).validateAllowanceByAccountId(eq(accountId));
+            verify(workoutService, times(1)).validatePerDayWorkoutLimit(eq(requestDto), eq(2));
         }
 
         @Test
-        void shouldThrowExceptionWhenPerDayWorkoutLimitIsExceeded() {
+        void shouldThrowExceptionWithOnlyPerDayWorkoutLimitError() {
             Long accountId = 1L;
             LocalDate workoutDate = null;
             short workoutLength = 2;
@@ -264,6 +316,11 @@ class WorkoutValidatorUnitTest {
             assertThat(list).hasSize(1);
 
             assertThat(list).extracting(FieldInfoError::getName).containsOnly("perDayWorkoutLimitError");
+
+            verify(accountService, times(1)).validateAccountRegistered(eq(accountId));
+            verify(exerciseService, times(1)).validateExerciseExistence(eq(exerciseId));
+            verify(identityVerificationService, times(1)).validateAllowanceByAccountId(eq(accountId));
+            verify(workoutService, times(1)).validatePerDayWorkoutLimit(eq(requestDto), eq(2));
         }
 
     }
