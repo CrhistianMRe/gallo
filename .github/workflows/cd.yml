@@ -43,6 +43,6 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --parameters commands='[
               "aws s3 cp s3://${{ secrets.S3_BUCKET }}/${{ env.JAR_NAME }} /home/ec2-user/app/${{ env.JAR_NAME }}",
-              "pkill -f springboot-gallo || true",
-              "source /home/ec2-user/.bashrc && nohup java -jar /home/ec2-user/app/${{ env.JAR_NAME }} > /home/ec2-user/app/app.log 2>&1 & disown"
+              "ln -sf /home/ec2-user/app/${{ env.JAR_NAME }} /home/ec2-user/app/springboot-gallo.jar",
+              "sudo systemctl restart springboot-gallo"
             ]'
