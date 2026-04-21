@@ -14,10 +14,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.StringToClassMapItem;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestControllerAdvice
 public class HandlerExceptionController {
 
     @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class, ValidationServiceException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleValidationException(Exception ex){
         int status = HttpStatus.BAD_REQUEST.value();
         Map<String, String> errors = new LinkedHashMap<String, String>();
@@ -61,6 +69,17 @@ public class HandlerExceptionController {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ApiResponse(
+    responseCode = "404",
+    content = @Content(
+        schema = @Schema(
+            type = "object",
+            properties = {
+               @StringToClassMapItem(key = "date", value = String.class),
+               @StringToClassMapItem(key = "message", value = String.class),
+               @StringToClassMapItem(key = "status", value = String.class)
+            }))
+    )
     public Map<String, Object> handleNotFoundException(NotFoundException ex){
         Map<String, Object> errors = new HashMap<>();
         errors.put("date", new Date().toString());
