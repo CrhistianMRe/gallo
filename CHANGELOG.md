@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-04-21
+
+### Fixed 
+
+- Replace not found inconsistent responses to bad request response in workout module
+- Replace not found inconsistent responses to bad request response in workout-set module
+
 ## [0.2.0] - 2026-04-02
 
 ### Added
@@ -29,7 +36,8 @@
 - Swagger implementation
 - MariaDB integration
 
-[UNRELEASED]: https://github.com/CrhistianMRe/gallo-backend/compare/v0.1.0...HEAD
+[UNRELEASED]: https://github.com/CrhistianMRe/gallo-backend/compare/v0.2.1...HEAD
 
+[0.2.1]: https://github.com/CrhistianMRe/gallo-backend/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/CrhistianMRe/gallo-backend/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/CrhistianMRe/gallo-backend/commits/v0.1.0
