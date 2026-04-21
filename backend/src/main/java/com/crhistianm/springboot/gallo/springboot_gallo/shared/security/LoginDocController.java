@@ -32,7 +32,12 @@ class LoginDocController {
                 })
             )
         ),
-    responses = {@ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = SuccesfulAuthResponseDto.class)))}
+    responses = {
+        @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = SuccesfulAuthResponseDto.class))),
+        @ApiResponse(responseCode = "400", content = {}),
+        @ApiResponse(responseCode = "404", content = {}),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(example = "{\"message\": \"authentication message\"}")))
+        }
     )
     @PostMapping("/login")
     void login(){};
