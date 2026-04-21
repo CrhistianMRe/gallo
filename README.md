@@ -19,6 +19,8 @@
 > [!TIP]
 > Here you can find the API documentation https://gallospring.duckdns.org/apidocs.html.
 
+> By the moment, test the API with these credentials: email: "user@gmail.com", password: "12345"
+
 > [!IMPORTANT]
 > This is a sub-repo of [Gallo Project](https://github.com/CrhistianMRe/gallo).
 
