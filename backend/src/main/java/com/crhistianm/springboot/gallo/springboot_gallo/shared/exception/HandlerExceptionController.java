@@ -26,6 +26,19 @@ public class HandlerExceptionController {
 
     @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class, ValidationServiceException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ApiResponse(
+    responseCode = "400",
+    content = @Content(
+        schema = @Schema(
+            type = "object",
+            properties = {
+               @StringToClassMapItem(key = "field", value = String.class),
+               @StringToClassMapItem(key = "status", value = String.class)
+            },
+            example = "[{\"field\": \"the field field message\"}, {\"field2\": \"the field2 field message\"}, {\"...\": \"...\"}]"
+            )
+        )
+    )
     public ResponseEntity<?> handleValidationException(Exception ex){
         int status = HttpStatus.BAD_REQUEST.value();
         Map<String, String> errors = new LinkedHashMap<String, String>();
