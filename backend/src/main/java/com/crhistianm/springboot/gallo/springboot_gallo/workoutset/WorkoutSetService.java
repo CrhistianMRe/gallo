@@ -42,5 +42,17 @@ class WorkoutSetService {
         return responseDto;
     }
 
+    @Transactional(readOnly = true)
+    List<WorkoutSetResponseDto> getAllByWorkoutId(Long workoutId) {
+        List<WorkoutSet> entityList = workoutSetRepository.findAllByWorkoutId(workoutId);
+
+        List<WorkoutSetResponseDto> responseList = entityList
+            .stream()
+            .map(WorkoutSetMapper::entityToResponse)
+            .collect(Collectors.toList());
+
+        return responseList;
+    }
+
 
 }
