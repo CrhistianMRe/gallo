@@ -3,6 +3,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.assertArg;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -126,6 +128,61 @@ class WorkoutSetServiceUnitTest {
             verify(workoutSetValidator, times(1)).validateSaveAllRequest(eq(requestDto));
             verifyNoInteractions(entityManager);
             verifyNoInteractions(workoutSetRepository);
+        }
+
+    }
+
+    @Nested
+    class ViewModuleTest {
+
+        Long workoutId;
+
+        @BeforeEach
+        void setUp() {
+            doAnswer(invo -> {
+                final Long argWorkoutId = invo.getArgument(0, Long.class);
+                List<WorkoutSet> entityList = new ArrayList<>();
+
+                if(argWorkoutId.equals(1L)) {
+                    WorkoutSet set1 = new WorkoutSet();
+                    set1.setWeightAmount(10.00);
+                    set1.setToFailure(false);
+                    set1.setRepAmount((byte)10);
+
+                    WorkoutSet set2 = new WorkoutSet();
+                    set1.setWeightAmount(20.00);
+                    set1.setToFailure(true);
+                    set1.setRepAmount((byte)20);
+
+                    entityList.add(set1);
+                    entityList.add(set2);
+                }
+
+                return entityList;
+            }).when(workoutSetRepository).findAllByWorkoutId(anyLong());
+
+        }
+
+        @Test
+        void shouldReturnEmptyWorkoutSetList() {
+            workoutId = 2L;
+
+            List<WorkoutSetResponseDto> responseList = workoutSetService.getAllByWorkoutId(workoutId);
+
+            assertThat(responseList).isEmpty();
+
+            verify(workoutSetRepository, times(1)).findAllByWorkoutId(eq(workoutId));
+        }
+
+        @Test
+        void shouldReturnFilledWorkoutSetList() {
+            workoutId = 1L;
+
+            List<WorkoutSetResponseDto> responseList = workoutSetService.getAllByWorkoutId(workoutId);
+
+            assertThat(responseList).isNotEmpty();
+
+            verify(workoutSetRepository, times(1)).findAllByWorkoutId(eq(workoutId));
         }
 
     }
