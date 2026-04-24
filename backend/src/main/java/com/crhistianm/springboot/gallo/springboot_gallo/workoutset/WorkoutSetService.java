@@ -44,6 +44,8 @@ class WorkoutSetService {
 
     @Transactional(readOnly = true)
     List<WorkoutSetResponseDto> getAllByWorkoutId(Long workoutId) {
+        workoutSetValidator.validateByIdRequest(workoutId);
+
         List<WorkoutSet> entityList = workoutSetRepository.findAllByWorkoutId(workoutId);
 
         List<WorkoutSetResponseDto> responseList = entityList
