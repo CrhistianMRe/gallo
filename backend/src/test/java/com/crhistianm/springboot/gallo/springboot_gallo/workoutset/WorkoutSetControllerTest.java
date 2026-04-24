@@ -2,13 +2,18 @@ package com.crhistianm.springboot.gallo.springboot_gallo.workoutset;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.workoutset.WorkoutSetData.givenSetRequestDtoList;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doAnswer;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -103,6 +108,48 @@ class WorkoutSetControllerTest {
                 .andExpect(jsonPath("$.workoutId").value("the field workoutId must not be null"));
         }
     
+    }
+
+    @Nested
+    class ViewModuleTest {  
+
+        @BeforeEach
+        void setUp() {
+            doAnswer(invo -> {
+                List<WorkoutSetResponseDto> responseList = new ArrayList<>();
+
+                Integer repAmount = 10;
+                Double weightAmount = 10.00;
+                boolean toFailure = false;
+
+                WorkoutSetResponseDto responseDto = new WorkoutSetResponseDto(repAmount, weightAmount, toFailure);
+
+                repAmount = 20;
+                weightAmount = 20.00;
+                toFailure = true;
+
+                WorkoutSetResponseDto responseDto2 = new WorkoutSetResponseDto(repAmount, weightAmount, toFailure);
+
+                responseList.add(responseDto);
+                responseList.add(responseDto2);
+
+                return responseList;
+            }).when(workoutSetService).getAllByWorkoutId(anyLong());
+
+        }
+
+        @Test
+        void shouldReturnResponseList() throws Exception {
+            mockMvc.perform(get("/api/workout-sets/1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("[0].repAmount").value(10))
+                .andExpect(jsonPath("[0].weightAmount").value(10.00))
+                .andExpect(jsonPath("[0].toFailure").value(false))
+                .andExpect(jsonPath("[1].repAmount").value(20))
+                .andExpect(jsonPath("[1].weightAmount").value(20.00))
+                .andExpect(jsonPath("[1].toFailure").value(true));
+        }
+
     }
 
 }
