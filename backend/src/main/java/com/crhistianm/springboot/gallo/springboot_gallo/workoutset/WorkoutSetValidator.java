@@ -42,4 +42,17 @@ class WorkoutSetValidator {
         errorFields.throwFieldErrors();
     }
 
+    void validateByIdRequest(Long workoutId) {
+        ValidationServiceErrorList errorFields = new ValidationServiceErrorList();
+
+        workoutValidationService.validateWorkoutExistence(workoutId).ifPresent(error -> {
+            errorFields.add(error);
+            errorFields.throwFieldErrors();
+        });
+
+        identityVerificationService.validateUserAllowanceByWorkoutId(workoutId).ifPresent(errorFields::add);
+
+        errorFields.throwFieldErrors();
+    }
+
 }
