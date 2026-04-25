@@ -23,7 +23,6 @@ import jakarta.persistence.UniqueConstraint;
 @Table(name = "exercise")
 public class Exercise {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,11 +50,11 @@ public class Exercise {
     )
     private List<BodyPart> bodyParts;
 
-    public Exercise() {
+    Exercise() {
         this.bodyParts = new ArrayList<>();
     }
 
-    public Exercise(String name, String description, Boolean weightRequired, String imageUrl) {
+    Exercise(String name, String description, Boolean weightRequired, String imageUrl) {
         this();
         this.name = name;
         this.description = description;
