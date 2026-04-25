@@ -139,7 +139,7 @@ class WorkoutSetServiceUnitTest {
 
         @BeforeEach
         void setUp() {
-            doAnswer(invo -> {
+            lenient().doAnswer(invo -> {
                 final Long argWorkoutId = invo.getArgument(0, Long.class);
                 List<WorkoutSet> entityList = new ArrayList<>();
 
@@ -150,9 +150,9 @@ class WorkoutSetServiceUnitTest {
                     set1.setRepAmount((byte)10);
 
                     WorkoutSet set2 = new WorkoutSet();
-                    set1.setWeightAmount(20.00);
-                    set1.setToFailure(true);
-                    set1.setRepAmount((byte)20);
+                    set2.setWeightAmount(20.00);
+                    set2.setToFailure(true);
+                    set2.setRepAmount((byte)20);
 
                     entityList.add(set1);
                     entityList.add(set2);
@@ -160,6 +160,12 @@ class WorkoutSetServiceUnitTest {
 
                 return entityList;
             }).when(workoutSetRepository).findAllByWorkoutId(anyLong());
+
+            doAnswer(invo -> {
+                final Long argWorkoutId = invo.getArgument(0, Long.class);
+                if(argWorkoutId.equals(10L)) throw new ValidationServiceException();
+                return null;
+            }).when(workoutSetValidator).validateByIdRequest(anyLong());
 
         }
 
@@ -172,6 +178,7 @@ class WorkoutSetServiceUnitTest {
             assertThat(responseList).isEmpty();
 
             verify(workoutSetRepository, times(1)).findAllByWorkoutId(eq(workoutId));
+            verify(workoutSetValidator).validateByIdRequest(eq(workoutId));
         }
 
         @Test
@@ -183,6 +190,18 @@ class WorkoutSetServiceUnitTest {
             assertThat(responseList).isNotEmpty();
 
             verify(workoutSetRepository, times(1)).findAllByWorkoutId(eq(workoutId));
+            verify(workoutSetValidator).validateByIdRequest(eq(workoutId));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenRequestIsInvalid() {
+            workoutId = 10L;
+
+            assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutSetService.getAllByWorkoutId(workoutId));
+
+            verifyNoInteractions(workoutSetRepository);
+            verify(workoutSetValidator).validateByIdRequest(eq(workoutId));
         }
 
     }
