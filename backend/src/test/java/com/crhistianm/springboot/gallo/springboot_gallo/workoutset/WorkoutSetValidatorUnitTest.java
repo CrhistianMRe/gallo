@@ -215,5 +215,70 @@ class WorkoutSetValidatorUnitTest {
         }
 
     }
+
+
+    @Nested
+    class ValidateByIdRequestMethodTest {
+
+        List<FieldInfoError> expectedErrors;
+
+        Long workoutdId;
+
+        @BeforeEach
+        void setUp() {
+            doAnswer(invo ->{
+                FieldInfoError responseError = null;
+                final Long argWorkoutId = invo.getArgument(0, Long.class);
+                if(argWorkoutId.equals(4L)){
+                    responseError = new FieldInfoErrorBuilder().name("workoutExistence").build();
+                }
+                return Optional.ofNullable(responseError);
+            }).when(workoutValidationService).validateWorkoutExistence(anyLong());
+
+            lenient().doAnswer(invo -> {
+                FieldInfoError responseError = null;
+                final Long argWorkoutId = invo.getArgument(0, Long.class);
+                if(argWorkoutId.equals(3L) || argWorkoutId.equals(4L)) {
+                    responseError = new FieldInfoErrorBuilder().name("workoutAllowance").build();
+                }
+                return Optional.ofNullable(responseError);
+            }).when(identityVerificationService).validateUserAllowanceByWorkoutId(anyLong());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenOnlyWorkoutExistenceIsInvalid(){
+            Long workoutId = 4L;
+
+            expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutSetValidator.validateByIdRequest(workoutId))
+                .actual()
+                .getFieldErrors();
+
+            assertThat(expectedErrors).hasSize(1);
+
+            assertThat(expectedErrors).extracting(FieldInfoError::getName).containsOnlyOnce("workoutExistence");
+
+            verify(workoutValidationService, times(1)).validateWorkoutExistence(eq(workoutId));
+            verifyNoMoreInteractions(identityVerificationService);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenOnlyWorkoutUserAllowanceIsInvalid() {
+            Long workoutId = 3L;
+
+            expectedErrors = assertThatExceptionOfType(ValidationServiceException.class)
+                .isThrownBy(() -> workoutSetValidator.validateByIdRequest(workoutId))
+                .actual()
+                .getFieldErrors();
+
+            assertThat(expectedErrors).hasSize(1);
+
+            assertThat(expectedErrors).extracting(FieldInfoError::getName).containsOnlyOnce("workoutAllowance");
+
+            verify(workoutValidationService, times(1)).validateWorkoutExistence(eq(workoutId));
+            verify(identityVerificationService, times(1)).validateUserAllowanceByWorkoutId(eq(workoutId));
+        }
+
+    }
     
 }
