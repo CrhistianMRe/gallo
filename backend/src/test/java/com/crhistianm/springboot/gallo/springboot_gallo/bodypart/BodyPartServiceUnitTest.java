@@ -1,6 +1,9 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.bodypart;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -21,11 +24,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.ValidationServiceException;
+
 @ExtendWith(MockitoExtension.class)
 class BodyPartServiceUnitTest {
 
     @Mock
     private BodyPartRepository bodyPartRepository;
+
+    @Mock
+    private BodyPartValidator bodyPartValidator;
 
     @InjectMocks
     private BodyPartService bodyPartService;
@@ -69,8 +77,13 @@ class BodyPartServiceUnitTest {
 
         @BeforeEach
         void setUp() {
-
             doAnswer(invo -> {
+                final Long argExerciseID = invo.getArgument(0, Long.class);
+                if(argExerciseID.equals(99L)) throw new ValidationServiceException();
+                return null;
+            }).when(bodyPartValidator).validateByIdRequest(anyLong());
+
+            lenient().doAnswer(invo -> {
                 List<BodyPart> responseEntityList = new ArrayList<>();
 
                 responseEntityList.add(new BodyPartBuilder().name("part1").build());
@@ -90,10 +103,19 @@ class BodyPartServiceUnitTest {
             assertThat(expectedResponseList).isNotEmpty();
 
             verify(bodyPartRepository, times(1)).findAllByExerciseId(eq(exerciseId));
+            verify(bodyPartValidator, times(1)).validateByIdRequest(eq(exerciseId));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenRequestIsInvalid() {   
+            exerciseId = 99L;
+
+            assertThatException().isThrownBy(() -> bodyPartService.getAllByExerciseId(exerciseId));
+
+            verify(bodyPartValidator, times(1)).validateByIdRequest(eq(exerciseId));
+            verifyNoInteractions(bodyPartRepository);
         }
 
     }
 
-
-    
 }
