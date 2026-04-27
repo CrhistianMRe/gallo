@@ -20,5 +20,17 @@ class BodyPartService {
         return bodyPartRepository.findAll().stream().map(BodyPartMapper::entityToResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    List<BodyPartResponseDto> getAllByExerciseId(Long exerciseId) {
+        List<BodyPart> entityList = bodyPartRepository.findAllByExerciseId(exerciseId);
+
+        List<BodyPartResponseDto> responseList = entityList
+            .stream()
+            .map(BodyPartMapper::entityToResponse)
+            .collect(Collectors.toList());
+
+        return responseList;
+    }
+
 }
 

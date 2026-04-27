@@ -40,7 +40,6 @@ public class Exercise {
     @Column(nullable = true, length = 255)
     private String imageUrl;
 
-    //Not bidirectional as i only expect to need bodyparts of a exercise, not inverse
     @ManyToMany
     @JoinTable(
         name = "exercise_body_part",
