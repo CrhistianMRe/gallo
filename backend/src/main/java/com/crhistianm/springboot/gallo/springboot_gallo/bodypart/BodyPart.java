@@ -1,10 +1,15 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.bodypart;
 
+import java.util.List;
+
+import com.crhistianm.springboot.gallo.springboot_gallo.exercise.Exercise;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,6 +22,9 @@ public class BodyPart {
 
     @Column(unique = true, length = 45, nullable = false)
     private String name;
+
+    @ManyToMany(mappedBy = "bodyParts")
+    private List<Exercise> exercises;
 
     BodyPart() {
     }
@@ -39,6 +47,14 @@ public class BodyPart {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Exercise> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
     }
 
     @Override
