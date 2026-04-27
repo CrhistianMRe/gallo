@@ -11,8 +11,11 @@ class BodyPartService {
 
     private final BodyPartRepository bodyPartRepository;
 
-    BodyPartService(BodyPartRepository bodyPartRepository) {
+    private final BodyPartValidator bodyPartValidator;
+
+    BodyPartService(BodyPartRepository bodyPartRepository, BodyPartValidator bodyPartValidator) {
         this.bodyPartRepository = bodyPartRepository;
+        this.bodyPartValidator = bodyPartValidator;
     }
 
     @Transactional(readOnly = true)
@@ -22,6 +25,8 @@ class BodyPartService {
 
     @Transactional(readOnly = true)
     List<BodyPartResponseDto> getAllByExerciseId(Long exerciseId) {
+        bodyPartValidator.validateByIdRequest(exerciseId);
+
         List<BodyPart> entityList = bodyPartRepository.findAllByExerciseId(exerciseId);
 
         List<BodyPartResponseDto> responseList = entityList
