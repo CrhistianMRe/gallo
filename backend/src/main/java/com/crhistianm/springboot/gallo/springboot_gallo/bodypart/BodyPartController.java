@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,15 +26,16 @@ class BodyPartController {
         return ResponseEntity.ok(bodyPartService.getAll());
     }
 
-    @GetMapping("/{exerciseId}")
+    @GetMapping(params = {"exerciseId"})
     @Operation(
         responses = {
             @ApiResponse(responseCode = "404", content = {})
         }
     )
-    ResponseEntity<List<BodyPartResponseDto>> viewAllByExerciseId(@PathVariable Long exerciseId) {
+    ResponseEntity<List<BodyPartResponseDto>> viewAllByExerciseId(@RequestParam(required = true) Long exerciseId) {
         List<BodyPartResponseDto> responseList = bodyPartService.getAllByExerciseId(exerciseId);
         return ResponseEntity.ok(responseList);
     }
+    //Tenes que ver como arreglar esto juntando ambos o viendo como
     
 }
