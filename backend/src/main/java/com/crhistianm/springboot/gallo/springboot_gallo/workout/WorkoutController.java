@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +23,9 @@ class WorkoutController {
         this.workoutService = workoutService;
     }
 
-    @GetMapping("/{accountId}")
+    @GetMapping
     ResponseEntity<PagedModel<WorkoutResponseDto>> viewByAccountId (
-            @PathVariable Long accountId,
+            @RequestParam(required = true) Long accountId,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {

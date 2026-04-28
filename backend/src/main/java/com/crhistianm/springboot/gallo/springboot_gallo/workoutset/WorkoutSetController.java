@@ -6,10 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.GroupsOrder;
@@ -30,8 +30,8 @@ class WorkoutSetController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @GetMapping("/{workoutId}")
-    ResponseEntity<List<WorkoutSetResponseDto>> findAllByWorkoutId(@PathVariable Long workoutId) {
+    @GetMapping
+    ResponseEntity<List<WorkoutSetResponseDto>> findAllByWorkoutId(@RequestParam(required = true) Long workoutId) {
         List<WorkoutSetResponseDto> responseList = workoutSetService.getAllByWorkoutId(workoutId);
         return ResponseEntity.ok(responseList);
     }
