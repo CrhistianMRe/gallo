@@ -20,6 +20,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.GroupsOrder
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 
 @RestController
@@ -39,6 +40,7 @@ class AccountController {
              ))
     )
     @PostMapping
+    @SecurityRequirements(value = {})
     ResponseEntity<AccountResponseDto> create(@Valid @RequestBody AccountRequestDto accountDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.save(accountDto));
     }
