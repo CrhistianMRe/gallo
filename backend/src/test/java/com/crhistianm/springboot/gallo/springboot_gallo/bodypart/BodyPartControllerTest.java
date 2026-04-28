@@ -103,7 +103,7 @@ class BodyPartControllerTest {
         void shouldReturnResponseListWhenRequestIsSent() throws Exception {
             final Long exerciseId = 1L;
 
-            mockMvc.perform(get(String.format("/api/body-parts/%d", exerciseId)))
+            mockMvc.perform(get(String.format("/api/body-parts?exerciseId=%d", exerciseId)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("[0].name").value("part1"))
                 .andExpect(jsonPath("[0].id").value(1))
