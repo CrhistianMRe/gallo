@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
@@ -21,21 +22,28 @@ class BodyPartController {
         this.bodyPartService = bodyPartService;
     }
 
-    @GetMapping
-    ResponseEntity<List<BodyPartResponseDto>> viewAll() {
-        return ResponseEntity.ok(bodyPartService.getAll());
-    }
-
-    @GetMapping(params = {"exerciseId"})
     @Operation(
         responses = {
             @ApiResponse(responseCode = "404", content = {})
         }
     )
-    ResponseEntity<List<BodyPartResponseDto>> viewAllByExerciseId(@RequestParam(required = true) Long exerciseId) {
+    @GetMapping(name = "viewAll")
+    ResponseEntity<List<BodyPartResponseDto>> viewAll() {
+        return ResponseEntity.ok(bodyPartService.getAll());
+    }
+
+    @Operation(
+        responses = {
+            @ApiResponse(responseCode = "404", content = {})
+        }
+    )
+    @GetMapping(name = "viewAllByExerciseId", params = {"exerciseId"})
+    ResponseEntity<List<BodyPartResponseDto>> viewAllByExerciseId
+    (
+     @Parameter @RequestParam(required = false) Long exerciseId
+    ) {
         List<BodyPartResponseDto> responseList = bodyPartService.getAllByExerciseId(exerciseId);
         return ResponseEntity.ok(responseList);
     }
-    //Tenes que ver como arreglar esto juntando ambos o viendo como
-    
+
 }
