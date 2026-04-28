@@ -140,7 +140,7 @@ class WorkoutSetControllerTest {
 
         @Test
         void shouldReturnResponseList() throws Exception {
-            mockMvc.perform(get("/api/workout-sets/1").contentType(MediaType.APPLICATION_JSON))
+            mockMvc.perform(get("/api/workout-sets?workoutId=1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("[0].repAmount").value(10))
                 .andExpect(jsonPath("[0].weightAmount").value(10.00))

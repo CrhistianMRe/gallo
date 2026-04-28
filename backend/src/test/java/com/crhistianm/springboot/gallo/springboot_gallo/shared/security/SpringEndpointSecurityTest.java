@@ -235,7 +235,7 @@ class SpringEndpointSecurityTest {
 
             @Test
             void shouldReturnBadRequestStatusWhenViewPageGetRequestIsSent() throws Exception {
-                mockMvc.perform(get("/api/workouts/1?page=0&size=4")
+                mockMvc.perform(get("/api/workouts?workoutId=1&page=0&size=4")
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
             }
@@ -359,7 +359,7 @@ class SpringEndpointSecurityTest {
 
             @Test
             void shouldReturnBadRequestStatusWhenViewPageGetRequestIsSent() throws Exception {
-                mockMvc.perform(get("/api/workouts/1?page=0&size=4")
+                mockMvc.perform(get("/api/workouts?accountId=1&page=0&size=4")
                         .header("Authorization", prefixWithToken))
                     .andExpect(status().isBadRequest());
             }

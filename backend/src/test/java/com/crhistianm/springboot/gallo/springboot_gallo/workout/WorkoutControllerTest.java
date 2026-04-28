@@ -76,7 +76,7 @@ class WorkoutControllerTest {
             int size = 4;
             Long accountId = 1L;
 
-            String uri = String.format("/api/workouts/%d?page=%d&size=%d", accountId, page, size);
+            String uri = String.format("/api/workouts?accountId=%d&page=%d&size=%d", accountId, page, size);
 
             mockMvc.perform(request(HttpMethod.GET, uri))
                 .andExpect(status().isOk())
