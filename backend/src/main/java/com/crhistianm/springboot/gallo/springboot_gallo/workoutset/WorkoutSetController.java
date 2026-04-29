@@ -31,7 +31,7 @@ class WorkoutSetController {
     }
 
     @GetMapping
-    ResponseEntity<List<WorkoutSetResponseDto>> findAllByWorkoutId(@RequestParam(required = true) Long workoutId) {
+    ResponseEntity<List<WorkoutSetResponseDto>> viewAllByWorkoutId(@RequestParam(required = true) Long workoutId) {
         List<WorkoutSetResponseDto> responseList = workoutSetService.getAllByWorkoutId(workoutId);
         return ResponseEntity.ok(responseList);
     }
