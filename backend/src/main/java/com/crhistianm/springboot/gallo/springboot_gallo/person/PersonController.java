@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 
@@ -27,11 +29,21 @@ public class PersonController {
 
     @PostMapping
     @SecurityRequirements(value = {})
+    @Operation(
+        responses = {
+            @ApiResponse(responseCode = "404",content = {}),
+        }
+    )
     public ResponseEntity<PersonResponseDto> create(@Valid @RequestBody PersonRequestDto personDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDto));
     }
 
     @GetMapping
+    @Operation(
+        responses = {
+            @ApiResponse(responseCode = "404",content = {}),
+        }
+    )
     public ResponseEntity<List<PersonResponseDto>> viewAll(){
         return ResponseEntity.ok(personService.getAll());
     }

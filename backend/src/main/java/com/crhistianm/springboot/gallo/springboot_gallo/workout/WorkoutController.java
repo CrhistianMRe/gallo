@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.GroupsOrder;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("api/workouts")
 class WorkoutController {
@@ -24,6 +27,14 @@ class WorkoutController {
     }
 
     @GetMapping
+    @Operation(
+        responses = {
+            @ApiResponse(
+                responseCode = "404",
+                content = {}
+            )
+        }
+    )
     ResponseEntity<PagedModel<WorkoutResponseDto>> viewByAccountId (
             @RequestParam(required = true) Long accountId,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -33,6 +44,14 @@ class WorkoutController {
     }
 
     @PostMapping
+    @Operation(
+        responses = {
+            @ApiResponse(
+                responseCode = "404",
+                content = {}
+            )
+        }
+    )
     ResponseEntity<WorkoutResponseDto> create(@RequestBody @Validated (GroupsOrder.class) WorkoutRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(workoutService.save(requestDto));
     }

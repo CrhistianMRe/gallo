@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.GroupsOrder;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,17 +31,22 @@ class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @ApiResponse
-    (
-     responseCode = "201",
-     content = @Content(
-         schema = @Schema(
-             type = "object",
-             oneOf = {AccountUserResponseDto.class, AccountAdminResponseDto.class}
-             ))
-    )
     @PostMapping
     @SecurityRequirements(value = {})
+    @Operation( 
+        responses = {
+            @ApiResponse(responseCode = "404",content = {}), 
+            @ApiResponse
+            (
+             responseCode = "201",
+             content = @Content(
+                 schema = @Schema(
+                     type = "object",
+                     oneOf = {AccountUserResponseDto.class, AccountAdminResponseDto.class}
+                     ))
+            )
+        }
+    )
     ResponseEntity<AccountResponseDto> create(@Valid @RequestBody AccountRequestDto accountDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.save(accountDto));
     }
@@ -63,6 +69,11 @@ class AccountController {
         return ResponseEntity.ok(accountService.getById(id));
     }
 
+    @Operation( 
+        responses = {
+            @ApiResponse(responseCode = "404",content = {})
+        }
+    )
     @GetMapping
     ResponseEntity<List<AccountAdminResponseDto>> viewAll(){
         return ResponseEntity.ok(accountService.getAll());
