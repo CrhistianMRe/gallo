@@ -96,7 +96,7 @@ Provided repository layer between service and db creating queries derived by met
 
 SQL creation and insert script for retrieve and store of Gallo workout app.
 
-![DB ER-diagram](https://github.com/CrhistianMRe/gallo/docs/ERGallo.svg)
+![DB ER-diagram](https://github.com/CrhistianMRe/gallo/raw/main/docs/ERGallo.svg)
 
 </details>
 
