@@ -24,6 +24,7 @@ class ExerciseController {
     @Operation(
         responses = {
             @ApiResponse(responseCode = "404",content = {}),
+            @ApiResponse(responseCode = "400",content = {})
         }
     )
     ResponseEntity<List<ExerciseResponseDto>> viewAll() {
