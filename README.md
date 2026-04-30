@@ -1,10 +1,13 @@
 <div align="center">
-  <h1>Gallo Backend</h1>
+  <img src="gallogo_letra.png" width="200" />
+  <h1>Gallo</h1>
+  <h4>Gallo is a system composed of a backend REST API to allow client users to save, retrieve and update gym workout data</h4>
   <img alt="Wakatime" src="https://wakatime.com/badge/user/a5d3b539-fae9-4380-955b-fa971cded77a/project/e71ab9b3-4e30-404d-ba95-007256ce8280.svg"/>
   
-  ![Build](https://github.com/CrhistianMRe/gallo-backend/actions/workflows/ci.yml/badge.svg)
-  ![Deploy](https://github.com/CrhistianMRe/gallo-backend/actions/workflows/cd.yml/badge.svg)
+  ![Build](https://github.com/CrhistianMRe/gallo/actions/workflows/ci.yml/badge.svg)
+  ![Deploy](https://github.com/CrhistianMRe/gallo/actions/workflows/cd.yml/badge.svg)
 </div>
+
 
 <p align="center">
   <img alt="Java" src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white"/>
@@ -21,14 +24,11 @@
 
 > By the moment, test the API with these credentials: email: "user@gmail.com", password: "12345"
 
-> [!IMPORTANT]
-> This is a sub-repo of [Gallo Project](https://github.com/CrhistianMRe/gallo).
-
 ### Local Installation
 - MariaDB 10.6+ (12.2.2-MariaDB used in this project)
 
-1. Install **MariaDB** server database with Gallo SQL [script](https://github.com/CrhistianMRe/gallo-backend/blob/main/backend/src/main/resources/gallo.sql).
-2. Set up environment variables used in [application.properties](https://github.com/CrhistianMRe/gallo-backend/blob/main/backend/src/main/resources/application.properties):
+1. Install **MariaDB** server database with Gallo SQL [script](https://github.com/CrhistianMRe/gallo/blob/main/backend/src/main/resources/gallo.sql).
+2. Set up environment variables used in [application.properties](https://github.com/CrhistianMRe/gallo/blob/main/backend/src/main/resources/application.properties):
 ```bash
 # fish shell
 set -x DB_URL "jdbc:mariadb://yourdatabaseurl:3306/yourdatabasename?sslMode=trust"
@@ -41,7 +41,15 @@ export DB_USER="youruser"
 export DB_PASSWORD="yourpassword"
 ```
 
-3. Run [latest release](https://github.com/CrhistianMRe/gallo-backend/releases/latest) jar.
+3. Run [latest release](https://github.com/CrhistianMRe/gallo/releases/latest) jar.
+
+### My repo workflow
+<details>
+<summary>Activity diagram</summary>
+
+![Workflow](./docs/ActivityDiagramWorkflowGallo.svg)
+
+</details>
 
 ### Technologies implementations in this API
 
@@ -88,7 +96,7 @@ Provided repository layer between service and db creating queries derived by met
 
 SQL creation and insert script for retrieve and store of Gallo workout app.
 
-![DB ER-diagram](https://github.com/CrhistianMRe/gallo/blob/main/docs/ERGallo.svg)
+![DB ER-diagram](https://github.com/CrhistianMRe/gallo/docs/ERGallo.svg)
 
 </details>
 
