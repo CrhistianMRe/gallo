@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.GroupsOrder;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("api/workout-sets")
 class WorkoutSetController {
@@ -25,12 +28,25 @@ class WorkoutSetController {
     }
 
     @PostMapping
+    @Operation(
+        responses = {
+            @ApiResponse(
+                responseCode = "404",
+                content = {}
+            )
+        }
+    )
     ResponseEntity<List<WorkoutSetResponseDto>> createAll(@Validated (GroupsOrder.class) @RequestBody WorkoutSetRequestDto requestDto) {
         List<WorkoutSetResponseDto> responseDto = workoutSetService.saveAll(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping
+    @Operation(
+        responses = {
+            @ApiResponse(responseCode = "404", content = {})
+        }
+    )
     ResponseEntity<List<WorkoutSetResponseDto>> viewAllByWorkoutId(@RequestParam(required = true) Long workoutId) {
         List<WorkoutSetResponseDto> responseList = workoutSetService.getAllByWorkoutId(workoutId);
         return ResponseEntity.ok(responseList);

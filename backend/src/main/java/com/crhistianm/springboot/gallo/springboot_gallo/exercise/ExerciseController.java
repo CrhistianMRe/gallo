@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("api/exercises")
 class ExerciseController {
@@ -18,6 +21,11 @@ class ExerciseController {
     }
 
     @GetMapping
+    @Operation(
+        responses = {
+            @ApiResponse(responseCode = "404",content = {}),
+        }
+    )
     ResponseEntity<List<ExerciseResponseDto>> viewAll() {
         return ResponseEntity.ok(exerciseService.getAll());
     }
