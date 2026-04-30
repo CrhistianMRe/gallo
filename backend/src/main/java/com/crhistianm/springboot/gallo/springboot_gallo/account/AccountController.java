@@ -71,7 +71,8 @@ class AccountController {
 
     @Operation( 
         responses = {
-            @ApiResponse(responseCode = "404",content = {})
+            @ApiResponse(responseCode = "404",content = {}),
+            @ApiResponse(responseCode = "400",content = {})
         }
     )
     @GetMapping
