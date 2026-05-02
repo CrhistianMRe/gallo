@@ -23,6 +23,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
@@ -87,12 +90,31 @@ class AccountServiceUnitTest {
         }
 
         @Test
-        void testGetAll(){
-            when(accountRepository.findAll()).thenReturn(List.of(givenAccountEntityAdmin().orElseThrow(), givenAccountEntityUser().orElseThrow()));
-            List<AccountAdminResponseDto> expectedList = List.of((AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityAdmin().orElseThrow()), 
-                    (AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityUser().orElseThrow()));
-            assertEquals(expectedList, accountService.getAll());
-            verify(accountRepository, times(1)).findAll();
+        void testGetBy() {
+
+            final int page = 0;
+
+            final int size = 10;
+
+            when(accountRepository.findBy(any(Pageable.class))).thenAnswer(anser -> {
+
+                Account accountOne = givenAccountEntityAdmin().orElseThrow();
+
+                Account accountTwo = givenAccountEntityUser().orElseThrow();
+
+                List<Account> entityList = new ArrayList<>();
+
+                entityList.add(accountOne);
+                entityList.add(accountTwo);
+
+                return new PageImpl<>(entityList);
+            });
+
+            List<AccountAdminResponseDto> expectedResponseList = accountService.getBy(page, size).getContent();
+
+            assertThat(expectedResponseList).hasSize(2);
+
+            verify(accountRepository, times(1)).findBy(any(Pageable.class));
         }
 
         @Test

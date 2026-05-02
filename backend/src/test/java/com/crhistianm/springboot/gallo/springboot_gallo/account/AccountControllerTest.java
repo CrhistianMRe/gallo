@@ -6,9 +6,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -115,14 +118,40 @@ class AccountControllerTest {
         }
 
         @Test
-        void testViewAll() throws Exception {
-            when(accountService.getAll()).thenReturn(List.of((AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityAdmin().orElseThrow()), 
-                    (AccountAdminResponseDto)AccountMapper.entityToAdminResponse(givenAccountEntityUser().orElseThrow())));
-            mockMvc.perform(get("/api/accounts"))
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[1].id").value(1L))
-                .andExpect(jsonPath("$[0].email").value("admin@gmail.com"))
-                .andExpect(jsonPath("$[1].email").value("user@gmail.com"));
+        void testViewBy() throws Exception {
+            when(accountService.getBy(anyInt(), anyInt())).thenAnswer(answer -> {
+
+                List<AccountAdminResponseDto> responseList = new ArrayList<>() ;
+
+                AccountAdminResponseDto dto1 = new AccountAdminResponseDto();
+
+                dto1.setId(1L);
+                dto1.setEmail("admin@gmail.com");
+
+                AccountAdminResponseDto dto2 = new AccountAdminResponseDto();
+
+                dto2.setId(1L);
+                dto2.setEmail("user@gmail.com");
+
+                responseList.add(dto1);
+                responseList.add(dto2);
+
+                PageImpl<AccountAdminResponseDto> pageEntity = new PageImpl<>(responseList);
+                return new PagedModel<>(pageEntity);
+            });
+
+            final int page = 0;
+            final int size = 10;
+
+            mockMvc.perform(get(String.format("/api/accounts?page=%d&size=%d", page, size)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.page.totalElements").value(2))
+                .andExpect(jsonPath("$.content.[0].id").value(1L))
+                .andExpect(jsonPath("$.content.[1].id").value(1L))
+                .andExpect(jsonPath("$.content.[0].email").value("admin@gmail.com"))
+                .andExpect(jsonPath("$.content.[1].email").value("user@gmail.com"));
+
+            verify(accountService, times(1)).getBy(eq(page), eq(size));
         }
 
         @Test
