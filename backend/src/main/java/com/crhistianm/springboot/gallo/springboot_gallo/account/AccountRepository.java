@@ -1,8 +1,9 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -21,6 +22,6 @@ interface AccountRepository extends CrudRepository <Account, Long>{
     @Query("select a from Account a inner join a.workouts w where w.id=?1")
     Optional<Account> findAccountByWorkoutId(Long workoutId);
 
-    List<Account> findAll();
+    Page<Account> findBy(Pageable pageable);
 
 }

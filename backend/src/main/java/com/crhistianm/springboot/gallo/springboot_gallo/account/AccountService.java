@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,9 +101,10 @@ class AccountService {
     }
 
     @Transactional(readOnly = true)
-    List<AccountAdminResponseDto> getAll() {
-        List<AccountAdminResponseDto> accountList = accountRepository.findAll().stream().map(a -> (AccountAdminResponseDto) AccountMapper.entityToAdminResponse(a)).collect(Collectors.toList());
-        return accountList;
+    PagedModel<AccountAdminResponseDto> getBy(int page, int size) {
+        Page<AccountAdminResponseDto> accountPage = accountRepository.findBy(PageRequest.of(page, size))
+            .map(account -> (AccountAdminResponseDto) AccountMapper.entityToAdminResponse(account));
+        return new PagedModel<AccountAdminResponseDto>(accountPage);
     }
 
 }
