@@ -6,6 +6,7 @@ import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.IdentityVerificationService;
+
+import org.aspectj.runtime.internal.PerObjectMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
@@ -113,12 +119,30 @@ class PersonServiceUnitTest {
         }
 
         @Test
-        void testGetAll(){
-            when(personRepository.findAll()).thenReturn(List.of(givenPersonEntityOne().orElseThrow(), givenPersonEntityTwo().orElseThrow()));
+        void testGetBy(){
+            doAnswer(invo -> {
+                List<Person> entityList = new ArrayList<>();
 
-            List<PersonResponseDto> expectedList = List.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()), PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow()));
-            assertEquals(expectedList, personService.getAll());
-            verify(personRepository, times(1)).findAll();
+                Person personOne = new PersonBuilder().id(1L).build();
+                Person personTwo = new PersonBuilder().id(2L).build();
+
+                entityList.add(personOne);
+                entityList.add(personTwo);
+
+                PageImpl<Person> personPageResponse = new PageImpl<>(entityList);
+
+                return personPageResponse;
+            }).when(personRepository).findBy(any(Pageable.class));
+
+            final int page = 0;
+
+            final int size = 10;
+
+            List<PersonResponseDto> expectedResponse = personService.getBy(page, size).getContent();
+
+            assertThat(expectedResponse).hasSize(2);
+
+            verify(personRepository, times(1)).findBy(eq(PageRequest.of(page, size)));
         }
 
         @Test

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -132,18 +135,39 @@ class PersonControllerTest {
         }
 
         @Test
-        void testViewAll() throws Exception {
-            when(personService.getAll()).thenReturn(List.of(PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow()), PersonMapper.entityToResponse(givenPersonEntityTwo().orElseThrow())));
+        void testViewBy() throws Exception {
+            doAnswer(invo -> {
+                List<PersonResponseDto> dtoList = new ArrayList<>();
+
+                PersonResponseDto dtoOne = new PersonResponseDto();
+                PersonResponseDto dtoTwo = new PersonResponseDto();
+
+                dtoOne.setId(1L);
+                dtoTwo.setId(2L);
+
+                dtoOne.setFirstName("Crhistian");
+                dtoTwo.setFirstName("Erick");
+
+                dtoOne.setPhoneNumber("55896144");
+                dtoTwo.setPhoneNumber("4444444");
+
+                dtoList.add(dtoOne);
+                dtoList.add(dtoTwo);
+
+                PageImpl<PersonResponseDto> dtoPage = new PageImpl<>(dtoList);
+
+                return new PagedModel<PersonResponseDto>(dtoPage);
+            }).when(personService).getBy(anyInt(), anyInt());
 
             mockMvc.perform(get("/api/persons"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[0].firstName").value("Crhistian"))
-                .andExpect(jsonPath("$[1].firstName").value("Erick"))
-                .andExpect(jsonPath("$[1].phoneNumber").value("55896144"))
-                .andExpect(jsonPath("$[0].phoneNumber").value("4444444"));
+                .andExpect(jsonPath("$.content[0].id").value(1L))
+                .andExpect(jsonPath("$.content[1].id").value(2L))
+                .andExpect(jsonPath("$.content[0].firstName").value("Crhistian"))
+                .andExpect(jsonPath("$.content[1].firstName").value("Erick"))
+                .andExpect(jsonPath("$.content.[1].phoneNumber").value("4444444"))
+                .andExpect(jsonPath("$.content[0].phoneNumber").value("55896144"));
         }
 
         @Test
