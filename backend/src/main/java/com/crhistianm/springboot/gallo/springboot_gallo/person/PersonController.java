@@ -3,6 +3,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.person;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,8 +46,11 @@ public class PersonController {
             @ApiResponse(responseCode = "404",content = {}),
         }
     )
-    public ResponseEntity<List<PersonResponseDto>> viewAll(){
-        return ResponseEntity.ok(personService.getAll());
+    public ResponseEntity<PagedModel<PersonResponseDto>> viewBy(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size 
+    ) {
+        return ResponseEntity.ok(personService.getBy(page, size));
     }
     
     @GetMapping("/{id}")
