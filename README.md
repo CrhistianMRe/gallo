@@ -51,6 +51,21 @@ export DB_PASSWORD="yourpassword"
 
 </details>
 
+### Project Structure
+
+Package by layer project structure is implemented mantaining all possible classes package private, emphasizing coupling avoidance.
+
+| Module | Description |
+|---|---|
+| [`account`](https://github.com/CrhistianMRe/gallo/tree/main/backend/src/main/java/com/crhistianm/springboot/gallo/springboot_gallo/account) | Account management, roles and audit |
+| [`person`](https://github.com/CrhistianMRe/gallo/tree/main/backend/src/main/java/com/crhistianm/springboot/gallo/springboot_gallo/person) | User personal data |
+| [`exercise`](https://github.com/CrhistianMRe/gallo/tree/main/backend/src/main/java/com/crhistianm/springboot/gallo/springboot_gallo/exercise) | Exercise catalog |
+| [`bodypart`](https://github.com/CrhistianMRe/gallo/tree/main/backend/src/main/java/com/crhistianm/springboot/gallo/springboot_gallo/bodypart) | Body parts per exercise |
+| [`workout`](https://github.com/CrhistianMRe/gallo/tree/main/backend/src/main/java/com/crhistianm/springboot/gallo/springboot_gallo/workout) | Training sessions |
+| [`workoutset`](https://github.com/CrhistianMRe/gallo/tree/main/backend/src/main/java/com/crhistianm/springboot/gallo/springboot_gallo/workoutset) | Sets and reps per session |
+| [`refreshtoken`](https://github.com/CrhistianMRe/gallo/tree/main/backend/src/main/java/com/crhistianm/springboot/gallo/springboot_gallo/refreshtoken) | JWT and refresh token handling |
+| [`shared`](https://github.com/CrhistianMRe/gallo/tree/main/backend/src/main/java/com/crhistianm/springboot/gallo/springboot_gallo/shared) | Security, classes used for validation, configuration and global exceptions |
+
 ### Technologies implementations in this API
 
 <details>
