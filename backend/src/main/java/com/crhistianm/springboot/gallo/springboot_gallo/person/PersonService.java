@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.account.IdentityVerificationService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,10 +67,11 @@ class PersonService {
     }
 
     @Transactional(readOnly = true)
-    List<PersonResponseDto> getAll() {
-        List<PersonResponseDto> personList = personRepository.findAll().stream().map(p -> PersonMapper.entityToResponse(p)).collect(Collectors.toList());
-        return personList;
-    }
+    PagedModel<PersonResponseDto> getBy(int page, int size) {
+        Page<PersonResponseDto> personPage = personRepository.findBy(PageRequest.of(page, size))
+            .map(PersonMapper::entityToResponse);
 
+        return new PagedModel<PersonResponseDto>(personPage);
+    }
     
 }
