@@ -40,7 +40,6 @@ public class ValidationServiceException extends TraceException  {
     }
 
     private void loadErrorList(List<FieldInfoError> fieldErrorList){
-        this.fieldErrors = new ArrayList<>();
         this.fieldErrors = fieldErrorList;
     }
 
@@ -48,9 +47,4 @@ public class ValidationServiceException extends TraceException  {
         return fieldErrors;
     }
 
-    public List<FieldInfoError> addField(FieldInfoError field){
-        fieldErrors.add(field);
-        return this.fieldErrors;
-    }
-    
 }
