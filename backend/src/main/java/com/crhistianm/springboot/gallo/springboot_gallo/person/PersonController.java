@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/persons")
-public class PersonController {
+class PersonController {
 
     @Autowired
     private PersonService personService;
@@ -36,7 +36,7 @@ public class PersonController {
             @ApiResponse(responseCode = "404",content = {}),
         }
     )
-    public ResponseEntity<PersonResponseDto> create(@Valid @RequestBody PersonRequestDto personDto){
+    ResponseEntity<PersonResponseDto> create(@Valid @RequestBody PersonRequestDto personDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDto));
     }
 
@@ -46,7 +46,7 @@ public class PersonController {
             @ApiResponse(responseCode = "404",content = {}),
         }
     )
-    public ResponseEntity<PagedModel<PersonResponseDto>> viewBy(
+    ResponseEntity<PagedModel<PersonResponseDto>> viewBy(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size 
     ) {
@@ -54,17 +54,17 @@ public class PersonController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<PersonResponseDto> viewById(@PathVariable Long id) {
+    ResponseEntity<PersonResponseDto> viewById(@PathVariable Long id) {
          return ResponseEntity.ok(personService.getById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PersonResponseDto> update(@PathVariable Long id, @Valid @RequestBody PersonRequestDto person){
+    ResponseEntity<PersonResponseDto> update(@PathVariable Long id, @Valid @RequestBody PersonRequestDto person){
         return ResponseEntity.ok(personService.update(id, person));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<PersonResponseDto> delete(@PathVariable Long id){
+    ResponseEntity<PersonResponseDto> delete(@PathVariable Long id){
         return ResponseEntity.ok(personService.delete(id));
     }
 
