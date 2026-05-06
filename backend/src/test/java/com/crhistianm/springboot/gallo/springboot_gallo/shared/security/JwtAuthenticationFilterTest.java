@@ -112,7 +112,7 @@ class JwtAuthenticationFilterTest {
                 .andExpect(jsonPath("$.expiresAt").value(Matchers.notNullValue()))
                 .andExpect(jsonPath("$.accountId").value(Matchers.equalTo(1)))
                 .andExpect(jsonPath("$.refreshToken").value(Matchers.equalTo("refreshToken")))
-                .andExpect(jsonPath("$.message").value(Matchers.equalTo("You have successfully logged in!")));
+                .andExpect(jsonPath("$.message").value(Matchers.equalTo("You have successfully logged in")));
         }
 
         @Test
@@ -123,7 +123,7 @@ class JwtAuthenticationFilterTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(createJsonRequest(email, password)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").value(Matchers.equalTo("email or password not valid, authentication failed!")));
+                .andExpect(jsonPath("$.message").value(Matchers.equalTo("email or password not valid, authentication failed")));
 
         }
 
