@@ -19,10 +19,17 @@
   <img alt="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"/>
 </p>
 
-> [!TIP]
-> Here you can find the API documentation https://gallospring.duckdns.org/apidocs.html.
+> [!IMPORTANT]
+> This backend project is already deployed and functional, refer to the [API documentation](https://gallospring.duckdns.org/apidocs.html).
 
-> By the moment, test the API with these credentials: email: "user@gmail.com", password: "12345"
+### Sign up process:
+>[!TIP]
+> If you want to skip this process the following common credentials are available: email: "user@gmail.com", password: "12345"
+
+1. Perform a **valid** POST request to the [create person endpoint](https://gallospring.duckdns.org/apidocs.html#tag/person-controller/operation/create_1)
+2. Continue your sign-up process by performing another **valid** POST request to the [create account endpoint](https://gallospring.duckdns.org/apidocs.html#tag/account-controller/operation/create_2)(admin field is not allowed)
+3. Now you can log-in by doing a **valid** POST request to the [login endpoint](https://gallospring.duckdns.org/apidocs.html#tag/login-controller/operation/login)
+4. Lastly you can access the deployed Gallo project using the provided JWT Bearer token available for refresh in the [refresh token endpoint](https://gallospring.duckdns.org/apidocs.html#tag/refresh-token-controller/operation/generateNewToken)
 
 ### Local Installation
 - MariaDB 10.6+ (12.2.2-MariaDB used in this project)
@@ -163,3 +170,13 @@ Swagger implemented to document Gallo backend platform.
 </details>
 
 
+</details>
+
+<details>
+<summary>🛫 CI/CD</summary>
+
+- **CI:** All tests(more than 300 at the moment) are executed in Gallo CI workflow before any PR merge and deployment.
+
+- **CD:** This project is deployed in an EC2 AWS server via Gallo CD workflow without a Docker container (temporarily).
+
+</details>
