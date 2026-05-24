@@ -17,19 +17,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.JacksonConfig;
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.config.RedisConfig;
 import com.crhistianm.springboot.gallo.springboot_gallo.account.AccountUserDetailsService;
 import com.crhistianm.springboot.gallo.springboot_gallo.refreshtoken.RefreshTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,10 +42,10 @@ import com.jayway.jsonpath.JsonPath;
 
 import jakarta.validation.Validator;
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import({SpringSecurityConfig.class, JacksonConfig.class})
+@TestPropertySource(properties = "spring.cache.type=none")
 class SpringEndpointSecurityTest {
 
     @Autowired
@@ -183,14 +188,14 @@ class SpringEndpointSecurityTest {
 
             @Test
             void testUpdateValidAuthority() throws Exception{
-                mockMvc.perform(put("/api/person/1")
+                mockMvc.perform(put("/api/persons/1")
                         .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixWithToken))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isBadRequest());
             }
 
             @Test
             void testDeleteValidAuthority()throws Exception {
-                mockMvc.perform(delete("/api/person/1")
+                mockMvc.perform(delete("/api/persons/1")
                         .contentType(MediaType.APPLICATION_JSON).header("Authorization", prefixWithToken))
                     .andExpect(status().isNotFound());
             }

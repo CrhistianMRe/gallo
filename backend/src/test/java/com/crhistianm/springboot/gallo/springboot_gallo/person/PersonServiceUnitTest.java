@@ -24,9 +24,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.cache.Cache;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBuilder;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
@@ -38,6 +40,12 @@ class PersonServiceUnitTest {
 
     @Mock
     PersonValidator personValidator;
+
+    @Mock
+    CacheManager cacheManager;
+
+    @Mock
+    Cache cache;
 
     @Mock
     PersonRepository personRepository;
@@ -55,7 +63,8 @@ class PersonServiceUnitTest {
     class CreateModuleTest {
 
         @BeforeEach
-        void setUp() {
+        void setUp() { 
+            lenient().when(cacheManager.getCache(anyString())).thenReturn(cache);
 
             lenient().doAnswer(invo -> {
                 return invo.getArgument(0, Person.class);
@@ -105,6 +114,7 @@ class PersonServiceUnitTest {
 
         @BeforeEach
         void setUp(){
+            lenient().when(cacheManager.getCache(anyString())).thenReturn(cache);
             lenient().doAnswer(invo -> {
                 FieldInfoError field = null;
                 if(invo.getArgument(0, Long.class).equals(120L)) field = new FieldInfoErrorBuilder().name("identity").build();
@@ -112,10 +122,15 @@ class PersonServiceUnitTest {
             }).when(identityVerificationService).validateUserAllowanceByPersonId(anyLong());
             lenient().when(personRepository.findById(anyLong())).thenAnswer(invo -> {
                 Optional<Person> responseOptional = Optional.empty();
-                if(invo.getArgument(0, Long.class) == 1L) responseOptional = givenPersonEntityOne();
-                if(invo.getArgument(0, Long.class) == 120L) responseOptional = givenPersonEntityOne();
+                if(invo.getArgument(0, Long.class).equals(1L)) responseOptional = givenPersonEntityOne();
+                if(invo.getArgument(0, Long.class).equals(120L)) responseOptional = givenPersonEntityOne();
                 return responseOptional;
             });
+
+            lenient().doAnswer(invo -> {
+                final Long argId = invo.getArgument(0, Long.class);
+                return argId.equals(1L) || argId.equals(120L);
+            }).when(personRepository).existsById(anyLong());
         }
 
         @Test
@@ -150,6 +165,8 @@ class PersonServiceUnitTest {
             PersonResponseDto expectedPerson = PersonMapper.entityToResponse(givenPersonEntityOne().orElseThrow());
 
             assertEquals(expectedPerson, personService.getById(1L));
+
+            verify(personRepository, times(1)).existsById(anyLong());
             verify(personRepository, times(1)).findById(anyLong());
         }
 
@@ -158,7 +175,7 @@ class PersonServiceUnitTest {
             assertThrows(NotFoundException.class, () -> {
                 personService.getById(2L);
             });
-            verify(personRepository, times(1)).findById(anyLong());
+            verify(personRepository, times(1)).existsById(anyLong());
         }
 
         @Test
@@ -170,6 +187,8 @@ class PersonServiceUnitTest {
 
             assertThat(field).isNotNull();
             assertThat(field).extracting(FieldInfoError::getName).isEqualTo("identity");
+
+            verify(personRepository, times(1)).existsById(anyLong());
         }
 
     }
@@ -181,11 +200,10 @@ class PersonServiceUnitTest {
 
         @BeforeEach
         void setUp(){
-            when(personRepository.findById(anyLong())).thenAnswer(invo -> {
-                if(invo.getArgument(0, Long.class) == 1L){
-                    return Optional.of(new Person());
-                }
-                return Optional.empty();
+            lenient().when(cacheManager.getCache(anyString())).thenReturn(cache);
+
+            when(personRepository.existsById(anyLong())).thenAnswer(invo -> {
+                return invo.getArgument(0, Long.class).equals(1L);
             });
 
             lenient().doAnswer(args -> {
@@ -196,8 +214,6 @@ class PersonServiceUnitTest {
             }).when(personValidator).validateRequest(anyLong(), any(PersonRequestDto.class));
         }
         
-
-
         @Test
         void testUpdate(){
             requestDto = givenPersonRequestDtoOne().orElseThrow();
@@ -221,9 +237,8 @@ class PersonServiceUnitTest {
 
             assertEquals(expectedResponse, actualResponse);
 
-            verify(personRepository, times(1)).findById(anyLong());
+            verify(personRepository, times(1)).existsById(anyLong());
             verify(personRepository, times(1)).save(any(Person.class));
-
         }
 
         @Test
@@ -241,7 +256,8 @@ class PersonServiceUnitTest {
             assertThrows(NotFoundException.class, () ->{
                 personService.update(2L, requestDto);
             });
-            verify(personRepository, times(1)).findById(anyLong());
+            verify(personRepository, times(1)).existsById(anyLong());
+            verifyNoMoreInteractions(personRepository);
         }
 
         @Test
@@ -259,7 +275,8 @@ class PersonServiceUnitTest {
 
             assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> personService.update(1L, requestDto));
-            verify(personRepository, times(1)).findById(eq(1L));
+
+            verify(personRepository, times(1)).existsById(eq(1L));
             verifyNoMoreInteractions(personRepository);
         }
         
@@ -275,12 +292,14 @@ class PersonServiceUnitTest {
                 if(invo.getArgument(0, Long.class).equals(120L)) field = new FieldInfoErrorBuilder().name("identity").build();
                 return Optional.ofNullable(field);
             }).when(identityVerificationService).validateUserAllowanceByPersonId(anyLong());
-            when(personRepository.findById(anyLong())).thenAnswer(invo ->{
+
+            lenient().when(personRepository.findById(anyLong())).thenAnswer(invo ->{
                 Optional<Person> personDb = Optional.empty();
-                if(invo.getArgument(0, Long.class) == 1L) personDb = givenPersonEntityOne();
-                if(invo.getArgument(0, Long.class) == 120L) personDb = givenPersonEntityOne();
+                if(invo.getArgument(0, Long.class).equals(1L)) personDb = givenPersonEntityOne();
+                if(invo.getArgument(0, Long.class).equals(120L)) personDb = givenPersonEntityOne();
                 return personDb;
             });
+
         }
 
         @Test
@@ -303,7 +322,7 @@ class PersonServiceUnitTest {
             FieldInfoError field = null;
 
             field = assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> personService.getById(120L)).actual().getFieldErrors().get(0);
+                .isThrownBy(() -> personService.delete(120L)).actual().getFieldErrors().get(0);
 
             assertThat(field).isNotNull();
             assertThat(field).extracting(FieldInfoError::getName).isEqualTo("identity");
