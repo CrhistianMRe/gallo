@@ -2,7 +2,9 @@ package com.crhistianm.springboot.gallo.springboot_gallo.person;
 
 import java.time.LocalDate;
 
-class PersonResponseDto {
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.ResponseDto;
+
+class PersonResponseDto implements ResponseDto {
 
     private Long id;
 
