@@ -62,7 +62,7 @@ class PersonService {
 
     @Transactional
     PersonResponseDto update(Long id, PersonRequestDto personDto) {
-        personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
+        if(!personRepository.existsById(id)) throw new NotFoundException(Person.class);
         personValidator.validateRequest(id, personDto);
         Person person = PersonMapper.requestToEntity(personDto);
 
@@ -87,7 +87,7 @@ class PersonService {
 
     @Transactional(readOnly = true)
     PersonResponseDto getById(Long id) {
-        Person person = personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
+        if(!personRepository.existsById(id)) throw new NotFoundException(Person.class);
         identityService.validateUserAllowanceByPersonId(id).ifPresent(f -> {
             throw new ValidationServiceException(new ArrayList<>(List.of(f)));
         });
@@ -98,13 +98,17 @@ class PersonService {
             .keyId(id)
             .cache(cacheManager.getCache(PERSON))
             .responseType(PersonResponseDto.class)
-            .onMissDo(() -> PersonMapper.entityToResponse(person))
+            .onMissDo(() -> {
+                Person personEntity = personRepository.findById(id).get();
+                return PersonMapper.entityToResponse(personEntity);
+            })
             .build();
 
         return CacheHandlingUtils.getOrCacheResponse(cacheContext);
     }
 
     @Transactional(readOnly = true)
+    //This is not cached as it is only for admins
     PagedModel<PersonResponseDto> getBy(int page, int size) {
         Page<PersonResponseDto> personPage = personRepository.findBy(PageRequest.of(page, size))
             .map(PersonMapper::entityToResponse);
