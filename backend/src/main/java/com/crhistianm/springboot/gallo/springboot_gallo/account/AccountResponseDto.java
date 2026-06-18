@@ -1,7 +1,8 @@
 package com.crhistianm.springboot.gallo.springboot_gallo.account;
 
+import com.crhistianm.springboot.gallo.springboot_gallo.shared.ResponseDto;
 
-abstract class AccountResponseDto {
+abstract class AccountResponseDto implements ResponseDto {
 
     protected String email;
 

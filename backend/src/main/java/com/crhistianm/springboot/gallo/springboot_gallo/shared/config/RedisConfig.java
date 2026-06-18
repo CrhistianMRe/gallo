@@ -18,6 +18,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.shared.cache.CacheModule.PERSON;
+import static com.crhistianm.springboot.gallo.springboot_gallo.shared.cache.CacheModule.ACCOUNT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
@@ -33,9 +34,11 @@ public class RedisConfig {
         redisObjectMapper.activateDefaultTyping(
                 BasicPolymorphicTypeValidator.builder()
                 .allowIfSubType("com.crhistianm.springboot.gallo")
+                .allowIfSubType("java.util")
                 .build(),
                 ObjectMapper.DefaultTyping.NON_FINAL
         );
+
 
         RedisSerializer<Object> valueSerializer = new GenericJackson2JsonRedisSerializer(redisObjectMapper);
 
@@ -54,6 +57,7 @@ public class RedisConfig {
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
 
         cacheConfigurations.put(PERSON, redisCacheConfiguration.entryTtl(Duration.ofHours(1)));
+        cacheConfigurations.put(ACCOUNT, redisCacheConfiguration.entryTtl(Duration.ofHours(2)));
 
         RedisCacheManager redisCacheManager = RedisCacheManager
             .builder(connectionFactory)
