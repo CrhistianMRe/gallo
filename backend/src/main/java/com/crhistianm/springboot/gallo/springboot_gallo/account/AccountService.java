@@ -129,7 +129,8 @@ class AccountService {
 
     @Transactional(readOnly = true)
     AccountResponseDto getById(Long id) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException(Account.class));
+        if(!accountRepository.existsById(id)) throw new NotFoundException(Account.class);
+
         accountValidator.validateByIdRequest(id);
 
         //Cache only for user role
@@ -140,11 +141,16 @@ class AccountService {
                 .keyId(id)
                 .cache(cacheManager.getCache(ACCOUNT))
                 .responseType(AccountUserResponseDto.class)
-                .onMissDo(() ->  (AccountUserResponseDto) AccountMapper.entityToResponse(account))
+                .onMissDo(() ->  {
+                    Account account = accountRepository.findById(id).get();
+                    return (AccountUserResponseDto) AccountMapper.entityToResponse(account);
+                })
                 .build();
 
             return CacheHandlingUtils.getOrCacheResponse(cacheContext);
         }
+
+        Account account = accountRepository.findById(id).get();
 
         return AccountMapper.entityToAdminResponse(account);
     }
