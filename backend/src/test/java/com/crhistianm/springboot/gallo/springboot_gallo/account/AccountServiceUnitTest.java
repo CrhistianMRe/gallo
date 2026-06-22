@@ -23,6 +23,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -61,33 +63,20 @@ class AccountServiceUnitTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    @Mock
+    private CacheManager cacheManager;
+
+    @Mock
+    private IdentityVerificationService identityVerificationService;
+
+    @Mock
+    private Cache cache;
+
     @InjectMocks
     AccountService accountService;
 
     @Nested
     class ViewModuleTest{
-
-        @BeforeEach
-        void setUp(){
-            lenient().doAnswer(invo -> {
-                FieldInfoError field = null;
-                if(invo.getArgument(0, Long.class).equals(120L)) {
-                    field = new FieldInfoErrorBuilder().name("error").build();
-                    throw new ValidationServiceException(new ArrayList<>(List.of(field)));
-                }
-                return Optional.ofNullable(field);
-            }).when(accountValidator).validateByIdRequest(anyLong());
-            lenient().when(accountRepository.findById(anyLong())).thenAnswer(invo -> {
-                Optional<Account> accountOptional = Optional.empty();
-                if(invo.getArgument(0, Long.class) == 1L) accountOptional = givenAccountEntityAdmin();
-                if(invo.getArgument(0, Long.class) == 120L) {
-                    Account account = givenAccountEntityAdmin().orElseThrow();
-                    account.getPerson().setId(120L);
-                    accountOptional = Optional.of(account);
-                }
-                return accountOptional;
-            });
-        }
 
         @Test
         void testGetBy() {
@@ -117,38 +106,82 @@ class AccountServiceUnitTest {
             verify(accountRepository, times(1)).findBy(any(Pageable.class));
         }
 
-        @Test
-        void testGetByIdNotFound(){
-            assertThrows(NotFoundException.class, () -> {
-                accountService.getById(2L);
-            });
-            verify(accountRepository, times(1)).findById(anyLong());
-            verifyNoInteractions(accountValidator);
-            verifyNoInteractions(accountValidationService);
-        }
+        @Nested
+        class GetByIdMethodTest {
 
-        @Test
-        void testGetById(){
-            when(accountValidationService.settleResponseType(any(Account.class))).thenAnswer(invo ->
-                    AccountMapper.entityToAdminResponse(invo.getArgument(0,Account.class)));
+            @BeforeEach
+            void setUp(){
 
-            assertEquals("admin@gmail.com", accountService.getById(1L).getEmail());
-            verify(accountRepository, times(1)).findById(anyLong());
-            verify(accountValidationService, times(1)).settleResponseType(any(Account.class));
-        }
+                lenient().doAnswer(invo -> {
+                    FieldInfoError field = null;
+                    if(invo.getArgument(0, Long.class).equals(120L)) {
+                        field = new FieldInfoErrorBuilder().name("error").build();
+                        throw new ValidationServiceException(new ArrayList<>(List.of(field)));
+                    }
+                    return Optional.ofNullable(field);
+                }).when(accountValidator).validateByIdRequest(anyLong());
 
-        @Test
-        void shouldThrowExceptionWhenRequestByIdIsInvalid() {
-            FieldInfoError field = null;
+                lenient().when(accountRepository.existsById(anyLong())).thenAnswer(invo -> {
+                    return invo.getArgument(0, Long.class) == 1L || invo.getArgument(0, Long.class) == 120L;
+                });
 
-            field = assertThatExceptionOfType(ValidationServiceException.class)
-                .isThrownBy(() -> accountService.getById(120L)).actual().getFieldErrors().get(0);
-            assertThat(field).isNotNull();
-            assertThat(field).extracting(FieldInfoError::getName).isEqualTo("error");
+                lenient().doReturn(givenAccountEntityAdmin()).when(accountRepository).findById(anyLong());
 
-            verify(accountRepository, times(1)).findById(eq(120L));
-            verify(accountValidator).validateByIdRequest(eq(120L));
-            verifyNoInteractions(accountValidationService);
+            }
+
+            @Test
+            void testGetByIdNotFound(){
+                assertThrows(NotFoundException.class, () -> {
+                    accountService.getById(2L);
+                });
+                verify(accountRepository, times(1)).existsById(anyLong());
+                verifyNoInteractions(accountValidator);
+                verifyNoInteractions(accountValidationService);
+            }
+
+            @Test
+            void shouldReturnAccountAdminResponseDtoWhenAuthorityIsAdmin() {
+                doReturn(true).when(identityVerificationService).isAdminAuthority();
+                final Long requestedId = 1L;
+
+                final AccountResponseDto expectedResponse = accountService.getById(requestedId);
+
+                assertThat(expectedResponse).isInstanceOf(AccountAdminResponseDto.class);
+
+                verify(accountValidator, times(1)).validateByIdRequest(eq(requestedId));
+                verify(accountRepository, times(1)).existsById(eq(requestedId));
+                verify(accountRepository, times(1)).findById(eq(requestedId));
+            }
+
+            @Test
+            void shouldReturnAccountUserResponseDtoWhenAuthorityIsUser() {
+                doReturn(false).when(identityVerificationService).isAdminAuthority();
+
+                final Long requestedId = 1L;
+
+                final AccountResponseDto expectedResponse = accountService.getById(requestedId);
+
+                assertThat(expectedResponse).isInstanceOf(AccountUserResponseDto.class);
+
+                verify(accountValidator, times(1)).validateByIdRequest(eq(requestedId));
+                verify(accountRepository, times(1)).existsById(eq(requestedId));
+                verify(accountRepository, times(1)).findById(eq(requestedId));
+            }
+
+            @Test
+            void shouldThrowExceptionWhenRequestByIdIsInvalid() {
+                FieldInfoError field = null;
+
+                field = assertThatExceptionOfType(ValidationServiceException.class)
+                    .isThrownBy(() -> accountService.getById(120L)).actual().getFieldErrors().get(0);
+                assertThat(field).isNotNull();
+                assertThat(field).extracting(FieldInfoError::getName).isEqualTo("error");
+
+                verify(accountRepository, times(1)).existsById(eq(120L));
+                verify(accountValidator).validateByIdRequest(eq(120L));
+                verifyNoInteractions(accountValidationService);
+            }
+
         }
 
     }
@@ -158,6 +191,8 @@ class AccountServiceUnitTest {
 
         @BeforeEach
         void setUp(){
+            lenient().doReturn(cache).when(cacheManager).getCache(anyString());
+
             Person person = getPersonInstance();
             person.setId(1L);
             person.setFirstName("one");
@@ -243,6 +278,8 @@ class AccountServiceUnitTest {
 
         @BeforeEach
         void setUp() {
+            lenient().doReturn(cache).when(cacheManager).getCache(anyString());
+
             lenient().doAnswer(invo -> {
                 Person person = getPersonInstance();
                 person.setId(1L);
