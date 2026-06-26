@@ -202,8 +202,10 @@ class PersonServiceUnitTest {
         void setUp(){
             lenient().when(cacheManager.getCache(anyString())).thenReturn(cache);
 
-            when(personRepository.existsById(anyLong())).thenAnswer(invo -> {
-                return invo.getArgument(0, Long.class).equals(1L);
+            when(personRepository.findById(anyLong())).thenAnswer(invo -> {
+                Person person = null;
+                if(invo.getArgument(0, Long.class).equals(1L)) person = givenPersonEntityOne().get();
+                return Optional.ofNullable(person);
             });
 
             lenient().doAnswer(args -> {
@@ -237,7 +239,7 @@ class PersonServiceUnitTest {
 
             assertEquals(expectedResponse, actualResponse);
 
-            verify(personRepository, times(1)).existsById(anyLong());
+            verify(personRepository, times(1)).findById(anyLong());
             verify(personRepository, times(1)).save(any(Person.class));
         }
 
@@ -256,7 +258,7 @@ class PersonServiceUnitTest {
             assertThrows(NotFoundException.class, () ->{
                 personService.update(2L, requestDto);
             });
-            verify(personRepository, times(1)).existsById(anyLong());
+            verify(personRepository, times(1)).findById(anyLong());
             verifyNoMoreInteractions(personRepository);
         }
 
@@ -276,7 +278,7 @@ class PersonServiceUnitTest {
             assertThatExceptionOfType(ValidationServiceException.class)
                 .isThrownBy(() -> personService.update(1L, requestDto));
 
-            verify(personRepository, times(1)).existsById(eq(1L));
+            verify(personRepository, times(1)).findById(eq(1L));
             verifyNoMoreInteractions(personRepository);
         }
         
