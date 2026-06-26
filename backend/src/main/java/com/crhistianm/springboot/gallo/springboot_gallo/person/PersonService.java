@@ -62,13 +62,19 @@ class PersonService {
 
     @Transactional
     PersonResponseDto update(Long id, PersonRequestDto personDto) {
-        if(!personRepository.existsById(id)) throw new NotFoundException(Person.class);
+        Person dbEntity = personRepository.findById(id).orElseThrow(() -> new NotFoundException(Person.class));
+
         personValidator.validateRequest(id, personDto);
-        Person person = PersonMapper.requestToEntity(personDto);
 
-        person.setId(id);
+        dbEntity.setBirthDate(personDto.getBirthDate());
+        dbEntity.setHeight(personDto.getHeight());
+        dbEntity.setWeight(personDto.getWeight());
+        dbEntity.setGender(personDto.getGender());
+        dbEntity.setFirstName(personDto.getFirstName());
+        dbEntity.setLastName(personDto.getLastName());
+        dbEntity.setPhoneNumber(personDto.getPhoneNumber());
 
-        PersonResponseDto responseDto = PersonMapper.entityToResponse(personRepository.save(person));
+        PersonResponseDto responseDto = PersonMapper.entityToResponse(personRepository.save(dbEntity));
 
         cacheManager.getCache(PERSON).put(responseDto.getId(), responseDto);
         return responseDto;
