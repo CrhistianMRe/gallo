@@ -34,6 +34,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.shared.FieldInfoErrorBui
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.account.AccountData.*;
 import static com.crhistianm.springboot.gallo.springboot_gallo.person.PersonData.getPersonInstance;
+import static com.crhistianm.springboot.gallo.springboot_gallo.shared.cache.CacheModule.ACCOUNT;
 
 import com.crhistianm.springboot.gallo.springboot_gallo.person.Person;
 import com.crhistianm.springboot.gallo.springboot_gallo.shared.exception.NotFoundException;
@@ -154,8 +155,9 @@ class AccountServiceUnitTest {
             }
 
             @Test
-            void shouldReturnAccountUserResponseDtoWhenAuthorityIsUser() {
+            void shouldReturnAccountUserResponseDtoFromCacheUtilsWhenAuthorityIsUser() {
                 doReturn(false).when(identityVerificationService).isAdminAuthority();
+                doReturn(null).when(cacheManager).getCache(anyString());
 
                 final Long requestedId = 1L;
 
@@ -166,6 +168,7 @@ class AccountServiceUnitTest {
                 verify(accountValidator, times(1)).validateByIdRequest(eq(requestedId));
                 verify(accountRepository, times(1)).existsById(eq(requestedId));
                 verify(accountRepository, times(1)).findById(eq(requestedId));
+                verify(cacheManager, times(1)).getCache(eq(ACCOUNT));
             }
 
             @Test
