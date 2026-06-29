@@ -191,8 +191,12 @@ class PersonServiceCacheTest {
     void shouldRemoveCachedResponseWhenPersonIsDeleted() throws Exception {
         final Long personId = 1L;
 
-        mockMvc.perform(get("/api/persons/" + personId))
-            .andExpect(status().isOk());
+        final String firstName = "example";
+
+        PersonResponseDto responseToCache = new PersonResponseDto();
+        responseToCache.setFirstName(firstName);
+
+        cacheManager.getCache("PERSON").put(personId, responseToCache);
 
         PersonResponseDto cachedResponse = cacheManager.getCache("PERSON").get(personId, PersonResponseDto.class);
 
