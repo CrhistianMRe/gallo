@@ -19,6 +19,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import static com.crhistianm.springboot.gallo.springboot_gallo.shared.cache.CacheModule.PERSON;
 import static com.crhistianm.springboot.gallo.springboot_gallo.shared.cache.CacheModule.ACCOUNT;
+import static com.crhistianm.springboot.gallo.springboot_gallo.shared.cache.CacheModule.EXERCISE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
@@ -58,6 +59,7 @@ public class RedisConfig {
 
         cacheConfigurations.put(PERSON, redisCacheConfiguration.entryTtl(Duration.ofHours(1)));
         cacheConfigurations.put(ACCOUNT, redisCacheConfiguration.entryTtl(Duration.ofHours(2)));
+        cacheConfigurations.put(EXERCISE, redisCacheConfiguration.entryTtl(Duration.ofHours(24)));
 
         RedisCacheManager redisCacheManager = RedisCacheManager
             .builder(connectionFactory)
