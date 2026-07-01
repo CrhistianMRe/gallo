@@ -54,7 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc(addFilters = false)
 @Testcontainers
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
-public class AccountServiceCacheTest {
+class AccountServiceCacheTest {
 
     @Container
     @ServiceConnection
