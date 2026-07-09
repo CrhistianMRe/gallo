@@ -36,6 +36,15 @@ class AccountController {
     @PostMapping
     @SecurityRequirements(value = {})
     @Operation( 
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true,
+            content = @Content(
+                schema = @Schema(
+                    implementation = AccountRequestDto.class,
+                    requiredProperties = {"password", "email", "personId"}
+                )
+            )
+        ),
         responses = {
             @ApiResponse(responseCode = "404",content = {}), 
             @ApiResponse
@@ -71,7 +80,10 @@ class AccountController {
         return ResponseEntity.ok(accountService.getById(id));
     }
 
+    //Encontra como aplicarlo a los que faltan que son solo de admin y haces una PR que se llame algo como docs/missing-admin-specification
+    //Asi pones junto a los admin field lo que falta de admin endpoints en un commit como "docs: add missing only admin functionalities OpenApi specifications"
     @Operation( 
+        description = "ADMIN ENDPOINT",
         responses = {
             @ApiResponse(responseCode = "404",content = {}),
             @ApiResponse(responseCode = "400",content = {})
