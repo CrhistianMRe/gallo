@@ -42,6 +42,7 @@ class PersonController {
 
     @GetMapping
     @Operation(
+        description = "ADMIN ENDPOINT",
         responses = {
             @ApiResponse(responseCode = "404",content = {}),
         }

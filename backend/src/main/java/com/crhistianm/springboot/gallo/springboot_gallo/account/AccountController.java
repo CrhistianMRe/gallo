@@ -36,6 +36,15 @@ class AccountController {
     @PostMapping
     @SecurityRequirements(value = {})
     @Operation( 
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true,
+            content = @Content(
+                schema = @Schema(
+                    implementation = AccountRequestDto.class,
+                    requiredProperties = {"password", "email", "personId"}
+                )
+            )
+        ),
         responses = {
             @ApiResponse(responseCode = "404",content = {}), 
             @ApiResponse
@@ -72,6 +81,7 @@ class AccountController {
     }
 
     @Operation( 
+        description = "ADMIN ENDPOINT",
         responses = {
             @ApiResponse(responseCode = "404",content = {}),
             @ApiResponse(responseCode = "400",content = {})
