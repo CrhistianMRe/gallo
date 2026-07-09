@@ -3,6 +3,7 @@ package com.crhistianm.springboot.gallo.springboot_gallo.account;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 //Id not in dto as it is auto incremental on db
 final class AccountRequestDto extends AbstractAccountRequestDto {
 
+    @Schema(description = "ADMIN FIELD")
     private final boolean admin;
 
     @JsonCreator

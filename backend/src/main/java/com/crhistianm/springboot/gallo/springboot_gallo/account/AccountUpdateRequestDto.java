@@ -8,6 +8,7 @@ import com.crhistianm.springboot.gallo.springboot_gallo.shared.group.SecondCheck
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
@@ -24,9 +25,9 @@ final class AccountUpdateRequestDto extends AbstractAccountRequestDto {
     (
      @JsonProperty(value = "email") String email,
      @JsonProperty(value = "password") String password,
-     @JsonProperty(value = "enabled") Boolean enabled,
-     @JsonProperty(value = "roles") List<RoleRequestDto> roles,
-     @JsonProperty(value = "personId") Long personId
+     @JsonProperty(value = "enabled")@Schema(description = "ADMIN FIELD") Boolean enabled,
+     @JsonProperty(value = "roles") @Schema(description = "ADMIN FIELD") List<RoleRequestDto> roles,
+     @JsonProperty(value = "personId") @Schema(description = "ADMIN FIELD") Long personId
      ) {
         super(email, password, personId);
         this.roles = roles == null ? List.of() : List.copyOf(roles);
