@@ -22,6 +22,7 @@ class ExerciseController {
 
     @GetMapping
     @Operation(
+        description = "Redis cache implemented",
         responses = {
             @ApiResponse(responseCode = "404",content = {}),
             @ApiResponse(responseCode = "400",content = {})

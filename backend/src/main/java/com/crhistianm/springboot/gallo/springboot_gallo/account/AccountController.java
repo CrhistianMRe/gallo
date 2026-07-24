@@ -36,6 +36,7 @@ class AccountController {
     @PostMapping
     @SecurityRequirements(value = {})
     @Operation( 
+        description = "Redis cache implemented",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             required = true,
             content = @Content(
@@ -64,18 +65,27 @@ class AccountController {
 
     @PatchMapping("/{id}")
     @AccountApiResponse200
+    @Operation( 
+        description = "Redis cache implemented"
+    )
     ResponseEntity<AccountResponseDto> update(@PathVariable Long id, @Validated(GroupsOrder.class) @RequestBody AccountUpdateRequestDto requestDto){
         return ResponseEntity.ok(accountService.update(id, requestDto)); 
     }
 
     @DeleteMapping("/{id}")
     @AccountApiResponse200
+    @Operation( 
+        description = "Redis cache implemented"
+    )
     ResponseEntity<AccountResponseDto> delete(@PathVariable Long id) {
         return ResponseEntity.ok(accountService.delete(id));
     }
 
     @GetMapping("/{id}")
     @AccountApiResponse200
+    @Operation( 
+        description = "Redis cache implemented"
+    )
     ResponseEntity<AccountResponseDto> viewById(@PathVariable Long id){
         return ResponseEntity.ok(accountService.getById(id));
     }

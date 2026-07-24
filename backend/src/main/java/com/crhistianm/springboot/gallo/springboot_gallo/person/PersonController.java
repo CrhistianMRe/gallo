@@ -32,6 +32,7 @@ class PersonController {
     @PostMapping
     @SecurityRequirements(value = {})
     @Operation(
+        description = "Redis cache implemented",
         responses = {
             @ApiResponse(responseCode = "404",content = {}),
         }
@@ -55,16 +56,25 @@ class PersonController {
     }
     
     @GetMapping("/{id}")
+    @Operation(
+        description = "Redis cache implemented"
+    )
     ResponseEntity<PersonResponseDto> viewById(@PathVariable Long id) {
          return ResponseEntity.ok(personService.getById(id));
     }
 
     @PutMapping("/{id}")
+    @Operation(
+        description = "Redis cache implemented"
+    )
     ResponseEntity<PersonResponseDto> update(@PathVariable Long id, @Valid @RequestBody PersonRequestDto person){
         return ResponseEntity.ok(personService.update(id, person));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(
+        description = "Redis cache implemented"
+    )
     ResponseEntity<PersonResponseDto> delete(@PathVariable Long id){
         return ResponseEntity.ok(personService.delete(id));
     }
