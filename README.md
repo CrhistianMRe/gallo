@@ -17,6 +17,7 @@
   <img alt="Maven" src="https://img.shields.io/badge/apachemaven-C71A36.svg?style=for-the-badge&logo=apachemaven&logoColor=white"/>
   <img alt="MariaDB" src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white"/>
   <img alt="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"/>
+  <img alt="Redis" src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
 </p>
 
 > [!IMPORTANT]
@@ -33,22 +34,28 @@
 
 ### Local Installation
 - MariaDB 10.6+ (12.2.2-MariaDB used in this project)
+- Redis (7.4-alpine used for this project)
 
 1. Install **MariaDB** server database with Gallo SQL [script](https://github.com/CrhistianMRe/gallo/blob/main/backend/src/main/resources/gallo.sql).
-2. Set up environment variables used in [application.properties](https://github.com/CrhistianMRe/gallo/blob/main/backend/src/main/resources/application.properties):
+2. Install **Redis**.
+3. Set up environment variables used in [application.properties](https://github.com/CrhistianMRe/gallo/blob/main/backend/src/main/resources/application.properties):
 ```bash
 # fish shell
 set -x DB_URL "jdbc:mariadb://yourdatabaseurl:3306/yourdatabasename?sslMode=trust"
 set -x DB_USER "youruser"
 set -x DB_PASSWORD "yourpassword"
+set -x REDIS_HOST "localhost"
+set -x REDIS_PORT "6379"
 
 # bashrc
 export DB_URL="jdbc:mariadb://yourdatabaseurl:3306/yourdatabasename?sslMode=trust"
 export DB_USER="youruser"
 export DB_PASSWORD="yourpassword"
+export REDIS_HOST="localhost"
+export REDIS_PORT="6379"
 ```
 
-3. Run [latest release](https://github.com/CrhistianMRe/gallo/releases/latest) jar.
+4. Run [latest release](https://github.com/CrhistianMRe/gallo/releases/latest) jar.
 
 ### My repo workflow
 <details>
@@ -119,6 +126,19 @@ Provided repository layer between service and db creating queries derived by met
 SQL creation and insert script for retrieve and store of Gallo workout app.
 
 ![DB ER-diagram](https://github.com/CrhistianMRe/gallo/raw/main/docs/ERGallo.svg)
+
+</details>
+
+<details>
+<summary>🔴 Redis cache</summary>
+
+- Implemented in the following common cacheable scenarios in Gallo platform:
+[Person module](https://gallospring.duckdns.org/apidocs.html#tag/person-controller),
+[Account module](https://gallospring.duckdns.org/apidocs.html#tag/account-controller),
+[Exercise module](https://gallospring.duckdns.org/apidocs.html#tag/exercise-controller)
+
+- [Custom cache handling utils](https://github.com/CrhistianMRe/gallo/blob/docs/redis/backend/src/main/java/com/crhistianm/springboot/gallo/springboot_gallo/shared/cache/CacheHandlingUtils.java)
+using Java generics.
 
 </details>
 
