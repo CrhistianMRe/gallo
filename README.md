@@ -18,6 +18,7 @@
   <img alt="MariaDB" src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white"/>
   <img alt="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"/>
   <img alt="Redis" src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
+  <img alt="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"/>
 </p>
 
 > [!IMPORTANT]
@@ -56,6 +57,15 @@ export REDIS_PORT="6379"
 ```
 
 4. Run [latest release](https://github.com/CrhistianMRe/gallo/releases/latest) jar.
+
+### Docker
+
+[DockerHub Repo](https://hub.docker.com/repository/docker/crhistianmre/springboot-gallo/general)
+
+You can use the example [Docker Compose](https://github.com/CrhistianMRe/gallo/blob/main/backend/compose.yml) file to run Redis and Gallo SpringBoot project.
+
+>[!IMPORTANT]
+> Keep in mind that MariaDB is not included in the Compose file
 
 ### My repo workflow
 <details>
@@ -147,6 +157,13 @@ using Java generics.
 
 - **Directory paths:**
 Defined to package ease of use for workflow on local Maven testing and GitHub Actions CI. 
+
+</details>
+
+<details>
+<summary>🐋 Docker</summary>
+
+Ease of project build, deployment, and execution.
 
 </details>
 
