@@ -1,6 +1,32 @@
 services:
+  springboot-gallo:
+    image: crhistianmre/springboot-gallo:latest
+    container_name: springboot-gallo 
+    depends_on:
+      - redis 
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_HOST=${REDIS_HOST}
+      - DB_URL=${DB_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    restart: unless-stopped
+    networks:
+      - backend
+
   redis:
     image: redis:7.4-alpine
-    ports:
-      - "6379:6379"
+    networks:
+      - backend
 
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
