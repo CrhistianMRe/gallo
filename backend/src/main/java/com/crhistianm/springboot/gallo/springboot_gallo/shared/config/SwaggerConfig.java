@@ -23,7 +23,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenApi() {
         return new OpenAPI()
-            .info(new Info().version("0.3.0"))
+            .info(new Info().version("0.3.1"))
             .components(new Components().addSecuritySchemes(
                     "bearerAuth", 
                     new SecurityScheme()
