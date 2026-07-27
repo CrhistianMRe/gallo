@@ -19,6 +19,7 @@
   <img alt="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"/>
   <img alt="Redis" src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
   <img alt="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"/>
+  <img alt="Oracle" src="https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white"/>
 </p>
 
 > [!IMPORTANT]
@@ -214,6 +215,6 @@ Swagger implemented to document Gallo backend platform.
 
 - **CI:** All tests(more than 300 at the moment) are executed in Gallo CI workflow before any PR merge and deployment.
 
-- **CD:** This project is deployed in an EC2 AWS server via Gallo CD workflow without a Docker container (temporarily).
+- **CD:** This project is deployed in an Oracle server via Gallo CD workflow using SSH and Docker Compose.
 
 </details>
