@@ -196,7 +196,7 @@ Used for entities instance declaration on runtime and testing.
 <details>
 <summary>🧪 Testing</summary>
 
-Tests implements JUnit, Mockito, AssertJ and H2 DE, intended to validate data/methods correct functionality integrity for local test and remote CI.
+Tests implements JUnit, Mockito, AssertJ, H2 DB and Testcontainers, intended to validate data/methods correct functionality integrity for local test and remote CI.
 
 </details>
 
