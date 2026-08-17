@@ -61,7 +61,7 @@ export REDIS_PORT="6379"
 
 ### Docker
 
-[DockerHub Repo](https://hub.docker.com/repository/docker/crhistianmre/springboot-gallo/general)
+[DockerHub Repo](https://hub.docker.com/r/crhistianmre/springboot-gallo)
 
 You can use the example [Docker Compose](https://github.com/CrhistianMRe/gallo/blob/main/backend/compose.yml) file to run Redis and Gallo SpringBoot project.
 
