@@ -29,6 +29,13 @@
 >[!TIP]
 > If you want to skip this process the following common credentials are available: email: "user@gmail.com", password: "12345"
 
+
+```bash
+curl "https://gallospring.duckdns.org/api/auth/login" --header "Content-Type: application/json" \
+        --request POST \
+        --data '{"email":"user@gmail.com","password":"12345"}'
+```
+
 1. Perform a **valid** POST request to the [create person endpoint](https://gallospring.duckdns.org/apidocs.html#tag/person-controller/operation/create_1)
 2. Continue your sign-up process by performing another **valid** POST request to the [create account endpoint](https://gallospring.duckdns.org/apidocs.html#tag/account-controller/operation/create_2)(admin field is not allowed)
 3. Now you can log-in by doing a **valid** POST request to the [login endpoint](https://gallospring.duckdns.org/apidocs.html#tag/login-controller/operation/login)
